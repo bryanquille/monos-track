@@ -1,7 +1,17 @@
+import { createRouter, RouterProvider } from "@tanstack/react-router"
+import { routeTree } from "./routeTree.gen"
+
+const router = createRouter({ routeTree })
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router
+  }
+}
+
 function App() {
   return (
     <>
-      <h1>Monos Track</h1>
+      <RouterProvider router={router} />
     </>
   )
 }
