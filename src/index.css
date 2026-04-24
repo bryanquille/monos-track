@@ -1,10 +1,20 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap");
 
 @theme {
-  --color-primary: #0088FF;
-  --color-secondary-light: #0F172A;
-  --color-tertiary-light: #DF6402;
+  --color-primary: #0088ff;
+  --color-secondary-light: #0f172a;
+  --color-tertiary-light: #df6402;
   --color-neutral-light: #747780;
-  --color-secondary-dark: #38BDF8;
+  --color-secondary-dark: #38bdf8;
+  --font-Geist: "Geist", sans-serif;
+  --font-Geist-Mono: "Geist Mono", monospace;
 }
 
+body {
+  @apply font-Geist bg-mist-300;
+}
+
+#root {
+  @apply relative w-full h-screen flex flex-col items-center gap-2;
+}
