@@ -1,16 +1,15 @@
+import { useHambMenu } from "../../../store/hambMenuStore"
 import { cn } from "../../../utils/cn"
 
-interface HambuerguerMenuButtonProps {
-  isHambMenuOpen: boolean
-  handleClick: () => void
-}
+function HamburguerMenuButton() {
+  const isHambMenuOpen = useHambMenu((state) => state.isHambMenuOpen)
+  const toggleHambMenu = useHambMenu((state) => state.toggleHambMenu)
 
-function HamburguerMenuButton({ isHambMenuOpen, handleClick }: HambuerguerMenuButtonProps) {
   return (
     <button
       type="button"
-      className='flex flex-col justify-center ite gap-0.75'
-      onClick={handleClick}
+      className='cursor-pointer flex flex-col justify-center ite gap-0.75'
+      onClick={toggleHambMenu}
     >
       <span
         className={cn(

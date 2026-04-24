@@ -1,12 +1,11 @@
 import { Link } from "@tanstack/react-router"
 import { cn } from "../../../utils/cn"
+import { useHambMenu } from "../../../store/hambMenuStore"
 
-interface NavbarProps {
-  isHambMenuOpen: boolean
-  handleClick: () => void
-}
+function Navbar() {
+  const isHambMenuOpen = useHambMenu((state) => state.isHambMenuOpen)
+  const closeHambMenu = useHambMenu((state) => state.closeHambMenu)
 
-function Navbar({ isHambMenuOpen, handleClick }: NavbarProps) {
   return (
     <nav className={cn(
       "fixed top-[12%] right-[calc(10%/4)] w-1/2 p-4 flex flex-col justify-center items-center gap-2 rounded-xl bg-mist-50 transform transition-transform duration-300",
@@ -18,14 +17,14 @@ function Navbar({ isHambMenuOpen, handleClick }: NavbarProps) {
       <Link
         to="/"
         className="[&.active]:font-bold"
-        onClick={handleClick}
+        onClick={closeHambMenu}
       >
         Home
       </Link>{' '}
       <Link
         to="/register"
         className="[&.active]:font-bold"
-        onClick={handleClick}
+        onClick={closeHambMenu}
       >
         Register
       </Link>

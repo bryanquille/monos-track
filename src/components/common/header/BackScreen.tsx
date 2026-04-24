@@ -1,10 +1,9 @@
+import { useHambMenu } from "../../../store/hambMenuStore"
 import { cn } from "../../../utils/cn"
 
-interface BackScreenProps {
-  isHambMenuOpen: boolean
-}
+function BackScreen() {
+  const isHambMenuOpen = useHambMenu((state) => state.isHambMenuOpen)
 
-function BackScreen({ isHambMenuOpen }: BackScreenProps) {
   return (
     <div
       className={cn(
