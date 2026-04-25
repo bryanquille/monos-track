@@ -8,7 +8,7 @@ function HamburguerMenuButton() {
   return (
     <button
       type="button"
-      className='cursor-pointer flex flex-col justify-center ite gap-0.75'
+      className='cursor-pointer flex flex-col justify-center ite gap-0.75 md:hidden'
       onClick={toggleHambMenu}
     >
       <span

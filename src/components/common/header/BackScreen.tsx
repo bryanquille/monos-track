@@ -7,7 +7,7 @@ function BackScreen() {
   return (
     <div
       className={cn(
-        "fixed inset-0 w-full h-screen bg-secondary-light/70 transform transition-transform duration-300",
+        "fixed inset-0 w-full h-screen bg-secondary-light/70 transform transition-transform duration-300 md:relative md:hidden",
         {
           "translate-x-0": isHambMenuOpen,
           "translate-x-[300%]": isHambMenuOpen === false,
