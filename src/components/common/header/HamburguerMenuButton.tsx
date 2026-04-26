@@ -1,9 +1,23 @@
+import { useEffect } from "react"
 import { useHambMenu } from "../../../store/hambMenuStore"
 import { cn } from "../../../utils/cn"
 
 function HamburguerMenuButton() {
   const isHambMenuOpen = useHambMenu((state) => state.isHambMenuOpen)
   const toggleHambMenu = useHambMenu((state) => state.toggleHambMenu)
+
+  useEffect(() => {
+    if (isHambMenuOpen) {
+      document.body.classList.add('no-scroll')
+    } else {
+      document.body.classList.remove('no-scroll')
+    }
+
+    return () => {
+      document.body.classList.remove('no-scroll')
+    }
+  }, [isHambMenuOpen])
+
 
   return (
     <button
