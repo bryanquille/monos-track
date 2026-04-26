@@ -16,7 +16,7 @@ function RegisterButton({
     <Link
       to="/register"
       className={cn(
-        'px-4 py-2 rounded-lg [&.active]:font-semibold bg-primary text-white',
+        'px-4 py-2 rounded-lg [&.active]:font-semibold bg-primary text-white hover:bg-primary/80',
       )}
       onClick={handleClick}
       style={style}
