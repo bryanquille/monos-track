@@ -11,7 +11,7 @@ function LoginButton({ handleClick, isBorderIncluded }: LoginButtonProps) {
     <Link
       to="/login"
       className={cn(
-        '[&.active]:font-semibold',
+        'border-b-4 border-b-transparent [&.active]:font-semibold hover:border-b-primary transition-colors duration-200',
         {
           'border-2 border-primary rounded-md': isBorderIncluded
         }
