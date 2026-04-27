@@ -2,7 +2,7 @@ import logo from '../../../assets/images/monos-track-logo-circle.png'
 
 function Footer() {
   return (
-    <footer className='w-full px-8 py-6 flex flex-col justify-center items-center gap-2 bg-white'>
+    <footer className='w-full max-w-7xl px-8 py-6 flex flex-col justify-center items-center gap-2 bg-white'>
       <div className='flex justify-center items-center gap-1.5'>
         <img
           src={logo}

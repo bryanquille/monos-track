@@ -15,7 +15,7 @@ function BrandLogo() {
         alt="Logotipo de Monos Track"
         className='w-9'
       />
-      <strong className="font-Plus-Jakarta-Sans text-gray-text text-lg">Monos Track</strong>
+      <strong className="font-Plus-Jakarta-Sans text-gray-text text-lg lg:text-xl">Monos Track</strong>
     </Link>
   )
 }
