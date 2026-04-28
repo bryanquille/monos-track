@@ -11,18 +11,21 @@ function DarkThemeButton() {
     <button
       type="button"
       ref={elementRef as React.Ref<HTMLButtonElement>}
-      className="relative p-0.5 flex justify-between items-center gap-1 border-2 border-secondary-light rounded-4xl"
+      className="relative cursor-pointer p-0.5 flex justify-between items-center gap-1 border-2 border-primary rounded-4xl"
       onClick={toggleTheme}
     >
       <div
-        style={{ '--width':`${elementHeight - 8}px` } as React.CSSProperties}
+        style={{
+          '--width-mobile': `${elementHeight - 8}px`,
+          '--width-tablet': `${elementHeight - 12}px`,
+        } as React.CSSProperties}
         className={cn(
-          `absolute inset-0 w-(--width) h-full rounded-full bg-secondary-light transform transition-transform duration-300`,
+          `absolute inset-0 w-(--width-mobile) h-full rounded-full bg-primary transform transition-all duration-300 md:w-(--width-tablet)`,
           isDark ? 'translate-x-0' : 'translate-x-full',
         )}
       ></div>
-      <Sun />
-      <Moon />
+      <Sun color="#df6402" />
+      <Moon color="#b4becc" />
     </button>
   )
 }

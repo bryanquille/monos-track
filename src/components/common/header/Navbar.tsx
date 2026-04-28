@@ -19,7 +19,7 @@ function Navbar({ headerHeight, headerWidth }: NavbarProps) {
         '--header-offset-left': `${headerWidth}px`
       } as React.CSSProperties}
       className={cn(
-        "fixed top-(--header-offset-top) left-(--header-offset-left) w-1/2 p-4 flex flex-col justify-center items-center gap-3 rounded-xl bg-white transform transition-transform duration-300 md:relative md:inset-0 md:w-[unset] md:p-0 md:flex-row md:gap-6 md:translate-0 md:bg-[unset] lg:gap-8",
+        "fixed top-(--header-offset-top) left-(--header-offset-left) w-1/2 p-4 flex flex-col justify-center items-center gap-3 rounded-xl bg-white transform transition-transform duration-300 md:relative md:inset-0 md:w-[unset] md:ml-auto md:p-0 md:flex-row md:gap-6 md:translate-0 md:bg-[unset] lg:gap-8 dark:bg-tertiary-dark dark:text-neutral-dark md:dark:bg-[unset]",
         {
           "-translate-x-full": isHambMenuOpen,
           "translate-x-[300%]": isHambMenuOpen === false,

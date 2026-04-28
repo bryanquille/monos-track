@@ -13,11 +13,11 @@ function Header() {
       <BackScreen />
       <header
         ref={elementRef}
-        className="relative z-40 w-[95%] max-w-7xl mt-2.5 px-4 py-2 flex justify-between items-center gap-2 rounded-xl bg-white lg:px-8 dark:bg-secondary-light dark:text-neutral-dark"
+        className="relative z-40 w-[95%] max-w-7xl mt-2.5 px-4 py-2 flex justify-between items-center gap-2 rounded-xl bg-white lg:px-8 dark:bg-tertiary-dark dark:text-neutral-dark"
       >
         <BrandLogo />
-        <div>
-          <div className="flex justify-center items-center gap-4">
+        <div className="grow flex flex-row-reverse justify-evenly items-center">
+          <div className="ml-auto flex justify-center items-center gap-4">
             <DarkThemeButton />
             <HamburguerMenuButton />
           </div>

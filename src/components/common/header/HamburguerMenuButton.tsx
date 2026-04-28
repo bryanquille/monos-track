@@ -27,7 +27,7 @@ function HamburguerMenuButton() {
     >
       <span
         className={cn(
-          'w-6 h-1 block rounded-xl bg-secondary-light transform transition-transform duration-300',
+          'w-6 h-1 block rounded-xl bg-secondary-light transform transition-transform duration-300 dark:bg-neutral-dark',
           {
             'translate-y-0.75 rotate-45': isHambMenuOpen
           }
@@ -35,7 +35,7 @@ function HamburguerMenuButton() {
       ></span>
       <span
         className={cn(
-          'w-6 h-1 block rounded-xl bg-secondary-light transition-all duration-300',
+          'w-6 h-1 block rounded-xl bg-secondary-light transition-all duration-300 dark:bg-neutral-dark',
           {
             'hidden': isHambMenuOpen,
           }
@@ -43,7 +43,7 @@ function HamburguerMenuButton() {
       ></span>
       <span
         className={cn(
-          'w-6 h-1 block rounded-xl bg-secondary-light transform transition-transform duration-300',
+          'w-6 h-1 block rounded-xl bg-secondary-light transform transition-transform duration-300 dark:bg-neutral-dark',
           {
             '-translate-y-0.75 -rotate-45': isHambMenuOpen
           }
