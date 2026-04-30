@@ -31,6 +31,7 @@ function Navbar({ headerHeight, headerWidth }: NavbarProps) {
       />
       <RegisterButton
         handleClick={closeHambMenu}
+        className="cursor-pointer px-4 py-2.5 rounded-md bg-primary text-neutral-dark hover:bg-primary/80 transition-all duration-200"
       />
     </nav>
   )

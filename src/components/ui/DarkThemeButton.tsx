@@ -17,7 +17,7 @@ function DarkThemeButton() {
       <div
         style={{
           '--width-mobile': `${elementHeight - 8}px`,
-          '--width-tablet': `${elementHeight - 12}px`,
+          '--width-tablet': `${elementHeight - 14}px`,
         } as React.CSSProperties}
         className={cn(
           `absolute inset-0 w-(--width-mobile) h-full rounded-full bg-primary transform transition-all duration-300 md:w-(--width-tablet)`,

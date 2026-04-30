@@ -22,8 +22,7 @@ function HomePage() {
         </div>
         <RegisterButton
           text='Comienza Gratis'
-          padding={[30, 14]}
-          fontSize={20}
+          className='cursor-pointer px-6 py-4 rounded-md font-semibold text-2xl bg-primary text-white hover:bg-primary/80 transition-all duration-200'
         />
       </section>
       <section className='w-[90%] max-w-7xl mt-14 mx-auto flex flex-col justify-center items-center gap-6'>
@@ -105,10 +104,7 @@ function HomePage() {
         <p className='text-center text-neutral-dark dark:text-neutral-light/85'>Unete a nuestra comunidad, que estan transformando sus finanzas personales de una tarea rutinaria en una obra maestra arquitectonica.</p>
         <RegisterButton
           text='Comienza Gratis'
-          bgColor='white'
-          textColor='#005BAF'
-          padding={[30, 14]}
-          fontSize={20}
+          className='cursor-pointer px-6 py-4 rounded-md font-semibold text-xl bg-neutral-dark text-primary hover:bg-neutral-dark/80 transition-all duration-200'
         />
       </section>
     </>
