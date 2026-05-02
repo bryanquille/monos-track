@@ -1,11 +1,12 @@
 import { Sun, Moon } from "lucide-react"
 import { useElementHeight } from "../../hooks/useElementWidthHeight"
 import { cn } from "../../utils/cn"
-import { useDarkMode } from "../../hooks/useDarkMode"
+import { useTheme } from "../../store/themeStore"
 
 function DarkThemeButton() {
   const { elementHeight, elementRef } = useElementHeight()
-  const { isDark, toggleTheme } = useDarkMode()
+  const isDark = useTheme((state) => state.isDark)
+  const toggleTheme = useTheme((state) => state.toggleTheme)
 
   return (
     <button
