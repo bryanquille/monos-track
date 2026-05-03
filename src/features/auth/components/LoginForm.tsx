@@ -73,7 +73,6 @@ function LoginForm() {
             {errors.password.message}
           </p>
         )}
-
       </div>
       <button
         type="submit"
