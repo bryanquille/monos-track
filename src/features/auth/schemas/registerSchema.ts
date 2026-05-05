@@ -4,10 +4,14 @@ import { z } from 'zod';
 const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}[\]:;"'<>,.?/\\|`~]).*$/;
 
 export const registerSchema = z.object({
-  name: z
+  firstName: z
     .string()
     .min(1, { message: "El nombre es obligatorio" })
     .max(50, { message: "El nombre no puede exceder los 50 caracteres" }),
+  lastName: z
+    .string()
+    .min(1, { message: "El apellido es obligatorio" })
+    .max(50, { message: "El apellido no puede exceder los 50 caracteres" }),
   email: z
     .string()
     .min(1, { message: "El correo es obligatorio" })
