@@ -28,6 +28,7 @@ function Navbar({ headerHeight, headerWidth }: NavbarProps) {
     >
       <LoginButton
         handleClick={closeHambMenu}
+        className={cn('border-b-4 border-b-transparent [&.active]:font-semibold hover:border-b-primary transition-colors duration-200')}
       />
       <RegisterButton
         handleClick={closeHambMenu}

@@ -1,24 +1,19 @@
 import { Link } from "@tanstack/react-router"
-import { cn } from "../../../utils/cn"
+import type { ComponentPropsWithoutRef } from "react";
 
-interface LoginButtonProps {
+interface LoginButtonProps extends ComponentPropsWithoutRef<'a'> {
   handleClick?: () => void
-  isBorderIncluded?: boolean 
+  text?: string
 }
 
-function LoginButton({ handleClick, isBorderIncluded }: LoginButtonProps) {
+function LoginButton({ handleClick, text = 'Iniciar Sesión', ...props }: LoginButtonProps) {
   return (
     <Link
       to="/login"
-      className={cn(
-        'border-b-4 border-b-transparent [&.active]:font-semibold hover:border-b-primary transition-colors duration-200',
-        {
-          'border-2 border-primary rounded-md': isBorderIncluded
-        }
-      )}
       onClick={handleClick}
+      {...props}
     >
-      Iniciar Sesión
+      {text}
     </Link>
   )
 }

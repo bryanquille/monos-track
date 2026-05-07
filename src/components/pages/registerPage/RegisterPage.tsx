@@ -15,13 +15,13 @@ function RegisterPage() {
   }
 
   return (
-    <>
-      <section className={cn('w-full p-8 flex flex-col justify-center items-center gap-6')}>
+    <div>
+      <section className={cn('w-full min-h-screen p-8 flex flex-col justify-center items-center gap-4 dark:bg-primary-dark dark:shadow-xl/50 dark:shadow-neutral-light')}>
         <div className={cn('flex flex-col-reverse justify-center items-center gap-4')}>
           <div>
             <h1 className={cn('sr-only')}>Registro</h1>
-            <strong className={cn('font-medium')}>Comienza ahora</strong>
-            <p className={cn('text-gray-text')}>Registrate para gestionar tus movimientos con precisión técnica.</p>
+            <strong className={cn('font-semibold dark:text-neutral-dark')}>Comienza ahora</strong>
+            <p className={cn('text-gray-text dark:text-neutral-light')}>Registrate para gestionar tus movimientos con precisión técnica.</p>
           </div>
           <div className={cn('flex justify-center items-center gap-1')}>
             <img
@@ -35,16 +35,21 @@ function RegisterPage() {
         <form
           onSubmit={handleSubmit(onSubmit)}
           className={cn(
-            'w-full p-6 grid grid-cols-2 gap-3 inset-shadow-sm inset-shadow-neutral-light rounded-xl',
+            'w-full p-6 grid grid-cols-2 gap-3 inset-shadow-sm inset-shadow-neutral-light rounded-xl dark:inset-shadow-[unset] dark:bg-secondary-light dark:shadow-sm dark:shadow-neutral-light/50',
           )}
         >
-          <div className={cn('flex flex-col justify-center items-start col-span-2')}>
-            <label htmlFor="firstName">Nombre(s)</label>
+          <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2')}>
+            <label
+              htmlFor="firstName"
+              className='dark:text-neutral-dark'
+            >
+              Nombre(s)
+            </label>
             <input
               type="text"
               id="firstName"
               placeholder="Alejandro"
-              className={cn('w-full px-4 py-2.5 border-2 border-secondary-light/70 rounded-lg')}
+              className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
               {...register('firstName')}
             />
             {errors.firstName && (
@@ -53,13 +58,18 @@ function RegisterPage() {
               </p>
             )}
           </div>
-          <div className={cn('flex flex-col justify-center items-start col-span-2')}>
-            <label htmlFor="lastName">Apellido(s)</label>
+          <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2')}>
+            <label
+              htmlFor="lastName"
+              className='dark:text-neutral-dark'
+            >
+              Apellido(s)
+            </label>
             <input
               type="text"
               id="lastName"
               placeholder="Martínez"
-              className={cn('w-full px-4 py-2.5 border-2 border-secondary-light/70 rounded-lg')}
+              className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
               {...register('lastName')}
             />
             {errors.lastName && (
@@ -68,13 +78,18 @@ function RegisterPage() {
               </p>
             )}
           </div>
-          <div className={cn('flex flex-col justify-center items-start col-span-2')}>
-            <label htmlFor="email">Correo electrónico</label>
+          <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2')}>
+            <label
+              htmlFor="email"
+              className='dark:text-neutral-dark'
+            >
+              Correo electrónico
+            </label>
             <input
               type="email"
               id="email"
               placeholder="alejandro_martinez@email.com"
-              className={cn('w-full px-4 py-2.5 border-2 border-secondary-light/70 rounded-lg')}
+              className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
               {...register('email')}
             />
             {errors.email && (
@@ -83,13 +98,18 @@ function RegisterPage() {
               </p>
             )}
           </div>
-          <div className={cn('flex flex-col justify-center items-start col-span-2')}>
-            <label htmlFor="password">Contraseña</label>
+          <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2')}>
+            <label
+              htmlFor="password"
+              className='dark:text-neutral-dark'
+            >
+              Contraseña
+            </label>
             <input
               type="password"
               id="password"
               placeholder="**********"
-              className={cn('w-full px-4 py-2.5 border-2 border-secondary-light/70 rounded-lg')}
+              className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
               {...register('password')}
             />
             {errors.password && (
@@ -98,13 +118,18 @@ function RegisterPage() {
               </p>
             )}
           </div>
-          <div className={cn('flex flex-col justify-center items-start col-span-2')}>
-            <label htmlFor="confirmPassword">Confirmar contraseña</label>
+          <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2')}>
+            <label
+              htmlFor="confirmPassword"
+              className='dark:text-neutral-dark'
+            >
+              Confirmar contraseña
+            </label>
             <input
               type="password"
               id="confirmPassword"
               placeholder="**********"
-              className={cn('w-full px-4 py-2.5 border-2 border-secondary-light/70 rounded-lg')}
+              className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
               {...register('confirmPassword')}
             />
             {errors.confirmPassword && (
@@ -118,10 +143,15 @@ function RegisterPage() {
               <input
                 type="checkbox"
                 id="termsAndConditions"
-                className={cn('transform scale-150 align-middle')}
+                className={cn('cursor-pointer transform scale-150 align-middle')}
                 {...register('termsAndConditions')}
               />
-              <label htmlFor="termsAndConditions">Acepto los Términos de Servicio y la Política de Privacidad de Monos Track.</label>
+              <label
+                htmlFor="termsAndConditions"
+                className='dark:text-neutral-dark'
+              >
+                Acepto los Términos de Servicio y la Política de Privacidad de Monos Track.
+              </label>
             </div>
             {errors.termsAndConditions && (
               <p className='text-sm text-red-500 mt-1'>
@@ -131,15 +161,18 @@ function RegisterPage() {
           </div>
           <button
             type="submit"
-            className={cn('p-2.5 flex flex-col justify-center items-center col-span-2 rounded-lg font-semibold text-lg bg-primary text-neutral-dark hover:bg-primary/70')}
+            className={cn('cursor-pointer p-2.5 flex flex-col justify-center items-center col-span-2 rounded-lg font-semibold text-lg bg-primary text-neutral-dark hover:bg-primary/70 dark:text-primary-dark')}
           >
             Crear cuenta
           </button>
         </form>
-        <hr className={cn('w-full border border-gray-text')} />
+        <hr className={cn('w-full border border-gray-text/50 dark:border-neutral-light')} />
         <p>
-          <span className={cn('text-gray-text')}>¿Ya tienes una cuenta? </span>
-          <LoginButton />
+          <span className={cn('text-gray-text dark:text-neutral-light')}>¿Ya tienes una cuenta? </span>
+          <LoginButton
+            className='text-primary font-semibold hover:text-primary/80 transition-all duration-200'
+            text='Inicia Sesión'
+          />
         </p>
       </section>
       <section className={cn('hidden')}>
@@ -170,7 +203,7 @@ function RegisterPage() {
           </article>
         </div>
       </section>
-    </>
+    </div>
   )
 }
 
