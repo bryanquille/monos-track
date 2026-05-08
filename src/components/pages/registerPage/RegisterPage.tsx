@@ -15,15 +15,15 @@ function RegisterPage() {
   }
 
   return (
-    <div>
-      <section className={cn('w-full min-h-screen p-8 flex flex-col justify-center items-center gap-4 dark:bg-primary-dark dark:shadow-xl/50 dark:shadow-neutral-light')}>
-        <div className={cn('flex flex-col-reverse justify-center items-center gap-4')}>
+    <div className={cn('w-full flex flex-row-reverse justify-center items-center')}>
+      <section className={cn('w-full min-h-screen p-8 flex flex-col justify-center items-center gap-4 dark:bg-primary-dark dark:shadow-xl/50 dark:shadow-neutral-light lg:w-1/2')}>
+        <header className={cn('flex flex-col-reverse justify-center items-center gap-4 md:max-w-120')}>
           <div>
             <h1 className={cn('sr-only')}>Registro</h1>
-            <strong className={cn('font-semibold dark:text-neutral-dark')}>Comienza ahora</strong>
-            <p className={cn('text-gray-text dark:text-neutral-light')}>Registrate para gestionar tus movimientos con precisión técnica.</p>
+            <strong className={cn('font-semibold dark:text-neutral-dark md:block md:text-center md:text-xl')}>Comienza ahora</strong>
+            <p className={cn('text-gray-text dark:text-neutral-light md:text-center md:mt-4')}>Registrate para gestionar tus movimientos con precisión técnica.</p>
           </div>
-          <div className={cn('flex justify-center items-center gap-1')}>
+          <div className={cn('flex justify-center items-center gap-1 lg:hidden')}>
             <img
               src={logo}
               alt="Monos Track Logo"
@@ -31,14 +31,14 @@ function RegisterPage() {
             />
             <strong className='font-bold text-2xl text-primary-dark dark:text-neutral-dark md:text-4xl'>Monos Track</strong>
           </div>
-        </div>
+        </header>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className={cn(
-            'w-full p-6 grid grid-cols-2 gap-3 inset-shadow-sm inset-shadow-neutral-light rounded-xl dark:inset-shadow-[unset] dark:bg-secondary-light dark:shadow-sm dark:shadow-neutral-light/50',
+            'w-full p-6 grid grid-cols-2 gap-3 inset-shadow-sm inset-shadow-neutral-light rounded-xl dark:inset-shadow-[unset] dark:bg-secondary-light dark:shadow-sm dark:shadow-neutral-light/50 md:max-w-120',
           )}
         >
-          <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2')}>
+          <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2 md:col-span-1')}>
             <label
               htmlFor="firstName"
               className='dark:text-neutral-dark'
@@ -58,7 +58,7 @@ function RegisterPage() {
               </p>
             )}
           </div>
-          <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2')}>
+          <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2 md:col-span-1')}>
             <label
               htmlFor="lastName"
               className='dark:text-neutral-dark'
@@ -166,17 +166,17 @@ function RegisterPage() {
             Crear cuenta
           </button>
         </form>
-        <hr className={cn('w-full border border-gray-text/50 dark:border-neutral-light')} />
-        <p>
-          <span className={cn('text-gray-text dark:text-neutral-light')}>¿Ya tienes una cuenta? </span>
+        <hr className={cn('w-full border border-gray-text/50 dark:border-neutral-light md:max-w-120')} />
+        <footer className={cn('flex justify-center items-center gap-1.5 md:max-w-120')}>
+          <p className={cn('text-gray-text dark:text-neutral-light')}>¿Ya tienes una cuenta? </p>
           <LoginButton
             className='text-primary font-semibold hover:text-primary/80 transition-all duration-200'
             text='Inicia Sesión'
           />
-        </p>
+        </footer>
       </section>
-      <section className={cn('hidden')}>
-        <div>
+      <section className={cn('hidden lg:w-1/2 lg:min-h-screen lg:p-12 lg:flex lg:flex-col lg:justify-center lg:items-center lg:gap-4 lg:bg-linear-180 lg:from-primary/70 lg:to-primary/20')}>
+        <div className={cn('flex flex-col justify-center items-center gap-2')}>
           <img
             src={logo}
             alt="Monos Track Logo"
