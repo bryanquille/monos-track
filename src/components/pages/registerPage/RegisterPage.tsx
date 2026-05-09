@@ -15,7 +15,7 @@ function RegisterPage() {
   }
 
   return (
-    <div className={cn('w-full flex flex-row-reverse justify-center items-center')}>
+    <div className={cn('w-full min-h-screen flex flex-row-reverse justify-center items-center')}>
       <section className={cn('w-full min-h-screen p-8 flex flex-col justify-center items-center gap-4 dark:bg-primary-dark dark:shadow-xl/50 dark:shadow-neutral-light lg:w-1/2')}>
         <header className={cn('flex flex-col-reverse justify-center items-center gap-4 md:max-w-120')}>
           <div>
@@ -175,7 +175,7 @@ function RegisterPage() {
           />
         </footer>
       </section>
-      <section className={cn('hidden lg:w-1/2 lg:min-h-screen lg:p-12 lg:flex lg:flex-col lg:justify-center lg:items-center lg:gap-4 lg:bg-linear-180 lg:from-primary/70 lg:to-primary/20')}>
+      <section className={cn('hidden h-full lg:w-1/2 lg:p-12 lg:flex lg:flex-col lg:justify-center lg:items-center lg:gap-4 lg:bg-linear-180 lg:from-primary/70 lg:to-primary/20')}>
         <div className={cn('flex flex-col justify-center items-center gap-2')}>
           <img
             src={logo}
@@ -185,18 +185,18 @@ function RegisterPage() {
           <strong className='font-bold text-2xl text-primary-dark dark:text-neutral-dark md:text-4xl'>Monos Track</strong>
         </div>
         <strong>Gestión finaciera de alto nivel.</strong>
-        <p>Únete a la plataforma preferida por analístas para el seguimiento preciso de flujos de capital y activos digitales.</p>
-        <div>
-          <article>
-            <div>
-              <h3>Seguridad bancaria</h3>
+        <p className={cn('text-center text-pretty')}>Únete a la plataforma preferida por analístas para el seguimiento preciso de flujos de capital y activos digitales.</p>
+        <div className={cn('flex justify-center items-center gap-2')}>
+          <article className={cn('p-6 bg-neutral-light/40 rounded-xl')}>
+            <div className={cn('flex flex-col-reverse justify-center items-start gap-2')}>
+              <h3 className={cn('text-lg font-semibold')}>Seguridad bancaria</h3>
               <ShieldCheck />
             </div>
             <p>Tus datos están encriptados con los más altos estándares.</p>
           </article>
-          <article>
-            <div>
-              <h3>Análisis inteligente</h3>
+          <article className={cn('p-6 bg-neutral-light/40 rounded-xl')}>
+            <div className={cn('flex flex-col-reverse justify-center items-start gap-2')}>
+              <h3 className={cn('text-lg font-semibold')}>Análisis inteligente</h3>
               <ChartNoAxesCombined />
             </div>
             <p>Información en tiempo real sobre tus hábitos de gasto.</p>
