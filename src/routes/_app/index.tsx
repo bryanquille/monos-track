@@ -4,4 +4,3 @@ import HomePage from '../../components/pages/HomePage'
 export const Route = createFileRoute('/_app/')({
   component: HomePage,
 })
-
