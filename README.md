@@ -32,22 +32,22 @@ Una aplicación web de seguimiento financiero que combina precisión técnica co
 
 2. Instala las dependencias:
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. Inicia el servidor de desarrollo:
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 4. Abre tu navegador en `http://localhost:5173` (o el puerto indicado).
 
 ## Scripts disponibles
 
-- `npm run dev`: Inicia el servidor de desarrollo.
-- `npm run build`: Construye la aplicación para producción.
-- `npm run lint`: Ejecuta el linter para verificar el código.
-- `npm run preview`: Previsualiza la build de producción.
+- `pnpm run dev`: Inicia el servidor de desarrollo.
+- `pnpm run build`: Construye la aplicación para producción.
+- `pnpm run lint`: Ejecuta el linter para verificar el código.
+- `pnpm run preview`: Previsualiza la build de producción.
 
 ## Estructura del proyecto
 
