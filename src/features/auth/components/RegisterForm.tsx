@@ -2,13 +2,41 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { RegisterSchema, type RegisterData } from "../schemas/registerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "../../../utils/cn";
+import { supabase } from "../../../lib/supabase";
+import { useNavigate } from "@tanstack/react-router";
+import { useMutation } from "@tanstack/react-query";
 
 function RegisterForm() {
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterData>({
     resolver: zodResolver(RegisterSchema)
   })
-  const onSubmit: SubmitHandler<RegisterData> = (data) => {
+
+  const navigate = useNavigate()
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: RegisterData) => {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            first_name: data.firstName,
+            last_name: data.lastName,
+          }
+        }
+      })
+      if (signUpError) throw signUpError
+    },
+    onSuccess: () => {
+      alert('¡Registro exitoso! Revisa tu correo para revisar tu cuenta.')
+      navigate({ to: '/login' })
+    },
+    onError: (error: Error) => {
+      alert(error.message)
+    }
+  })
+  const onSubmit: SubmitHandler<RegisterData> = async (data) => {
     console.log(data)
+    mutate(data)
   }
 
   return (
@@ -141,9 +169,13 @@ function RegisterForm() {
       </div>
       <button
         type="submit"
-        className={cn('cursor-pointer p-2.5 flex flex-col justify-center items-center col-span-2 rounded-lg font-semibold text-lg bg-primary text-neutral-dark hover:bg-primary/70 dark:text-primary-dark')}
+        disabled={isPending}
+        className={cn(
+          'cursor-pointer p-2.5 flex flex-col justify-center items-center col-span-2 rounded-lg font-semibold text-lg bg-primary text-neutral-dark hover:bg-primary/70 dark:text-primary-dark',
+          isPending ? 'cursor-not-allowed bg-primary/50' : ''
+        )}
       >
-        Crear cuenta
+        {isPending ? 'Creando cuenta...' : 'Registrarse'}
       </button>
     </form>
   )
