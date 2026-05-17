@@ -7,13 +7,17 @@ import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useShowPassword } from "../../../hooks/useShowPassword";
 import { Eye, EyeOff } from "lucide-react";
+import PasswordStrength from "./PasswordStrength";
+import { useState } from "react";
 
 function RegisterForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterData>({
-    resolver: zodResolver(RegisterSchema)
+  const { register, handleSubmit, formState: { errors }, control } = useForm<RegisterData>({
+    resolver: zodResolver(RegisterSchema),
+    mode: 'onChange'
   })
   const { showPassword, toggleShowPassword } = useShowPassword()
   const { showPassword: showConfirmPassword, toggleShowPassword: toggleShowConfirmPassword } = useShowPassword()
+  const [showPasswordReq, setShowPasswordReq] = useState(false)
 
   const navigate = useNavigate()
   const { mutate, isPending } = useMutation({
@@ -109,41 +113,49 @@ function RegisterForm() {
           </p>
         )}
       </div>
-      {/* 
-        TODO: Add password strength indicator
-       */}
-      <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2 xl:col-span-1')}>
-        <label
-          htmlFor="password"
-          className='dark:text-neutral-dark'
-        >
-          Contraseña
-        </label>
-        <div className={cn('relative w-full')}>
-          <input
-            type={showPassword ? 'text' : 'password'}
-            id="password"
-            placeholder="••••••••••"
-            className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
-            {...register('password')}
-          />
-          <button
-            type="button"
-            className={cn('absolute top-1/2 right-4 cursor-pointer transform -translate-y-1/2 dark:text-neutral-dark')}
-            onClick={toggleShowPassword}
+      <div className="relative col-span-2 xl:col-span-1">
+        <div className={cn('flex flex-col justify-center items-start gap-0.5')}>
+          <label
+            htmlFor="password"
+            className='dark:text-neutral-dark'
           >
-            {showPassword ? (
-              <EyeOff className='dark:text-neutral-dark/70 hover:opacity-70 transition-all duration-200' />
-            ) : (
-              <Eye className='dark:text-neutral-dark/70 hover:opacity-70 transition-all duration-200' />
-            )}
-          </button>
+            Contraseña
+          </label>
+          <div className={cn('relative w-full')}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              placeholder="••••••••••"
+              onFocus={() => setShowPasswordReq(true)}
+              className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
+              {...register('password', {
+                onBlur: () => {
+                  setShowPasswordReq(false)
+                }
+              })}
+            />
+            <button
+              type="button"
+              className={cn('absolute top-1/2 right-4 cursor-pointer transform -translate-y-1/2 dark:text-neutral-dark')}
+              onClick={toggleShowPassword}
+              onMouseDown={(e) => e.preventDefault()}
+            >
+              {showPassword ? (
+                <EyeOff className='dark:text-neutral-dark/70 hover:opacity-70 transition-all duration-200' />
+              ) : (
+                <Eye className='dark:text-neutral-dark/70 hover:opacity-70 transition-all duration-200' />
+              )}
+            </button>
+          </div>
+          {errors.password && (
+            <p className='text-sm text-red-500 mt-1'>
+              {errors.password.message}
+            </p>
+          )}
         </div>
-        {errors.password && (
-          <p className='text-sm text-red-500 mt-1'>
-            {errors.password.message}
-          </p>
-        )}
+        {
+          showPasswordReq && <PasswordStrength control={control} />
+        }
       </div>
       <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2 xl:col-span-1')}>
         <label
