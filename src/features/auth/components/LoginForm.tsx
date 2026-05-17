@@ -3,15 +3,37 @@ import { useForm, type SubmitHandler } from "react-hook-form"
 import { LoginSchema, type LoginData } from "../schemas/loginSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
+import { useNavigate } from "@tanstack/react-router";
+import { useMutation } from "@tanstack/react-query";
+import { supabase } from "../../../lib/supabase";
+import { cn } from "../../../utils/cn";
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const { register, handleSubmit, reset, formState: { errors } } = useForm<LoginData>({
     resolver: zodResolver(LoginSchema),
   })
+  const navigate = useNavigate()
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: LoginData) => {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      })
+      if (signInError) throw signInError
+    },
+    onSuccess: () => {
+      navigate({ to: '/dashboard' })
+    },
+    onError: (error: Error) => {
+      alert(error.message)
+    }
+  })
 
   const onSubmit: SubmitHandler<LoginData> = (data) => {
     console.log(data)
+    mutate(data)
     reset()
   }
 
@@ -76,7 +98,11 @@ function LoginForm() {
       </div>
       <button
         type="submit"
-        className='cursor-pointer p-2 flex justify-center items-center gap-2 rounded-md bg-primary text-white font-bold text-2xl transition-all duration-200 hover:bg-primary/80'
+        disabled={isPending}
+        className={cn(
+          'cursor-pointer p-2 flex justify-center items-center gap-2 rounded-md bg-primary text-white font-bold text-2xl transition-all duration-200 hover:bg-primary/80',
+          isPending ? 'bg-primary/50 cursor-not-allowed' : '',
+        )}
       >
         <span>Iniciar sesión</span>
         <ArrowRight className='stroke-3' />
