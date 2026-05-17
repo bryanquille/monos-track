@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { cn } from '../../../utils/cn';
+import DashboardPage from '../../../components/pages/dashboardPage/DashboardPage';
 
 export const Route = createFileRoute('/_app/dashboard/')({
-  component: () => <div className={cn('dark:text-neutral-dark')}>Dashboard</div>,
+  component: DashboardPage,
 })
