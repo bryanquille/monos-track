@@ -35,7 +35,6 @@ function RegisterForm() {
     }
   })
   const onSubmit: SubmitHandler<RegisterData> = async (data) => {
-    console.log(data)
     mutate(data)
   }
 
@@ -106,6 +105,10 @@ function RegisterForm() {
           </p>
         )}
       </div>
+      {/* 
+        TODO: Add password strength indicator
+        TODO: Add show/hide password button
+       */}
       <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2 xl:col-span-1')}>
         <label
           htmlFor="password"

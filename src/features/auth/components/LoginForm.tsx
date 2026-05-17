@@ -32,7 +32,6 @@ function LoginForm() {
   })
 
   const onSubmit: SubmitHandler<LoginData> = (data) => {
-    console.log(data)
     mutate(data)
     reset()
   }
