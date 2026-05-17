@@ -5,11 +5,15 @@ import { cn } from "../../../utils/cn";
 import { supabase } from "../../../lib/supabase";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
+import { useShowPassword } from "../../../hooks/useShowPassword";
+import { Eye, EyeOff } from "lucide-react";
 
 function RegisterForm() {
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterData>({
     resolver: zodResolver(RegisterSchema)
   })
+  const { showPassword, toggleShowPassword } = useShowPassword()
+  const { showPassword: showConfirmPassword, toggleShowPassword: toggleShowConfirmPassword } = useShowPassword()
 
   const navigate = useNavigate()
   const { mutate, isPending } = useMutation({
@@ -42,7 +46,7 @@ function RegisterForm() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className={cn(
-        'w-full p-6 grid grid-cols-2 gap-3 inset-shadow-sm inset-shadow-neutral-light rounded-xl dark:inset-shadow-[unset] dark:bg-secondary-light dark:shadow-sm dark:shadow-neutral-light/50 md:max-w-120',
+        'w-full p-6 grid grid-cols-2 gap-3 inset-shadow-sm inset-shadow-neutral-light rounded-xl xl:items-start dark:inset-shadow-[unset] dark:bg-secondary-light dark:shadow-sm dark:shadow-neutral-light/50 md:max-w-120',
       )}
     >
       <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2 md:col-span-1')}>
@@ -107,7 +111,6 @@ function RegisterForm() {
       </div>
       {/* 
         TODO: Add password strength indicator
-        TODO: Add show/hide password button
        */}
       <div className={cn('flex flex-col justify-center items-start gap-0.5 col-span-2 xl:col-span-1')}>
         <label
@@ -116,13 +119,26 @@ function RegisterForm() {
         >
           Contraseña
         </label>
-        <input
-          type="password"
-          id="password"
-          placeholder="**********"
-          className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
-          {...register('password')}
-        />
+        <div className={cn('relative w-full')}>
+          <input
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            placeholder="••••••••••"
+            className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
+            {...register('password')}
+          />
+          <button
+            type="button"
+            className={cn('absolute top-1/2 right-4 cursor-pointer transform -translate-y-1/2 dark:text-neutral-dark')}
+            onClick={toggleShowPassword}
+          >
+            {showPassword ? (
+              <EyeOff className='dark:text-neutral-dark/70 hover:opacity-70 transition-all duration-200' />
+            ) : (
+              <Eye className='dark:text-neutral-dark/70 hover:opacity-70 transition-all duration-200' />
+            )}
+          </button>
+        </div>
         {errors.password && (
           <p className='text-sm text-red-500 mt-1'>
             {errors.password.message}
@@ -136,13 +152,26 @@ function RegisterForm() {
         >
           Confirmar contraseña
         </label>
-        <input
-          type="password"
-          id="confirmPassword"
-          placeholder="**********"
-          className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
-          {...register('confirmPassword')}
-        />
+        <div className="relative w-full">
+          <input
+            type={showConfirmPassword ? 'text' : 'password'}
+            id="confirmPassword"
+            placeholder="••••••••••"
+            className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
+            {...register('confirmPassword')}
+          />
+          <button
+            type="button"
+            className={cn('absolute top-1/2 right-4 cursor-pointer transform -translate-y-1/2 dark:text-neutral-dark')}
+            onClick={toggleShowConfirmPassword}
+          >
+            {showConfirmPassword ? (
+              <EyeOff className='dark:text-neutral-dark/70 hover:opacity-70 transition-all duration-200' />
+            ) : (
+              <Eye className='dark:text-neutral-dark/70 hover:opacity-70 transition-all duration-200' />
+            )}
+          </button>
+        </div>
         {errors.confirmPassword && (
           <p className='text-sm text-red-500 mt-1'>
             {errors.confirmPassword.message}

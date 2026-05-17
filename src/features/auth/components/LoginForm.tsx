@@ -2,14 +2,14 @@ import { ArrowRight, Eye, EyeOff } from "lucide-react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { LoginSchema, type LoginData } from "../schemas/loginSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "../../../lib/supabase";
 import { cn } from "../../../utils/cn";
+import { useShowPassword } from "../../../hooks/useShowPassword";
 
 function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false)
+  const { showPassword, toggleShowPassword } = useShowPassword()
   const { register, handleSubmit, reset, formState: { errors } } = useForm<LoginData>({
     resolver: zodResolver(LoginSchema),
   })
@@ -80,7 +80,7 @@ function LoginForm() {
           <button
             type="button"
             className='absolute top-1/2 right-4 cursor-pointer transform -translate-y-1/2 dark:text-neutral-dark'
-            onClick={() => setShowPassword(!showPassword)}
+            onClick={toggleShowPassword}
           >
             {showPassword ? (
               <EyeOff className='dark:text-neutral-dark/70 hover:opacity-70 transition-all duration-200' />
