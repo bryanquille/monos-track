@@ -4,6 +4,7 @@ import { useTheme } from "../../store/themeStore";
 import { useEffect } from "react";
 import { useAuthStore } from "../../store/authStore";
 import { supabase } from "../../lib/supabase";
+import LoaderPage from "./LoaderPage";
 
 function RootComponent() {
   const isDark = useTheme((state) => state.isDark)
@@ -36,18 +37,7 @@ function RootComponent() {
     }
   }, [setSession])
 
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50">
-        {/* TODO: Add an spinner here */}
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-500"></div>
-        <p className="mt-4 text-sm font-medium text-zinc-500 animate-pulse">
-          Sincronizando Monos Track...
-        </p>
-      </div>
-    )
-  }
+  if (isLoading) return <LoaderPage text="Sincronizando Monos Track..." />
 
   return (
     <>

@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { supabase } from "../../../lib/supabase";
 import { cn } from "../../../utils/cn";
 import { useShowPassword } from "../../../hooks/useShowPassword";
+import Loader from "../../../components/ui/Loader";
 
 function LoginForm() {
   const { showPassword, toggleShowPassword } = useShowPassword()
@@ -35,6 +36,8 @@ function LoginForm() {
     mutate(data)
     reset()
   }
+
+  if (isPending) return <Loader className="mt-10" text="Iniciando sesión" />
 
   return (
     <form

@@ -9,9 +9,10 @@ import { useShowPassword } from "../../../hooks/useShowPassword";
 import { Eye, EyeOff } from "lucide-react";
 import PasswordStrength from "./PasswordStrength";
 import { useState } from "react";
+import Loader from "../../../components/ui/Loader";
 
 function RegisterForm() {
-  const { register, handleSubmit, formState: { errors }, control } = useForm<RegisterData>({
+  const { register, handleSubmit, reset, formState: { errors }, control } = useForm<RegisterData>({
     resolver: zodResolver(RegisterSchema),
     mode: 'onChange'
   })
@@ -42,9 +43,13 @@ function RegisterForm() {
       alert(error.message)
     }
   })
+
   const onSubmit: SubmitHandler<RegisterData> = async (data) => {
     mutate(data)
+    reset()
   }
+
+  if (isPending) return <Loader className="my-10" text="Creando cuenta" />
 
   return (
     <form
