@@ -8,14 +8,12 @@ export const useElementHeight = () => {
   useEffect(() => {
     const gettingElementHeight = () => {
       const elementHeight = elementRef.current?.clientHeight
-      const elementTop = elementRef.current?.offsetTop
-      if (elementHeight && elementTop) setElementHeight(elementHeight + elementTop)
+      if (elementHeight) setElementHeight(elementHeight)
     }
 
     const gettingElementWidth = () => {
       const elementWidth = elementRef.current?.clientWidth
-      const elementLeft = elementRef.current?.offsetLeft
-      if (elementWidth && elementLeft) setElementWidth(elementWidth + elementLeft)
+      if (elementWidth) setElementWidth(elementWidth)
     }
 
     gettingElementWidth()

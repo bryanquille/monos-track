@@ -3,7 +3,11 @@ import { useElementHeight } from "../../hooks/useElementWidthHeight"
 import { cn } from "../../utils/cn"
 import { useTheme } from "../../store/themeStore"
 
-function DarkThemeButton() {
+interface DarkThemeButtonProps {
+  className?: string
+}
+
+function DarkThemeButton({ className }: DarkThemeButtonProps) {
   const { elementHeight, elementRef } = useElementHeight()
   const isDark = useTheme((state) => state.isDark)
   const toggleTheme = useTheme((state) => state.toggleTheme)
@@ -12,17 +16,14 @@ function DarkThemeButton() {
     <button
       type="button"
       ref={elementRef as React.Ref<HTMLButtonElement>}
-      className="relative cursor-pointer p-0.5 flex justify-between items-center gap-1 border-2 border-primary rounded-4xl"
+      className={cn("relative cursor-pointer p-0.5 flex justify-evenly items-center gap-1 border-2 rounded-4xl border-primary", className)}
       onClick={toggleTheme}
     >
       <div
-        style={{
-          '--width-mobile': `${elementHeight - 8}px`,
-          '--width-tablet': `${elementHeight - 14}px`,
-        } as React.CSSProperties}
+        style={{ width: elementHeight, height: elementHeight }}
         className={cn(
-          `absolute inset-0 w-(--width-mobile) h-full rounded-full bg-primary transform transition-all duration-300 md:w-(--width-tablet)`,
-          isDark ? 'translate-x-0' : 'translate-x-full',
+          `absolute rounded-full bg-primary transform transition-all duration-300`,
+          isDark ? '-translate-x-1/2' : 'translate-x-1/2',
         )}
       ></div>
       <Sun color="#df6402" />
