@@ -15,6 +15,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard/index'
 import { Route as AppDashboardSettingsRouteImport } from './routes/_app/dashboard/settings'
+import { Route as AppDashboardMovementsRouteImport } from './routes/_app/dashboard/movements'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -45,11 +46,17 @@ const AppDashboardSettingsRoute = AppDashboardSettingsRouteImport.update({
   path: '/dashboard/settings',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDashboardMovementsRoute = AppDashboardMovementsRouteImport.update({
+  id: '/dashboard/movements',
+  path: '/dashboard/movements',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/dashboard/movements': typeof AppDashboardMovementsRoute
   '/dashboard/settings': typeof AppDashboardSettingsRoute
   '/dashboard/': typeof AppDashboardIndexRoute
 }
@@ -57,6 +64,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/': typeof AppIndexRoute
+  '/dashboard/movements': typeof AppDashboardMovementsRoute
   '/dashboard/settings': typeof AppDashboardSettingsRoute
   '/dashboard': typeof AppDashboardIndexRoute
 }
@@ -66,6 +74,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/dashboard/movements': typeof AppDashboardMovementsRoute
   '/_app/dashboard/settings': typeof AppDashboardSettingsRoute
   '/_app/dashboard/': typeof AppDashboardIndexRoute
 }
@@ -75,16 +84,24 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/dashboard/movements'
     | '/dashboard/settings'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/register' | '/' | '/dashboard/settings' | '/dashboard'
+  to:
+    | '/login'
+    | '/register'
+    | '/'
+    | '/dashboard/movements'
+    | '/dashboard/settings'
+    | '/dashboard'
   id:
     | '__root__'
     | '/_app'
     | '/login'
     | '/register'
     | '/_app/'
+    | '/_app/dashboard/movements'
     | '/_app/dashboard/settings'
     | '/_app/dashboard/'
   fileRoutesById: FileRoutesById
@@ -139,17 +156,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardSettingsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/dashboard/movements': {
+      id: '/_app/dashboard/movements'
+      path: '/dashboard/movements'
+      fullPath: '/dashboard/movements'
+      preLoaderRoute: typeof AppDashboardMovementsRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppDashboardMovementsRoute: typeof AppDashboardMovementsRoute
   AppDashboardSettingsRoute: typeof AppDashboardSettingsRoute
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppDashboardMovementsRoute: AppDashboardMovementsRoute,
   AppDashboardSettingsRoute: AppDashboardSettingsRoute,
   AppDashboardIndexRoute: AppDashboardIndexRoute,
 }
