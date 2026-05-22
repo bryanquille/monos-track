@@ -4,9 +4,22 @@ import BrandLogo from "./BrandLogo"
 import BackScreen from "./BackScreen"
 import { useElementHeight } from "../../../hooks/useElementWidthHeight"
 import DarkThemeButton from "../../ui/DarkThemeButton"
+import { useAuthStore } from "../../../store/authStore";
+import { LogOut, UserCircle } from "lucide-react";
+import { cn } from "../../../utils/cn";
+import { useNavigate } from "@tanstack/react-router";
+import SignedInNavbar from "./SignedInNavbar";
 
 function Header() {
   const { elementHeight, elementWidth, elementRef } = useElementHeight()
+  const user = useAuthStore((state) => state.user)
+  const logout = useAuthStore((state) => state.logout)
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await logout()
+    navigate({ to: '/' })
+  }
 
   return (
     <>
@@ -17,14 +30,42 @@ function Header() {
       >
         <BrandLogo />
         <div className="grow flex flex-row-reverse justify-evenly items-center">
-          <div className="ml-auto flex justify-center items-center gap-4">
-            <DarkThemeButton />
-            <HamburguerMenuButton />
-          </div>
-          <Navbar
-            headerHeight={elementHeight}
-            headerWidth={elementWidth}
-          />
+          {user ? (
+            <>
+              <SignedInNavbar 
+                headerHeight={elementHeight}
+                headerWidth={elementWidth}
+              />
+              <div className={cn('ml-auto flex justify-center items-center gap-2')}>
+                <DarkThemeButton />
+                <p>{user?.user_metadata.first_name} {user?.user_metadata.last_name}</p>
+                <button
+                  type="button"
+                  className={cn('cursor-pointer')}
+                >
+                  <UserCircle />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className={cn('cursor-pointer')}
+                >
+                  <LogOut />
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="ml-auto flex justify-center items-center gap-4">
+                <DarkThemeButton />
+                <HamburguerMenuButton />
+              </div>
+              <Navbar
+                headerHeight={elementHeight}
+                headerWidth={elementWidth}
+              />
+            </>
+          )}
         </div>
       </header>
     </>

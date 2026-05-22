@@ -12,6 +12,7 @@ function Navbar({ headerHeight, headerWidth }: NavbarProps) {
   const isHambMenuOpen = useHambMenu((state) => state.isHambMenuOpen)
   const closeHambMenu = useHambMenu((state) => state.closeHambMenu)
 
+  // TODO: Modify to show when a user is signed in
   return (
     <nav
       style={{ 
