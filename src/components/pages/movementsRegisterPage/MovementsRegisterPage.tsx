@@ -1,15 +1,29 @@
 import { RefreshCcw, ShieldCheck } from "lucide-react";
 import { cn } from "../../../utils/cn";
+import { useState } from "react";
 
 function MovementsRegisterPage() {
+  const [isIncome, setIsIncome] = useState(true)
   return (
-    <section className={cn('dark:text-neutral-dark')}>
-      <header>
-        <h1>Registrar Movimiento</h1>
-        <p>Ingresa los detalles de tu nueva operación financiera.</p>
-        <button type="button">
-          <span>Ingreso</span>
-          <span>Gasto</span>
+    <section className={cn('w-[95%] max-w-7xl mx-auto overflow-hidden rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
+      <header className={cn('p-4 flex flex-col justify-center items-center gap-3 bg-neutral-light/50')}>
+        <div>
+          <h1>Registrar Movimiento</h1>
+          <p>Ingresa los detalles de tu nueva operación financiera.</p>
+        </div>
+        <button
+          type="button"
+          className={cn('relative py-2 px-4 overflow-hidden flex justify-evenly items-center gap-2 rounded-xl bg-neutral-light')}
+          onClick={() => setIsIncome(!isIncome)}
+        >
+          <span
+            className={cn(
+              'absolute w-1/2 h-full bg-primary transform transition-all duration-200',
+              isIncome ? 'translate-x-3/5' : '-translate-x-3/5',
+            )}
+          ></span>
+          <span className={cn('w-1/2')}>Ingreso</span>
+          <span className={cn('w-1/2')}>Gasto</span>
         </button>
       </header>
       <main>
