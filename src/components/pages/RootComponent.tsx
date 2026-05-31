@@ -1,5 +1,4 @@
 import { Outlet } from "@tanstack/react-router"
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 import { useTheme } from "../../store/themeStore";
 import { useEffect } from "react";
 import { useAuthStore } from "../../store/authStore";
@@ -42,7 +41,6 @@ function RootComponent() {
   return (
     <>
       <Outlet />
-      <TanStackRouterDevtools />
     </>
   )
 }

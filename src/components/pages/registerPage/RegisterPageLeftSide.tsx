@@ -4,7 +4,7 @@ import { cn } from "../../../utils/cn"
 
 function RegisterPageLeftSide() {
   return (
-    <section className={cn('hidden h-full min-h-screen lg:w-1/2 lg:p-12 lg:flex lg:flex-col lg:justify-center lg:items-center lg:gap-4 lg:bg-linear-180 lg:from-primary/70 lg:to-primary/20 dark:bg-linear-120 dark:from-tertiary-dark dark:to-primary-dark')}>
+    <section className={cn('hidden lg:w-1/2 lg:p-12 lg:flex lg:flex-col lg:justify-center lg:items-center lg:gap-4 lg:bg-linear-180 lg:from-primary/70 lg:to-primary/20 dark:bg-linear-120 dark:from-tertiary-dark dark:to-primary-dark')}>
       <div className={cn('flex flex-col justify-center items-center gap-2')}>
         <img
           src={logo}
