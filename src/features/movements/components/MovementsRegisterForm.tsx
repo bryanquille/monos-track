@@ -98,7 +98,7 @@ function MovementsRegisterForm() {
         <span>Comprobante/Adjunto (Opcional)</span>
         <label
           htmlFor="receipt-upload"
-          className={cn('w-full h-30 flex flex-col justify-center items-center gap-0.5 border-2 border-dashed rounded-md bg-neutral-light/30 dark:bg-primary-dark/50')}
+          className={cn('cursor-pointer w-full h-30 flex flex-col justify-center items-center gap-0.5 border-2 border-dashed rounded-md bg-neutral-light/30 dark:bg-primary-dark/50')}
         >
           <span className={cn('p-2 rounded-full bg-white dark:bg-tertiary-dark')}>
             <CloudUpload strokeWidth={3} className={cn('text-neutral-light/70')} />
