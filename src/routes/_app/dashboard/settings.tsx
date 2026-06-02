@@ -22,5 +22,5 @@ export const Route = createFileRoute('/_app/dashboard/settings')({
       })
     }
   },
-  component: () => <div>Settings</div>,
+  component: () => <div className='text-center dark:text-neutral-dark'>Settings</div>,
 })

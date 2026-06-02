@@ -1,12 +1,23 @@
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { cn } from "../../../utils/cn";
 import { ChevronDown, CloudUpload } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MovementsSchema, type MovementsData } from "../schemas/movementsSchema";
 
 function MovementsRegisterForm() {
-  const { register } = useForm()
+  const { register, handleSubmit, formState: { errors } } = useForm<MovementsData>({
+    resolver: zodResolver(MovementsSchema)
+  })
+
+  const onSubmit: SubmitHandler<MovementsData> = (data) => {
+    console.log(data)
+  }
 
   return (
-    <form className={cn('grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6')}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={cn('grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6')}
+    >
       <div className={cn('flex flex-col gap-1')}>
         <label htmlFor="amount">Monto</label>
         <input
@@ -14,7 +25,7 @@ function MovementsRegisterForm() {
           id="amount"
           placeholder="100.00"
           className={cn('px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
-          {...register('amount')}
+          {...register('amount', { valueAsNumber: true })}
         />
       </div>
       <div className={cn('flex flex-col gap-1')}>
@@ -41,10 +52,40 @@ function MovementsRegisterForm() {
               Salario
             </option>
             <option
-              value="gift"
+              value="freelance"
               className={cn('bg-white dark:bg-tertiary-dark')}
             >
-              Regalo
+              Honorarios/Freelance
+            </option>
+            <option
+              value="sales"
+              className={cn('bg-white dark:bg-tertiary-dark')}
+            >
+              Ventas
+            </option>
+            <option
+              value="investments"
+              className={cn('bg-white dark:bg-tertiary-dark')}
+            >
+              Inversiones y rendimientos
+            </option>
+            <option
+              value="gifts"
+              className={cn('bg-white dark:bg-tertiary-dark')}
+            >
+              Regalos
+            </option>
+            <option
+              value="refunds"
+              className={cn('bg-white dark:bg-tertiary-dark')}
+            >
+              Reembolsos
+            </option>
+            <option
+              value="other"
+              className={cn('bg-white dark:bg-tertiary-dark')}
+            >
+              Otros ingresos
             </option>
           </select>
           <ChevronDown
@@ -54,12 +95,12 @@ function MovementsRegisterForm() {
         </div>
       </div>
       <div className={cn('flex flex-col gap-1')}>
-        <label htmlFor="method">Método de Pago</label>
+        <label htmlFor="getMoneyMethod">Método de Pago</label>
         <div className={cn('relative')}>
           <select
-            id="method"
+            id="getMoneyMethod"
             className={cn('w-full pl-5 pr-10 py-3 border-2 border-secondary-light/70 rounded-md appearance-none dark:border-neutral-light/70 dark:text-neutral-dark')}
-            {...register('method')}
+            {...register('getMonetMethod')}
           >
             <option
               value="cash"
@@ -97,7 +138,7 @@ function MovementsRegisterForm() {
       <div className={cn('flex flex-col gap-1')}>
         <span>Comprobante/Adjunto (Opcional)</span>
         <label
-          htmlFor="receipt-upload"
+          htmlFor="receiptUpload"
           className={cn('cursor-pointer w-full h-30 flex flex-col justify-center items-center gap-0.5 border-2 border-dashed rounded-md bg-neutral-light/30 dark:bg-primary-dark/50')}
         >
           <span className={cn('p-2 rounded-full bg-white dark:bg-tertiary-dark')}>
@@ -108,10 +149,10 @@ function MovementsRegisterForm() {
         </label>
         <input
           type="file"
-          id="receipt-upload"
+          id="receiptUpload"
           className={cn('hidden')}
           accept=".pdf, .png, .jpg, .jpeg"
-          {...register('receipt-upload')}
+          {...register('receiptUpload')}
         />
       </div>
       <button
