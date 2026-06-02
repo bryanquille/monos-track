@@ -27,6 +27,9 @@ function MovementsRegisterForm() {
           className={cn('px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
           {...register('amount', { valueAsNumber: true })}
         />
+        {errors.amount &&
+          <span className={cn('text-sm text-red-500')}>{errors.amount.message}</span>
+        }
       </div>
       <div className={cn('flex flex-col gap-1')}>
         <label htmlFor="movementDate">Fecha</label>
@@ -36,6 +39,9 @@ function MovementsRegisterForm() {
           className={cn('px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
           {...register('movementDate')}
         />
+        {errors.movementDate &&
+          <span className={cn('text-sm text-red-500')}>{errors.movementDate.message}</span>
+        }
       </div>
       <div className={cn('flex flex-col gap-1')}>
         <label htmlFor="category">Categoría</label>
@@ -45,6 +51,12 @@ function MovementsRegisterForm() {
             className={cn('w-full pl-5 pr-10 py-3 border-2 border-secondary-light/70 rounded-md appearance-none dark:border-neutral-light/70 dark:text-neutral-dark')}
             {...register('category')}
           >
+            <option
+              value=""
+              className={cn('bg-white dark:bg-tertiary-dark')}
+            >
+              Escoge una categoría
+            </option>
             <option
               value="salary"
               className={cn('bg-white dark:bg-tertiary-dark')}
@@ -93,6 +105,9 @@ function MovementsRegisterForm() {
             className={cn('absolute top-1/2 right-2.5 pointer-events-none transform -translate-x-1/2 -translate-y-1/2')}
           />
         </div>
+        {errors.category &&
+          <span className={cn('text-sm text-red-500')}>{errors.category.message}</span>
+        }
       </div>
       <div className={cn('flex flex-col gap-1')}>
         <label htmlFor="getMoneyMethod">Método de Pago</label>
@@ -100,8 +115,14 @@ function MovementsRegisterForm() {
           <select
             id="getMoneyMethod"
             className={cn('w-full pl-5 pr-10 py-3 border-2 border-secondary-light/70 rounded-md appearance-none dark:border-neutral-light/70 dark:text-neutral-dark')}
-            {...register('getMonetMethod')}
+            {...register('getMoneyMethod')}
           >
+            <option
+              value=""
+              className={cn('bg-white dark:bg-tertiary-dark')}
+            >
+              Escoje un método
+            </option>
             <option
               value="cash"
               className={cn('bg-white dark:bg-tertiary-dark')}
@@ -126,6 +147,9 @@ function MovementsRegisterForm() {
             className={cn('absolute top-1/2 right-2.5 pointer-events-none transform -translate-x-1/2 -translate-y-1/2')}
           />
         </div>
+        {errors.getMoneyMethod &&
+          <span className={cn('text-sm text-red-500')}>{errors.getMoneyMethod.message}</span>
+        }
       </div>
       <div className={cn('flex flex-col gap-1')}>
         <label htmlFor="description">Descripción</label>
