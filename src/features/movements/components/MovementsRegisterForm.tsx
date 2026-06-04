@@ -169,7 +169,7 @@ function MovementsRegisterForm() {
             <CloudUpload strokeWidth={3} className={cn('text-neutral-light/70')} />
           </span>
           <span>Haz clic para subir o arrastra un archivo</span>
-          <span className={cn('text-sm text-gray-text/80 dark:text-neutral-dark/50')}>PDF, PNG O JPG (Máx. 10MB)</span>
+          <span className={cn('text-sm text-gray-text/80 dark:text-neutral-dark/50')}>PDF, PNG O JPG (Máx. 5MB)</span>
         </label>
         <input
           type="file"
@@ -178,6 +178,9 @@ function MovementsRegisterForm() {
           accept=".pdf, .png, .jpg, .jpeg"
           {...register('receiptUpload')}
         />
+        {errors.receiptUpload && 
+          <span className={cn('text-sm text-red-500')}>{errors.receiptUpload.message}</span>
+        }
       </div>
       <button
         type="submit"
