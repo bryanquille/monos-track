@@ -8,14 +8,17 @@ import { useAuthStore } from "../../../store/authStore";
 import { LogOut, UserCircle } from "lucide-react";
 import { cn } from "../../../utils/cn";
 import { useNavigate } from "@tanstack/react-router";
+import { useHambMenu } from "../../../store/hambMenuStore";
 
 function Header() {
   const { elementHeight, elementWidth, elementLeftPosition, elementRef } = useElementHeight()
+  const closeHambMenu = useHambMenu((state) => state.closeHambMenu)
   const user = useAuthStore((state) => state.user)
   const logout = useAuthStore((state) => state.logout)
   const navigate = useNavigate()
 
   const handleLogout = async () => {
+    closeHambMenu()
     await logout()
     navigate({ to: '/' })
   }

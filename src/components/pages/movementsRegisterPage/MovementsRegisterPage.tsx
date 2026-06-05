@@ -29,7 +29,9 @@ function MovementsRegisterPage() {
         </button>
       </header>
       <main className={cn('p-4 md:p-8')}>
-        <MovementsRegisterForm />
+        <MovementsRegisterForm
+          isIncome={isIncome}
+        />
       </main>
       <footer className={cn('p-4 grid grid-cols-1 grid-rows-2 gap-4 md:p-8 md:grid-cols-2 md:grid-rows-1')}>
         <article className={cn('w-full p-4 flex flex-row-reverse justify-end items-center gap-4 rounded-xl bg-neutral-light/50 dark:bg-primary-dark')}>

@@ -9,7 +9,7 @@ interface ThemeState {
 export const useTheme = create<ThemeState>()(
   persist(
     (set) => ({
-      isDark: window.matchMedia('(prefers-color-schema: dark)').matches,
+      isDark: window.matchMedia('(prefers-color-scheme: dark)').matches,
       toggleTheme: () => set((state) => ({ isDark: !state.isDark })),
     }),
     {

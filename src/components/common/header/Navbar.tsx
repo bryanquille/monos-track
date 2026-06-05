@@ -21,6 +21,7 @@ function Navbar({ headerHeight, headerWidth, headerLeftPosition }: NavbarProps) 
   const navigate = useNavigate()
 
   const handleLogout = async () => {
+    closeHambMenu()
     await logout()
     navigate({ to: '/' })
   }

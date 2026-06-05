@@ -2,9 +2,13 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { cn } from "../../../utils/cn";
 import { ChevronDown, CloudUpload } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MovementsSchema, type MovementsData } from "../schemas/movementsSchema";
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, MovementsSchema, type MovementsData } from "../schemas/movementsSchema";
 
-function MovementsRegisterForm() {
+interface MovementsRegisterFormProps {
+  isIncome: boolean
+}
+
+function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
   const { register, handleSubmit, formState: { errors } } = useForm<MovementsData>({
     resolver: zodResolver(MovementsSchema)
   })
@@ -57,48 +61,27 @@ function MovementsRegisterForm() {
             >
               Escoge una categoría
             </option>
-            <option
-              value="salary"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Salario
-            </option>
-            <option
-              value="freelance"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Honorarios/Freelance
-            </option>
-            <option
-              value="sales"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Ventas
-            </option>
-            <option
-              value="investments"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Inversiones y rendimientos
-            </option>
-            <option
-              value="gifts"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Regalos
-            </option>
-            <option
-              value="refunds"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Reembolsos
-            </option>
-            <option
-              value="other"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Otros ingresos
-            </option>
+            {isIncome ? (
+              INCOME_CATEGORIES.map((category) => (
+                <option
+                  key={category.value}
+                  value={category.value}
+                  className={cn('bg-white dark:bg-tertiary-dark')}
+                >
+                  {category.label}
+                </option>
+              ))
+            ) : (
+              EXPENSE_CATEGORIES.map((category) => (
+                <option
+                  key={category.value}
+                  value={category.value}
+                  className={cn('bg-white dark:bg-tertiary-dark')}
+                >
+                  {category.label}
+                </option>
+              ))
+            )}
           </select>
           <ChevronDown
             size={20}
@@ -178,7 +161,7 @@ function MovementsRegisterForm() {
           accept=".pdf, .png, .jpg, .jpeg"
           {...register('receiptUpload')}
         />
-        {errors.receiptUpload && 
+        {errors.receiptUpload &&
           <span className={cn('text-sm text-red-500')}>{errors.receiptUpload.message}</span>
         }
       </div>
