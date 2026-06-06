@@ -31,6 +31,9 @@ const ACCEPTED_FILE_TYPES = ['image/jpeg', "image/jpg", 'image/png', 'applicatio
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 
 export const MovementsSchema = z.object({
+  movementType: z
+    .enum(['income', 'expense']),
+
   amount: z
     .coerce.number<number>({ message: 'La cantidad en dolares es requerida.' })
     .positive('El valor ingresado debe ser mayor a cero.'),

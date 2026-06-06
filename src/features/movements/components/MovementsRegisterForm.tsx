@@ -3,15 +3,29 @@ import { cn } from "../../../utils/cn";
 import { ChevronDown, CloudUpload } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, MovementsSchema, type MovementsData } from "../schemas/movementsSchema";
+import { useEffect } from "react";
 
 interface MovementsRegisterFormProps {
   isIncome: boolean
 }
 
 function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
-  const { register, handleSubmit, formState: { errors } } = useForm<MovementsData>({
-    resolver: zodResolver(MovementsSchema)
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors }
+  } = useForm<MovementsData>({
+    resolver: zodResolver(MovementsSchema),
+    defaultValues: {
+      movementType: isIncome ? 'income' : 'expense'
+    }
   })
+
+  useEffect(() => {
+    setValue('movementType', isIncome ? 'income' : 'expense')
+  }, [isIncome, setValue])
+
 
   const onSubmit: SubmitHandler<MovementsData> = (data) => {
     console.log(data)
