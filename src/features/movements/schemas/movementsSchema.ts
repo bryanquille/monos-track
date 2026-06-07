@@ -28,7 +28,7 @@ export const EXPENSE_CATEGORIES = [
 const GET_MONEY_METHOD_VALUES = ['cash', 'transfer', 'deposit'] as const
 
 const ACCEPTED_FILE_TYPES = ['image/jpeg', "image/jpg", 'image/png', 'application/pdf']
-const MAX_FILE_SIZE = 5 * 1024 * 1024
+const MAX_FILE_SIZE = 10 * 1024 * 1024
 
 export const MovementsSchema = z.object({
   movementType: z
@@ -57,7 +57,7 @@ export const MovementsSchema = z.object({
     .optional()
     .refine(
       (files) => !files || files.length === 0 || files[0].size <= MAX_FILE_SIZE,
-      'El archivo no debe pesar más de 5MB.'
+      'El archivo no debe pesar más de 10MB.'
     )
     .refine(
       (files) => !files || files.length === 0 || ACCEPTED_FILE_TYPES.includes(files[0].type),
