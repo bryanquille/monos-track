@@ -2,36 +2,17 @@ import { ArrowRight, Eye, EyeOff } from "lucide-react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { LoginSchema, type LoginData } from "../schemas/loginSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useNavigate } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
-import { supabase } from "../../../lib/supabase";
 import { cn } from "../../../utils/cn";
 import { useShowPassword } from "../../../hooks/useShowPassword";
 import Loader from "../../../components/ui/Loader";
+import { useLoginForm } from "../hooks/useLoginForm";
 
 function LoginForm() {
   const { showPassword, toggleShowPassword } = useShowPassword()
   const { register, handleSubmit, reset, formState: { errors } } = useForm<LoginData>({
     resolver: zodResolver(LoginSchema),
   })
-  const navigate = useNavigate()
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (data: LoginData) => {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      })
-      if (signInError) throw signInError
-    },
-    onSuccess: () => {
-      navigate({ to: '/dashboard' })
-    },
-    onError: (error: Error) => {
-      alert(error.message)
-    }
-  })
-
+  const { mutate, isPending } = useLoginForm()
   const onSubmit: SubmitHandler<LoginData> = (data) => {
     mutate(data)
     reset()
