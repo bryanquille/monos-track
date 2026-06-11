@@ -2,14 +2,12 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { RegisterSchema, type RegisterData } from "../schemas/registerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "../../../utils/cn";
-import { supabase } from "../../../lib/supabase";
-import { useNavigate } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
 import { useShowPassword } from "../../../hooks/useShowPassword";
 import { Eye, EyeOff } from "lucide-react";
 import PasswordStrength from "./PasswordStrength";
 import { useState } from "react";
 import Loader from "../../../components/ui/Loader";
+import { useRegisterForm } from "../hooks/useRegisterForm";
 
 function RegisterForm() {
   const { register, handleSubmit, reset, formState: { errors }, control } = useForm<RegisterData>({
@@ -20,29 +18,7 @@ function RegisterForm() {
   const { showPassword: showConfirmPassword, toggleShowPassword: toggleShowConfirmPassword } = useShowPassword()
   const [showPasswordReq, setShowPasswordReq] = useState(false)
 
-  const navigate = useNavigate()
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (data: RegisterData) => {
-      const { error: signUpError } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            first_name: data.firstName,
-            last_name: data.lastName,
-          }
-        }
-      })
-      if (signUpError) throw signUpError
-    },
-    onSuccess: () => {
-      alert('¡Registro exitoso! Revisa tu correo para revisar tu cuenta.')
-      navigate({ to: '/login' })
-    },
-    onError: (error: Error) => {
-      alert(error.message)
-    }
-  })
+  const { mutate, isPending } = useRegisterForm()
 
   const onSubmit: SubmitHandler<RegisterData> = async (data) => {
     mutate(data)
