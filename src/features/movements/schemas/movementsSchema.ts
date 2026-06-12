@@ -1,68 +1,67 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
-const INCOME_VALUES = ['salary', 'freelance', 'sales', 'investments', 'gifts', 'refunds', 'other_income'] as const
-export const INCOME_CATEGORIES = [
-  { value: 'salary', label: 'Salario / Nómina' },
-  { value: 'freelance', label: 'Honorarios / Freelance' },
-  { value: 'sales', label: 'Ventas' },
-  { value: 'investments', label: 'Inversiones y Rendimientos' },
-  { value: 'gifts', label: 'Regalos / Donaciones' },
-  { value: 'refunds', label: 'Reembolsos' },
-  { value: 'other_income', label: 'Otros Ingresos' },
-]
+export const movementSchema = z.object({
+  // En Zod 4, las opciones de configuración de error usan el parámetro 'error'
+  movementType: z.enum(['income', 'expense'], {
+    error: 'Please select a valid movement type',
+  }),
 
-const EXPENSE_VALUES = ['food', 'housing', 'transport', 'utilities', 'health', 'entertainment', 'shopping', 'education', 'debt', 'other_expense'] as const
-export const EXPENSE_CATEGORIES = [
-  { value: 'food', label: 'Alimentación' },
-  { value: 'housing', label: 'Vivienda' },
-  { value: 'transport', label: 'Transporte' },
-  { value: 'utilities', label: 'Servicios' },
-  { value: 'health', label: 'Salud y Cuidado' },
-  { value: 'entertainment', label: 'Entretenimiento y Ocio' },
-  { value: 'shopping', label: 'Compras Personales' },
-  { value: 'education', label: 'Educación' },
-  { value: 'debt', label: 'Pago de Deudas' },
-  { value: 'other_expense', label: 'Otros Gastos' },
-]
+  // El método coerce hereda la configuración de 'error' para fallos de tipo primitivo
+  amount: z.coerce
+    .number({
+      error: 'Amount must be a valid number',
+    })
+    .positive({
+      error: 'Amount must be greater than zero',
+    }),
 
-const GET_MONEY_METHOD_VALUES = ['cash', 'transfer', 'deposit'] as const
+  // Para emular required vs invalid_type en Zod 4, pasamos una función al parámetro 'error'
+  movementDate: z.coerce.date({
+    error: (issue) => {
+      if (issue.input === undefined || issue.input === '') {
+        return 'Date is required';
+      }
+      return 'Please enter a valid date';
+    },
+  }),
 
-const ACCEPTED_FILE_TYPES = ['image/jpeg', "image/jpg", 'image/png', 'application/pdf']
-const MAX_FILE_SIZE = 10 * 1024 * 1024
+  // Selects obligatorios (si el input HTML manda string vacío "", falla el .min)
+  category: z.string().min(1, { error: 'Please select a category' }),
 
-export const MovementsSchema = z.object({
-  movementType: z
-    .enum(['income', 'expense']),
+  getMoneyMethod: z.string().min(1, { error: 'Please select a payment method' }),
 
-  amount: z
-    .coerce.number<number>({ message: 'La cantidad en dolares es requerida.' })
-    .positive('El valor ingresado debe ser mayor a cero.'),
-
-  movementDate: z
-    .iso.date('La fecha es requerida.'),
-
-  category: z
-    .enum(INCOME_VALUES, { message: 'Debes escoger una categoria.' })
-    .or(z.enum(EXPENSE_VALUES, { message: 'Debes escoger una categoria.' })),
-
-  getMoneyMethod: z
-    .enum(GET_MONEY_METHOD_VALUES, { message: 'Debes escoger un método de pago.' }),
-
-  description: z
-    .string()
-    .optional(),
-
-  receiptUpload: z
-    .custom<FileList>()
+  // Campo opcional que maneja correctamente los strings vacíos que envían los formularios por defecto
+  description: z.string()
+    .max(500, { error: 'Description cannot exceed 500 characters' })
     .optional()
-    .refine(
-      (files) => !files || files.length === 0 || files[0].size <= MAX_FILE_SIZE,
-      'El archivo no debe pesar más de 10MB.'
-    )
-    .refine(
-      (files) => !files || files.length === 0 || ACCEPTED_FILE_TYPES.includes(files[0].type),
-      'Solo se aceptan formatos .png .jpg .pdf'
-    )
-})
+    .or(z.literal('')),
 
-export type MovementsData = z.infer<typeof MovementsSchema>
+  // Procesamiento de FileList a File usando la nomenclatura correcta de Zod 4 para .refine
+  receiptUpload: z
+    .custom<FileList | File>()
+    .transform((value) => {
+      if (value instanceof FileList) {
+        return value.length > 0 ? value.item(0) : null;
+      }
+      if (value instanceof File) return value;
+      return null;
+    })
+    .refine((file) => {
+      if (!file) return true; // Al ser opcional, si no hay archivo pasa la validación
+      const maxFileSize = 10 * 1024 * 1024; // 10MB
+      return file.size <= maxFileSize;
+    }, {
+      error: 'File size must be less than 10MB',
+    })
+    .refine((file) => {
+      if (!file) return true;
+      const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+      return allowedTypes.includes(file.type);
+    }, {
+      error: 'Only JPG, PNG, and PDF files are allowed',
+    })
+    .nullable()
+    .optional(),
+});
+
+export type MovementFormValues = z.infer<typeof movementSchema>;
