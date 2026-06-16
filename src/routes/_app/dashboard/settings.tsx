@@ -1,6 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useAuthStore } from '../../../store/authStore';
 import { supabase } from '../../../lib/supabase';
+import SettingsPage from '../../../components/pages/settingsPage/SettingsPage';
 
 export const Route = createFileRoute('/_app/dashboard/settings')({
   beforeLoad: async () => {
@@ -22,5 +23,5 @@ export const Route = createFileRoute('/_app/dashboard/settings')({
       })
     }
   },
-  component: () => <div className='text-center dark:text-neutral-dark'>Settings</div>,
+  component: SettingsPage,
 })
