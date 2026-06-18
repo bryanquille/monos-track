@@ -5,12 +5,14 @@ import UserName from "../../ui/UserName";
 import LoaderPage from "../LoaderPage";
 import { BanknoteArrowDown, BanknoteArrowUp, CircleCheck, Info, Landmark, MoveUpRight, PiggyBank } from "lucide-react";
 import FinancialCard from "./FinancialCard";
+import { useFinancialSummary } from "../../../features/movements/hooks/useFinancialSummary";
 
 const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
 function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
   const [currentDate, setCurrentDate] = useState<string>('')
+  const { data, isPending, error } = useFinancialSummary()
 
   useEffect(() => {
     const getDate = () => {
@@ -21,6 +23,15 @@ function DashboardPage() {
     }
     getDate()
   }, [])
+
+  if (isPending) return <LoaderPage text="Cargando aplicación..." />
+  if (error) {
+    return (
+      <div className={cn('p-4 border border-red-500/20 rounded-xl text-center bg-red-500/10 text-red-500')}>
+        Error al cargar los datos: {error.message}
+      </div>
+    )
+  }
 
   if (isLoading) return <LoaderPage text="Cargando aplicación..." />
 
@@ -41,9 +52,9 @@ function DashboardPage() {
           <FinancialCard
             title="Ingresos Totales"
             mainIcon={BanknoteArrowUp}
-            mainIconBg="bg-secondary-light/15"
+            mainIconBg="bg-cyan-100"
             mainIconColor="text-primary"
-            cashValue="300.00"
+            cashValue={data.totalIncome}
             recapIcon={MoveUpRight}
             recapText="+12.5% desde el mes pasado"
             recapTextColor="text-green-600"
@@ -53,7 +64,7 @@ function DashboardPage() {
             mainIcon={BanknoteArrowDown}
             mainIconBg="bg-red-100"
             mainIconColor="text-red-500"
-            cashValue="120.00"
+            cashValue={data.totalExpenses}
             recapIcon={MoveUpRight}
             recapText="+2.4% desde el mes pasado"
             recapTextColor="text-red-600"
@@ -63,10 +74,10 @@ function DashboardPage() {
             mainIcon={Landmark}
             mainIconBg="bg-sky-100"
             mainIconColor="text-sky-500"
-            cashValue="180.00"
+            cashValue={data.balance}
             recapIcon={Info}
             recapText="Actualizado hace 3 minutos"
-            recapTextColor="text-gray-600"
+            recapTextColor="text-indigo-500"
           />
           <FinancialCard
             title="Ahorro mensual"
