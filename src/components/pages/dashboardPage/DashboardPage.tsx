@@ -67,6 +67,63 @@ function DashboardPage() {
             recapTextColor="text-green-600"
           />
         </div>
+        <div className={cn('p-4 grid grid-cols-1 gap-3 items-center md:grid-cols-2')}>
+          <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
+            <div className={cn('flex justify-between items-start')}>
+              <div>
+                <h3>Ingresos vs Gastos</h3>
+                <p className={cn('text-sm text-gray-500 dark:text-gray-400')}>Comparativa mensual</p>
+              </div>
+              <div>
+                <div className={cn('flex items-center gap-1.5')}>
+                  <span className={cn('block w-3 h-3 rounded-4xl bg-blue-500')}></span>
+                  <p>Ingresos</p>
+                </div>
+                <div className={cn('flex items-center gap-1.5')}>
+                  <span className={cn('block w-3 h-3 rounded-4xl bg-red-400')}></span>
+                  <p>Gastos</p>
+                </div>
+              </div>
+            </div>
+            <div className={cn('pt-4 px-2 pb-1 flex justify-evenly items-end border border-gray-400 rounded-2xl')}>
+              <div>
+                <div className={cn('flex items-end gap-0.5')}>
+                  <div className={cn('w-4 h-32 bg-blue-500')}></div>
+                  <div className={cn('w-4 h-24 bg-red-400')}></div>
+                </div>
+                <p className={cn('text-sm')}>Ene</p>
+              </div>
+              <div>
+                <div className={cn('flex items-end gap-0.5')}>
+                  <div className={cn('w-4 h-40 bg-blue-500')}></div>
+                  <div className={cn('w-4 h-20 bg-red-400')}></div>
+                </div>
+                <p className={cn('text-sm')}>Feb</p>
+              </div>
+              <div>
+                <div className={cn('flex items-end gap-0.5')}>
+                  <div className={cn('w-4 h-28 bg-blue-500')}></div>
+                  <div className={cn('w-4 h-26 bg-red-400')}></div>
+                </div>
+                <p className={cn('text-sm')}>Mar</p>
+              </div>
+              <div>
+                <div className={cn('flex items-end gap-0.5')}>
+                  <div className={cn('w-4 h-50 bg-blue-500')}></div>
+                  <div className={cn('w-4 h-32 bg-red-400')}></div>
+                </div>
+                <p className={cn('text-sm')}>Apr</p>
+              </div>
+              <div>
+                <div className={cn('flex items-end gap-0.5')}>
+                  <div className={cn('w-4 h-38 bg-blue-500')}></div>
+                  <div className={cn('w-4 h-26 bg-red-400')}></div>
+                </div>
+                <p className={cn('text-sm')}>Jun</p>
+              </div>
+            </div>
+          </article>
+        </div>
       </main>
     </section>
   )
