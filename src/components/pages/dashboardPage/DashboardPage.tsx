@@ -67,11 +67,11 @@ function DashboardPage() {
             recapTextColor="text-green-600"
           />
         </div>
-        <div className={cn('p-4 grid grid-cols-1 gap-3 items-center md:grid-cols-2')}>
-          <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
+        <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
+          <article className={cn('p-4 flex flex-col justify-between gap-4 rounded-2xl bg-neutral-light/20')}>
             <div className={cn('flex justify-between items-start')}>
               <div>
-                <h3>Ingresos vs Gastos</h3>
+                <h3 className={cn('font-semibold text-lg')}>Ingresos vs Gastos</h3>
                 <p className={cn('text-sm text-gray-500 dark:text-gray-400')}>Comparativa mensual</p>
               </div>
               <div>
@@ -120,6 +120,52 @@ function DashboardPage() {
                   <div className={cn('w-4 h-26 bg-red-400')}></div>
                 </div>
                 <p className={cn('text-sm')}>Jun</p>
+              </div>
+            </div>
+          </article>
+          <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
+            <h3 className={cn('font-semibold text-lg')}>Gastos por categoría</h3>
+            <div className={cn('relative flex flex-col justify-center items-center gap-4')}>
+              <div className={cn('relative w-60 h-60 flex justify-center items-center')}>
+                <div className={cn(
+                  'absolute top-1/2 left-1/2 w-60 h-60 rounded-full transform -translate-1/2',
+                  `bg-conic-[blue_0%,blue_42%,red_42%,red_70%,cyan_70%,cyan_85%,orange_85%,orange]`
+                )}></div>
+                <div className={cn('absolute top-1/2 left-1/2 w-48 h-48 overflow-hidden rounded-full bg-white transform -translate-1/2 dark:bg-secondary-light')}>
+                  <div className={cn('w-full h-full bg-neutral-light/20')}></div>
+                </div>
+              </div>
+              <div className={cn('w-full')}>
+                <div className={cn('flex flex-col gap-2')}>
+                  <div className={cn('flex justify-between items-center')}>
+                    <div className={cn('flex items-center gap-1.5')}>
+                      <div className={cn('w-3 h-3 rounded-4xl bg-blue-500')}></div>
+                      <p>Personal</p>
+                    </div>
+                    <p>42%</p>
+                  </div>
+                  <div className={cn('flex justify-between items-center')}>
+                    <div className={cn('flex items-center gap-1.5')}>
+                      <div className={cn('w-3 h-3 rounded-4xl bg-red-500')}></div>
+                      <p>Facturas y Servicios</p>
+                    </div>
+                    <p>28%</p>
+                  </div>
+                  <div className={cn('flex justify-between items-center')}>
+                    <div className={cn('flex items-center gap-1.5')}>
+                      <div className={cn('w-3 h-3 rounded-4xl bg-cyan-500')}></div>
+                      <p>Inversiones</p>
+                    </div>
+                    <p>15%</p>
+                  </div>
+                  <div className={cn('flex justify-between items-center')}>
+                    <div className={cn('flex items-center gap-1.5')}>
+                      <div className={cn('w-3 h-3 rounded-4xl bg-orange-400')}></div>
+                      <p>Otros</p>
+                    </div>
+                    <p>15%</p>
+                  </div>
+                </div>
               </div>
             </div>
           </article>
