@@ -8,6 +8,7 @@ export const useCreateMovement = () => {
     mutationFn: submitMovementToSupabase,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['movements'] })
+      queryClient.invalidateQueries({ queryKey: ['financial-summary'] })
       // TODO: Use a toast notification or a popup to show success message.
       console.log('Movimiento registrado con exito')
     },
