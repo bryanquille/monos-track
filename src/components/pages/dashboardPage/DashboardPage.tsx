@@ -5,12 +5,19 @@ import { BanknoteArrowDown, BanknoteArrowUp, CircleCheck, Info, Landmark, MoveUp
 import FinancialCard from "./FinancialCard";
 import { useFinancialSummary } from "../../../features/movements/hooks/useFinancialSummary";
 import DashboardHeader from "./DashboardHeader";
+import { useExpensesByCategory } from "../../../features/movements/hooks/useExpensesByCategory";
+import ExpensePercentageInfo from "./ExpensePercentageInfo";
 
 function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
   const { data, isPending, error } = useFinancialSummary()
+  const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
+  console.log(chartData)
+  console.log(charDataError)
+
 
   if (isPending) return <LoaderPage text="Cargando aplicación..." />
+  if (isPendingCharData) return <LoaderPage text="Cargando datos..." />
   if (error) {
     return (
       <div className={cn('p-4 border border-red-500/20 rounded-xl text-center bg-red-500/10 text-red-500')}>
@@ -137,34 +144,15 @@ function DashboardPage() {
               </div>
               <div className={cn('w-full')}>
                 <div className={cn('flex flex-col gap-2')}>
-                  <div className={cn('flex justify-between items-center')}>
-                    <div className={cn('flex items-center gap-1.5')}>
-                      <div className={cn('w-3 h-3 rounded-4xl bg-blue-500')}></div>
-                      <p>Personal</p>
-                    </div>
-                    <p>42%</p>
-                  </div>
-                  <div className={cn('flex justify-between items-center')}>
-                    <div className={cn('flex items-center gap-1.5')}>
-                      <div className={cn('w-3 h-3 rounded-4xl bg-red-500')}></div>
-                      <p>Facturas y Servicios</p>
-                    </div>
-                    <p>28%</p>
-                  </div>
-                  <div className={cn('flex justify-between items-center')}>
-                    <div className={cn('flex items-center gap-1.5')}>
-                      <div className={cn('w-3 h-3 rounded-4xl bg-cyan-500')}></div>
-                      <p>Inversiones</p>
-                    </div>
-                    <p>15%</p>
-                  </div>
-                  <div className={cn('flex justify-between items-center')}>
-                    <div className={cn('flex items-center gap-1.5')}>
-                      <div className={cn('w-3 h-3 rounded-4xl bg-orange-400')}></div>
-                      <p>Otros</p>
-                    </div>
-                    <p>15%</p>
-                  </div>
+                  {
+                    chartData?.map(item => (
+                      <ExpensePercentageInfo
+                        key={item.category}
+                        category={item.category}
+                        percentageValue={item.percentage}
+                      />
+                    ))
+                  }
                 </div>
               </div>
             </div>
