@@ -10,6 +10,7 @@ export const useCreateMovement = () => {
     onSuccess: () => {
       // queryClient.invalidateQueries({ queryKey: ['movements'] })
       queryClient.invalidateQueries({ queryKey: ['financial-summary'] })
+      queryClient.invalidateQueries({ queryKey: ['expenses-by-category'] })
       sileo.success({ title: '¡Movimiento registrado con exito!' })
       console.log('Movimiento registrado con exito')
     },

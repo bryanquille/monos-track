@@ -13,16 +13,16 @@ export const INCOME_CATEGORIES = [
 
 const EXPENSE_VALUES = ['food', 'housing', 'transport', 'utilities', 'health', 'entertainment', 'shopping', 'education', 'debt', 'other_expense'] as const
 export const EXPENSE_CATEGORIES = [
-  { value: 'food', label: 'Alimentación' },
-  { value: 'housing', label: 'Vivienda' },
-  { value: 'transport', label: 'Transporte' },
-  { value: 'utilities', label: 'Servicios' },
-  { value: 'health', label: 'Salud y Cuidado' },
-  { value: 'entertainment', label: 'Entretenimiento y Ocio' },
-  { value: 'shopping', label: 'Compras Personales' },
-  { value: 'education', label: 'Educación' },
-  { value: 'debt', label: 'Pago de Deudas' },
-  { value: 'other_expense', label: 'Otros Gastos' },
+  { value: 'food', label: 'Alimentación', color: 'red' },
+  { value: 'housing', label: 'Vivienda', color: 'skyBlue' },
+  { value: 'transport', label: 'Transporte', color: 'salmon' },
+  { value: 'utilities', label: 'Servicios', color: 'orange' },
+  { value: 'health', label: 'Salud y Cuidado', color: 'blue' },
+  { value: 'entertainment', label: 'Entretenimiento y Ocio', color: 'pink' },
+  { value: 'shopping', label: 'Compras Personales', color: 'paleGreen' },
+  { value: 'education', label: 'Educación', color: 'teal' },
+  { value: 'debt', label: 'Pago de Deudas', color: 'fuchsia' },
+  { value: 'other_expense', label: 'Otros Gastos', color: 'yellow' },
 ]
 
 const GET_MONEY_METHOD_VALUES = ['cash', 'transfer', 'deposit'] as const

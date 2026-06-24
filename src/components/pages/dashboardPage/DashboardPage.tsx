@@ -7,6 +7,7 @@ import { useFinancialSummary } from "../../../features/movements/hooks/useFinanc
 import DashboardHeader from "./DashboardHeader";
 import { useExpensesByCategory } from "../../../features/movements/hooks/useExpensesByCategory";
 import ExpensePercentageInfo from "./ExpensePercentageInfo";
+import { EXPENSE_CATEGORIES } from "../../../features/movements/schemas/movementsSchema";
 
 function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
@@ -148,8 +149,9 @@ function DashboardPage() {
                     chartData?.map(item => (
                       <ExpensePercentageInfo
                         key={item.category}
-                        category={item.category}
+                        category={EXPENSE_CATEGORIES.filter((expItem) => expItem.value === item.category)[0].label}
                         percentageValue={item.percentage}
+                        color={EXPENSE_CATEGORIES.filter((expItem) => expItem.value === item.category)[0].color}
                       />
                     ))
                   }
