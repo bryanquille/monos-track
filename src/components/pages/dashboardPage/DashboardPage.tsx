@@ -16,6 +16,24 @@ function DashboardPage() {
   console.log(chartData)
   console.log(charDataError)
 
+  const chartDataColorPercentage = chartData?.map(item => {
+    const categoryColor = EXPENSE_CATEGORIES.find((expItem) => expItem.value === item.category)?.color || 'bg-gray-500'
+    return {
+      ...item,
+      categoryColor
+    }
+  })
+
+  console.log(chartDataColorPercentage)
+
+  let graphicColors = ''
+  if (chartDataColorPercentage) {
+    chartDataColorPercentage.forEach(item => {
+      graphicColors += `${item.categoryColor}_${item.percentage}%,`
+    })
+  }
+  graphicColors = graphicColors.slice(0, -1) // Remove the last comma
+  console.log(graphicColors)
 
   if (isPending) return <LoaderPage text="Cargando aplicación..." />
   if (isPendingCharData) return <LoaderPage text="Cargando datos..." />
@@ -135,10 +153,12 @@ function DashboardPage() {
             <h3 className={cn('font-semibold text-lg')}>Gastos por categoría</h3>
             <div className={cn('relative flex flex-col justify-center items-center gap-4')}>
               <div className={cn('relative w-60 h-60 flex justify-center items-center')}>
-                <div className={cn(
-                  'absolute top-1/2 left-1/2 w-60 h-60 rounded-full transform -translate-1/2',
-                  `bg-conic-[blue_0%,blue_42%,red_42%,red_70%,cyan_70%,cyan_85%,orange_85%,orange]`
-                )}></div>
+                <div
+                  className={cn(
+                    'absolute top-1/2 left-1/2 w-60 h-60 rounded-full transform -translate-1/2',
+                    `bg-conic-[orange_0%,orange_31%,yellow_31%,yellow_57%,blue_57%,blue_80%,red_80%,red_95%,salmon_95%,salmon_100%]`
+                  )}
+                ></div>
                 <div className={cn('absolute top-1/2 left-1/2 w-48 h-48 overflow-hidden rounded-full bg-white transform -translate-1/2 dark:bg-secondary-light')}>
                   <div className={cn('w-full h-full bg-neutral-light/20')}></div>
                 </div>
