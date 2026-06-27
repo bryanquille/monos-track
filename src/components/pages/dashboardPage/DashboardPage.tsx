@@ -8,32 +8,15 @@ import DashboardHeader from "./DashboardHeader";
 import { useExpensesByCategory } from "../../../features/movements/hooks/useExpensesByCategory";
 import ExpensePercentageInfo from "./ExpensePercentageInfo";
 import { EXPENSE_CATEGORIES } from "../../../features/movements/schemas/movementsSchema";
+import { getGraphicsText } from "../../../features/movements/utils/getGraphicsText";
 
 function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
   const { data, isPending, error } = useFinancialSummary()
   const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
-  console.log(chartData)
   console.log(charDataError)
 
-  const chartDataColorPercentage = chartData?.map(item => {
-    const categoryColor = EXPENSE_CATEGORIES.find((expItem) => expItem.value === item.category)?.color || 'bg-gray-500'
-    return {
-      ...item,
-      categoryColor
-    }
-  })
-
-  console.log(chartDataColorPercentage)
-
-  let graphicColors = ''
-  if (chartDataColorPercentage) {
-    chartDataColorPercentage.forEach(item => {
-      graphicColors += `${item.categoryColor}_${item.percentage}%,`
-    })
-  }
-  graphicColors = graphicColors.slice(0, -1) // Remove the last comma
-  console.log(graphicColors)
+  const graphicsText = getGraphicsText({ registerExpenses: chartData ?? [] })
 
   if (isPending) return <LoaderPage text="Cargando aplicación..." />
   if (isPendingCharData) return <LoaderPage text="Cargando datos..." />
@@ -151,33 +134,37 @@ function DashboardPage() {
           </article>
           <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
             <h3 className={cn('font-semibold text-lg')}>Gastos por categoría</h3>
-            <div className={cn('relative flex flex-col justify-center items-center gap-4')}>
-              <div className={cn('relative w-60 h-60 flex justify-center items-center')}>
-                <div
-                  className={cn(
-                    'absolute top-1/2 left-1/2 w-60 h-60 rounded-full transform -translate-1/2',
-                    `bg-conic-[orange_0%,orange_31%,yellow_31%,yellow_57%,blue_57%,blue_80%,red_80%,red_95%,salmon_95%,salmon_100%]`
-                  )}
-                ></div>
-                <div className={cn('absolute top-1/2 left-1/2 w-48 h-48 overflow-hidden rounded-full bg-white transform -translate-1/2 dark:bg-secondary-light')}>
-                  <div className={cn('w-full h-full bg-neutral-light/20')}></div>
-                </div>
-              </div>
-              <div className={cn('w-full')}>
-                <div className={cn('flex flex-col gap-2')}>
-                  {
-                    chartData?.map(item => (
-                      <ExpensePercentageInfo
-                        key={item.category}
-                        category={EXPENSE_CATEGORIES.filter((expItem) => expItem.value === item.category)[0].label}
-                        percentageValue={item.percentage}
-                        color={EXPENSE_CATEGORIES.filter((expItem) => expItem.value === item.category)[0].color}
-                      />
-                    ))
-                  }
-                </div>
-              </div>
-            </div>
+            {charDataError ?
+              (<p className={cn('text-center text-red-500')}>Error al obtener los datos de los gastos: {charDataError.message}</p>)
+              : (
+                <div className={cn('relative flex flex-col justify-center items-center gap-4')}>
+                  <div className={cn('relative w-60 h-60 flex justify-center items-center')}>
+                    <div
+                      style={{ "--graphicsColors": graphicsText } as React.CSSProperties}
+                      className={cn(
+                        'absolute top-1/2 left-1/2 w-60 h-60 rounded-full transform -translate-1/2',
+                        `bg-conic-(--graphicsColors)`
+                      )}
+                    ></div>
+                    <div className={cn('absolute top-1/2 left-1/2 w-48 h-48 overflow-hidden rounded-full bg-white transform -translate-1/2 dark:bg-secondary-light')}>
+                      <div className={cn('w-full h-full bg-neutral-light/20')}></div>
+                    </div>
+                  </div>
+                  <div className={cn('w-full')}>
+                    <div className={cn('flex flex-col gap-2')}>
+                      {
+                        chartData?.map(item => (
+                          <ExpensePercentageInfo
+                            key={item.category}
+                            category={EXPENSE_CATEGORIES.filter((expItem) => expItem.value === item.category)[0].label}
+                            percentageValue={item.percentage}
+                            color={EXPENSE_CATEGORIES.filter((expItem) => expItem.value === item.category)[0].color}
+                          />
+                        ))
+                      }
+                    </div>
+                  </div>
+                </div>)}
           </article>
         </div>
       </main>
