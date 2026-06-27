@@ -6,17 +6,20 @@ interface chartData {
   percentage: number
 }
 
-interface getGraphicsTextProps {
-  registerExpenses: chartData[] | undefined
+interface GraphicsTextProps {
+  registerExpenses?: chartData[]
 }
 
 interface chartDataColorPercentage {
   category: string
   color: string
   percentage: number
+  accumulatedPercentage?: number
 }
 
-export const getGraphicsText = ({ registerExpenses }:getGraphicsTextProps) => {
+export const getGraphicsText = ({ registerExpenses }: GraphicsTextProps): string => {
+  if (!registerExpenses || registerExpenses.length === 0) return ''
+
   const chartDataColorsPercentages: chartDataColorPercentage[] = []
 
   EXPENSE_CATEGORIES.forEach(exp => {
@@ -46,15 +49,15 @@ export const getGraphicsText = ({ registerExpenses }:getGraphicsTextProps) => {
     }
     return {
       ...item,
-      acumPercentage: cum,
+      accumulatedPercentage: cum,
     }
   })
 
   let currentPercentage = 0
   let graphicsText = ''
   chartDataAccumPercentage.forEach(item => {
-    graphicsText += `${item.color} ${currentPercentage}%,${item.color} ${item.acumPercentage}%,`
-    currentPercentage = item.acumPercentage
+    graphicsText += `${item.color} ${currentPercentage}%,${item.color} ${item.accumulatedPercentage}%,`
+    currentPercentage = item.accumulatedPercentage
   })
 
   graphicsText = graphicsText.slice(0, -1)
