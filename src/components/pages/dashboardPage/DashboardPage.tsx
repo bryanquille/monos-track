@@ -9,40 +9,14 @@ import { useExpensesByCategory } from "../../../features/movements/hooks/useExpe
 import ExpensePercentageInfo from "./ExpensePercentageInfo";
 import { EXPENSE_CATEGORIES } from "../../../features/movements/schemas/movementsSchema";
 import { getGraphicsText } from "../../../features/movements/utils/getGraphicsText";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../../../lib/supabase";
+import { useIncomesVsExpenses } from "../../../features/movements/hooks/useIncomesVsExpenses";
 
 function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
 
   const { data, isPending, error } = useFinancialSummary()
   const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
-  const { data: incomesVsExpenses, isPending: isIncomesVsExpensesPending, error: incomesVsExpensesError } = useQuery({
-    queryKey: ['incomes-vs-expenses'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('movements')
-        .select('amount, movement_type, movement_date')
-
-      if (error) throw new Error(error.message)
-      if (!data || data.length === 0) return []
-
-      const monthlyData = data.reduce((acc: { [key: string]: { income: number, expense: number } }, item) => {
-        const month = new Date(item.movement_date).toLocaleString('default', { month: 'short', year: 'numeric' }) 
-        if (!acc[month]) {
-          acc[month] = { income: 0, expense: 0 }
-        }
-        if (item.movement_type === 'income') {
-          acc[month].income += item.amount
-        } else {
-          acc[month].expense += item.amount
-        }
-        return acc
-      }, {})
-
-      return monthlyData
-    }
-  })
+  const { data: incomesVsExpenses, isPending: isIncomesVsExpensesPending, error: incomesVsExpensesError } = useIncomesVsExpenses()
 
   console.log(incomesVsExpenses, isIncomesVsExpensesPending, incomesVsExpensesError)
 
