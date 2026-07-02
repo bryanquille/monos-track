@@ -10,6 +10,7 @@ import ExpensePercentageInfo from "./ExpensePercentageInfo";
 import { EXPENSE_CATEGORIES } from "../../../features/movements/schemas/movementsSchema";
 import { getGraphicsText } from "../../../features/movements/utils/getGraphicsText";
 import { useIncomesVsExpenses } from "../../../features/movements/hooks/useIncomesVsExpenses";
+import IncomeExpenseBars from "./IncomeExpenseBars";
 
 function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
@@ -98,42 +99,15 @@ function DashboardPage() {
                 </div>
               </div>
             </div>
-            <div className={cn('pt-4 px-2 pb-1 flex justify-evenly items-end border border-gray-400 rounded-2xl')}>
-              <div>
-                <div className={cn('flex items-end gap-0.5')}>
-                  <div className={cn('w-4 h-32 bg-blue-500')}></div>
-                  <div className={cn('w-4 h-24 bg-red-400')}></div>
-                </div>
-                <p className={cn('text-sm')}>Ene</p>
-              </div>
-              <div>
-                <div className={cn('flex items-end gap-0.5')}>
-                  <div className={cn('w-4 h-40 bg-blue-500')}></div>
-                  <div className={cn('w-4 h-20 bg-red-400')}></div>
-                </div>
-                <p className={cn('text-sm')}>Feb</p>
-              </div>
-              <div>
-                <div className={cn('flex items-end gap-0.5')}>
-                  <div className={cn('w-4 h-28 bg-blue-500')}></div>
-                  <div className={cn('w-4 h-26 bg-red-400')}></div>
-                </div>
-                <p className={cn('text-sm')}>Mar</p>
-              </div>
-              <div>
-                <div className={cn('flex items-end gap-0.5')}>
-                  <div className={cn('w-4 h-50 bg-blue-500')}></div>
-                  <div className={cn('w-4 h-32 bg-red-400')}></div>
-                </div>
-                <p className={cn('text-sm')}>Apr</p>
-              </div>
-              <div>
-                <div className={cn('flex items-end gap-0.5')}>
-                  <div className={cn('w-4 h-38 bg-blue-500')}></div>
-                  <div className={cn('w-4 h-26 bg-red-400')}></div>
-                </div>
-                <p className={cn('text-sm')}>Jun</p>
-              </div>
+            <div className={cn('pt-4 px-2 pb-1 flex justify-evenly items-end border border-gray-400 rounded-2xl md:mb-16')}>
+              {incomesVsExpenses?.map((item) => (
+                <IncomeExpenseBars
+                  key={item.label}
+                  label={item.label}
+                  incomeHeight={item.incomeHeight}
+                  expenseHeight={item.expenseHeight}
+                />
+              ))}
             </div>
           </article>
           <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
