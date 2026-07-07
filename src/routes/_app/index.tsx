@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useAuthStore } from '../../store/authStore'
 import { supabase } from '../../lib/supabase'
-import HomePage from '../../components/pages/HomePage'
+import HomePage from '../../features/home/pages/HomePage'
 
 export const Route = createFileRoute('/_app/')({
   beforeLoad: async () => {

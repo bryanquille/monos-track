@@ -5,7 +5,7 @@ import RegisterButton from "../../../features/auth/components/RegisterButton"
 import { useAuthStore } from "../../../store/authStore";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { LogOut } from "lucide-react";
-import DarkThemeButton from "../../ui/DarkThemeButton";
+import DarkThemeButton from "../../../shared/components/DarkThemeButton";
 
 interface NavbarProps {
   headerHeight: number

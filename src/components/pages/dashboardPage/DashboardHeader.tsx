@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { cn } from "../../../utils/cn";
-import UserName from "../../ui/UserName";
+import UserName from "../../../shared/components/UserName";
 import { monthNames } from "../../../utils/constants";
 
 function DashboardHeader() {

@@ -6,7 +6,7 @@ import { useShowPassword } from "../../../hooks/useShowPassword";
 import { Eye, EyeOff } from "lucide-react";
 import PasswordStrength from "./PasswordStrength";
 import { useState } from "react";
-import Loader from "../../../components/ui/Loader";
+import Loader from "../../../shared/components/Loader";
 import { useRegisterForm } from "../hooks/useRegisterForm";
 
 function RegisterForm() {

@@ -1,5 +1,5 @@
 import { BadgeCheck, ChartNoAxesCombined, ShieldCheck, Sparkles, Earth, Smartphone, Tablet, Laptop } from 'lucide-react'
-import RegisterButton from '../../features/auth/components/RegisterButton'
+import RegisterButton from '../../auth/components/RegisterButton'
 
 function HomePage() {
   return (

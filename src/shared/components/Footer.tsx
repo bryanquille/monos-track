@@ -1,4 +1,4 @@
-import logo from '../../../assets/images/monos-track-logo-circle.png'
+import logo from '../../assets/images/monos-track-logo-circle.png'
 
 function Footer() {
   return (

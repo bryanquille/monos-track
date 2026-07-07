@@ -1,4 +1,4 @@
-import UserName from "../../ui/UserName";
+import UserName from "../../../shared/components/UserName";
 
 function SettingsPage() {
   return (

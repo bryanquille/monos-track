@@ -2,7 +2,7 @@ import { RefreshCcw, ShieldCheck } from "lucide-react";
 import { cn } from "../../../utils/cn";
 import { useState } from "react";
 import MovementsRegisterForm from "../../../features/movements/components/MovementsRegisterForm";
-import UserName from "../../ui/UserName";
+import UserName from "../../../shared/components/UserName";
 import { Toaster } from "sileo";
 
 function MovementsRegisterPage() {

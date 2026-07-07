@@ -4,7 +4,7 @@ import { LoginSchema, type LoginData } from "../schemas/loginSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { cn } from "../../../utils/cn";
 import { useShowPassword } from "../../../hooks/useShowPassword";
-import Loader from "../../../components/ui/Loader";
+import Loader from "../../../shared/components/Loader";
 import { useLoginForm } from "../hooks/useLoginForm";
 
 function LoginForm() {

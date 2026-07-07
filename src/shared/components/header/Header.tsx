@@ -3,7 +3,7 @@ import HamburguerMenuButton from "./HamburguerMenuButton"
 import BrandLogo from "./BrandLogo"
 import BackScreen from "./BackScreen"
 import { useElementHeight } from "../../../hooks/useElementWidthHeight"
-import DarkThemeButton from "../../ui/DarkThemeButton"
+import DarkThemeButton from "../../../shared/components/DarkThemeButton"
 import { useAuthStore } from "../../../store/authStore";
 import { LogOut, UserCircle } from "lucide-react";
 import { cn } from "../../../utils/cn";

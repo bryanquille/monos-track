@@ -1,5 +1,5 @@
 import { cn } from "../../utils/cn";
-import Loader from "../ui/Loader";
+import Loader from "../../shared/components/Loader";
 
 interface LoaderPageProps {
   text?: string
