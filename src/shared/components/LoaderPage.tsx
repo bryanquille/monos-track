@@ -1,5 +1,5 @@
-import { cn } from "../../utils/cn";
-import Loader from "../../shared/components/Loader";
+import { cn } from "../utils/cn";
+import Loader from "./Loader";
 
 interface LoaderPageProps {
   text?: string

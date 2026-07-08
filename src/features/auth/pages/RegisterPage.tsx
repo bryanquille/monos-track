@@ -1,5 +1,5 @@
 import logo from '../../../assets/images/monos-track-logo-circle.png'
-import { cn } from '../../../utils/cn';
+import { cn } from '../../../shared/utils/cn';
 import DarkThemeButton from '../../../shared/components/DarkThemeButton';
 import LoginButton from '../components/LoginButton';
 import RegisterForm from '../components/RegisterForm';

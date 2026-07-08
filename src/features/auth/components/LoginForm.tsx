@@ -2,8 +2,8 @@ import { ArrowRight, Eye, EyeOff } from "lucide-react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { LoginSchema, type LoginData } from "../schemas/loginSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { cn } from "../../../utils/cn";
-import { useShowPassword } from "../../../hooks/useShowPassword";
+import { cn } from "../../../shared/utils/cn";
+import { useShowPassword } from "../hooks/useShowPassword";
 import Loader from "../../../shared/components/Loader";
 import { useLoginForm } from "../hooks/useLoginForm";
 

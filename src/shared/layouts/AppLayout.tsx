@@ -1,6 +1,6 @@
 import { Outlet } from "@tanstack/react-router"
 import Footer from "../components/Footer"
-import { cn } from "../../utils/cn";
+import { cn } from "../utils/cn";
 import Header from "../components/header/Header";
 
 function AppLayout() {

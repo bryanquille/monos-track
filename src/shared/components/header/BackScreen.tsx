@@ -1,5 +1,5 @@
-import { useHambMenu } from "../../../store/hambMenuStore"
-import { cn } from "../../../utils/cn"
+import { useHambMenu } from "../../stores/hambMenuStore"
+import { cn } from "../../utils/cn"
 
 function BackScreen() {
   const isHambMenuOpen = useHambMenu((state) => state.isHambMenuOpen)

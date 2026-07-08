@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import DashboardPage from '../../../components/pages/dashboardPage/DashboardPage';
-import { useAuthStore } from '../../../store/authStore';
-import { supabase } from '../../../lib/supabase';
+import DashboardPage from '../../../features/dashboard/pages/DashboardPage';
+import { useAuthStore } from '../../../shared/stores/authStore';
+import { supabase } from '../../../shared/lib/supabase';
 
 export const Route = createFileRoute('/_app/dashboard/')({
   beforeLoad: async () => {

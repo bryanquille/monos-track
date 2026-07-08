@@ -1,4 +1,4 @@
-import { EXPENSE_CATEGORIES } from "../schemas/movementsSchema";
+import { EXPENSE_CATEGORIES } from "../../movements/schemas/movementsSchema";
 
 interface chartData {
   category: string

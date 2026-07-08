@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { useHambMenu } from "../../../store/hambMenuStore"
+import { useHambMenu } from "../../stores/hambMenuStore"
 
 function BrandLogo() {
   const closeHambMenu = useHambMenu((state) => state.closeHambMenu)

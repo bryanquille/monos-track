@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { cn } from "../../../utils/cn";
+import { cn } from "../../../shared/utils/cn";
 import UserName from "../../../shared/components/UserName";
-import { monthNames } from "../../../utils/constants";
+import { monthNames } from "../../../shared/constants/constants";
 
 function DashboardHeader() {
   const [currentDate, setCurrentDate] = useState<string>('')

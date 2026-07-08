@@ -1,5 +1,5 @@
-import { useAuthStore } from "../../store/authStore";
-import { cn } from "../../utils/cn";
+import { useAuthStore } from "../stores/authStore";
+import { cn } from "../utils/cn";
 
 function UserName() {
   const user = useAuthStore((state) => state.user)

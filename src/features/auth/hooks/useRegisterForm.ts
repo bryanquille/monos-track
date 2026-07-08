@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { RegisterData } from "../schemas/registerSchema";
-import { supabase } from "../../../lib/supabase";
+import { supabase } from "../../../shared/lib/supabase";
 
 export const useRegisterForm = () => {
   const navigate = useNavigate()

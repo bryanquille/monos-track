@@ -1,8 +1,8 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { RegisterSchema, type RegisterData } from "../schemas/registerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cn } from "../../../utils/cn";
-import { useShowPassword } from "../../../hooks/useShowPassword";
+import { cn } from "../../../shared/utils/cn";
+import { useShowPassword } from "../hooks/useShowPassword";
 import { Eye, EyeOff } from "lucide-react";
 import PasswordStrength from "./PasswordStrength";
 import { useState } from "react";

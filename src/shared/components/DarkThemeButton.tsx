@@ -1,7 +1,7 @@
 import { Sun, Moon } from "lucide-react"
-import { useElementHeight } from "../../hooks/useElementWidthHeight"
-import { cn } from "../../utils/cn"
-import { useTheme } from "../../store/themeStore"
+import { useElementHeight } from "../hooks/useElementWidthHeight"
+import { cn } from "../utils/cn"
+import { useTheme } from "../stores/themeStore"
 
 interface DarkThemeButtonProps {
   className?: string

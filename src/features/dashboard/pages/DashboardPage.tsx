@@ -1,16 +1,16 @@
-import { useAuthStore } from "../../../store/authStore";
-import { cn } from "../../../utils/cn";
-import LoaderPage from "../LoaderPage";
+import { useAuthStore } from "../../../shared/stores/authStore";
+import { cn } from "../../../shared/utils/cn";
+import LoaderPage from "../../../shared/components/LoaderPage";
 import { BanknoteArrowDown, BanknoteArrowUp, CircleCheck, Info, Landmark, MoveUpRight, PiggyBank } from "lucide-react";
-import FinancialCard from "./FinancialCard";
-import { useFinancialSummary } from "../../../features/movements/hooks/useFinancialSummary";
-import DashboardHeader from "./DashboardHeader";
-import { useExpensesByCategory } from "../../../features/movements/hooks/useExpensesByCategory";
-import ExpensePercentageInfo from "./ExpensePercentageInfo";
-import { EXPENSE_CATEGORIES } from "../../../features/movements/schemas/movementsSchema";
-import { getGraphicsText } from "../../../features/movements/utils/getGraphicsText";
-import { useIncomesVsExpenses } from "../../../features/movements/hooks/useIncomesVsExpenses";
-import IncomeExpenseBars from "./IncomeExpenseBars";
+import FinancialCard from "../components/FinancialCard";
+import { useFinancialSummary } from "../hooks/useFinancialSummary";
+import DashboardHeader from "../components/DashboardHeader";
+import { useExpensesByCategory } from "../hooks/useExpensesByCategory";
+import ExpensePercentageInfo from "../components/ExpensePercentageInfo";
+import { EXPENSE_CATEGORIES } from "../../movements/schemas/movementsSchema";
+import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
+import IncomeExpenseBars from "../components/IncomeExpenseBars";
+import { getGraphicsText } from "../utils/getGraphicsText";
 
 function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)

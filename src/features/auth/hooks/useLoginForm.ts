@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import type { LoginData } from "../schemas/loginSchema";
-import { supabase } from "../../../lib/supabase";
+import { supabase } from "../../../shared/lib/supabase";
 
 export const useLoginForm = () => {
   const navigate = useNavigate()

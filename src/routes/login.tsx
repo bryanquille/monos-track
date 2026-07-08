@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { useAuthStore } from '../store/authStore'
-import { supabase } from '../lib/supabase'
+import { useAuthStore } from '../shared/stores/authStore'
+import { supabase } from '../shared/lib/supabase'
 import LoginPage from '../features/auth/pages/LoginPage';
 
 export const Route = createFileRoute('/login')({

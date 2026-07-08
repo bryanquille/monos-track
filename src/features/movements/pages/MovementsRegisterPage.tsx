@@ -1,7 +1,7 @@
 import { RefreshCcw, ShieldCheck } from "lucide-react";
-import { cn } from "../../../utils/cn";
+import { cn } from "../../../shared/utils/cn";
 import { useState } from "react";
-import MovementsRegisterForm from "../../../features/movements/components/MovementsRegisterForm";
+import MovementsRegisterForm from "../components/MovementsRegisterForm";
 import UserName from "../../../shared/components/UserName";
 import { Toaster } from "sileo";
 

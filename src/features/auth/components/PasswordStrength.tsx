@@ -1,6 +1,6 @@
 import { useWatch, type Control } from "react-hook-form";
 import type { RegisterData } from "../schemas/registerSchema";
-import { cn } from "../../../utils/cn";
+import { cn } from "../../../shared/utils/cn";
 import { Check, X } from "lucide-react";
 
 interface PasswordStrengthProps {

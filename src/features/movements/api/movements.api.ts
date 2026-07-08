@@ -1,4 +1,4 @@
-import { supabase } from "../../../lib/supabase";
+import { supabase } from "../../../shared/lib/supabase";
 import type { MovementsData } from "../schemas/movementsSchema";
 
 export const submitMovementToSupabase = async (data: MovementsData) => {

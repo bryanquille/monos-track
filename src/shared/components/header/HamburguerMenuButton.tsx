@@ -1,6 +1,6 @@
 import { useEffect } from "react"
-import { useHambMenu } from "../../../store/hambMenuStore"
-import { cn } from "../../../utils/cn"
+import { useHambMenu } from "../../stores/hambMenuStore"
+import { cn } from "../../utils/cn"
 
 function HamburguerMenuButton() {
   const isHambMenuOpen = useHambMenu((state) => state.isHambMenuOpen)

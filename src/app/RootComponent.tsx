@@ -1,9 +1,9 @@
 import { Outlet } from "@tanstack/react-router"
-import { useTheme } from "../../store/themeStore";
+import { useTheme } from "../shared/stores/themeStore";
 import { useEffect } from "react";
-import { useAuthStore } from "../../store/authStore";
-import { supabase } from "../../lib/supabase";
-import LoaderPage from "./LoaderPage";
+import { useAuthStore } from "../shared/stores/authStore";
+import { supabase } from "../shared/lib/supabase";
+import LoaderPage from "../shared/components/LoaderPage";
 
 function RootComponent() {
   const isDark = useTheme((state) => state.isDark)

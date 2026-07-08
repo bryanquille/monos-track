@@ -2,13 +2,13 @@ import Navbar from "./Navbar"
 import HamburguerMenuButton from "./HamburguerMenuButton"
 import BrandLogo from "./BrandLogo"
 import BackScreen from "./BackScreen"
-import { useElementHeight } from "../../../hooks/useElementWidthHeight"
+import { useElementHeight } from "../../hooks/useElementWidthHeight"
 import DarkThemeButton from "../../../shared/components/DarkThemeButton"
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../stores/authStore";
 import { LogOut, UserCircle } from "lucide-react";
-import { cn } from "../../../utils/cn";
+import { cn } from "../../utils/cn";
 import { useNavigate } from "@tanstack/react-router";
-import { useHambMenu } from "../../../store/hambMenuStore";
+import { useHambMenu } from "../../stores/hambMenuStore";
 
 function Header() {
   const { elementHeight, elementWidth, elementLeftPosition, elementRef } = useElementHeight()
