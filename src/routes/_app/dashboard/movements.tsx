@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import MovementsRegisterPage from '../../../features/movements/pages/MovementsRegisterPage';
-import { useAuthStore } from '../../../shared/stores/authStore';
+import { useAuthStore } from '../../../features/auth/store/authStore';
 import { supabase } from '../../../shared/lib/supabase';
 
 export const Route = createFileRoute('/_app/dashboard/movements')({

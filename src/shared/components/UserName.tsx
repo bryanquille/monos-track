@@ -1,4 +1,4 @@
-import { useAuthStore } from "../stores/authStore";
+import { useAuthStore } from "../../features/auth/store/authStore";
 import { cn } from "../utils/cn";
 
 function UserName() {

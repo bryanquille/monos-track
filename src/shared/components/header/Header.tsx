@@ -4,7 +4,7 @@ import BrandLogo from "./BrandLogo"
 import BackScreen from "./BackScreen"
 import { useElementHeight } from "../../hooks/useElementWidthHeight"
 import DarkThemeButton from "../../../shared/components/DarkThemeButton"
-import { useAuthStore } from "../../stores/authStore";
+import { useAuthStore } from "../../../features/auth/store/authStore";
 import { LogOut, UserCircle } from "lucide-react";
 import { cn } from "../../utils/cn";
 import { useNavigate } from "@tanstack/react-router";

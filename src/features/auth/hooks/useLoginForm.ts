@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import type { LoginData } from "../schemas/loginSchema";
 import { supabase } from "../../../shared/lib/supabase";
+import { sileo } from "sileo";
 
 export const useLoginForm = () => {
   const navigate = useNavigate()
@@ -18,7 +19,10 @@ export const useLoginForm = () => {
       navigate({ to: '/dashboard' })
     },
     onError: (error: Error) => {
-      alert(error.message)
+      sileo.error({
+        title: "Error al iniciar sesión.",
+        description: error.message,
+      });
     }
   })
 

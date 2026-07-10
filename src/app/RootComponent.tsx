@@ -1,9 +1,10 @@
 import { Outlet } from "@tanstack/react-router"
 import { useTheme } from "../shared/stores/themeStore";
 import { useEffect } from "react";
-import { useAuthStore } from "../shared/stores/authStore";
+import { useAuthStore } from "../features/auth/store/authStore";
 import { supabase } from "../shared/lib/supabase";
-import LoaderPage from "../shared/components/LoaderPage";
+import FullScreenLoader from "../shared/components/FullScreenLoader";
+import { Toaster } from "sileo";
 
 function RootComponent() {
   const isDark = useTheme((state) => state.isDark)
@@ -36,10 +37,11 @@ function RootComponent() {
     }
   }, [setSession])
 
-  if (isLoading) return <LoaderPage text="Sincronizando Monos Track..." />
+  if (isLoading) return <FullScreenLoader text="Sincronizando Monos Track..." />
 
   return (
     <>
+      <Toaster position='top-center' />
       <Outlet />
     </>
   )

@@ -1,6 +1,5 @@
-import { useAuthStore } from "../../../shared/stores/authStore";
+import { useAuthStore } from "../../auth/store/authStore";
 import { cn } from "../../../shared/utils/cn";
-import LoaderPage from "../../../shared/components/LoaderPage";
 import { BanknoteArrowDown, BanknoteArrowUp, CircleCheck, Info, Landmark, MoveUpRight, PiggyBank } from "lucide-react";
 import FinancialCard from "../components/FinancialCard";
 import { useFinancialSummary } from "../hooks/useFinancialSummary";
@@ -11,41 +10,43 @@ import { EXPENSE_CATEGORIES } from "../../movements/schemas/movementsSchema";
 import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
 import IncomeExpenseBars from "../components/IncomeExpenseBars";
 import { getGraphicsText } from "../utils/getGraphicsText";
+import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 
 function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
 
-  const { data, isPending, error } = useFinancialSummary()
+  const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError } = useFinancialSummary()
   const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
   const { data: incomesVsExpenses, isPending: isIncomesVsExpensesPending, error: incomesVsExpensesError } = useIncomesVsExpenses()
 
   console.log(incomesVsExpenses, isIncomesVsExpensesPending, incomesVsExpensesError)
 
-  if (isPending) { return <LoaderPage text="Cargando aplicación..." /> }
-  if (error) {
+  if (isFinancialInfoPending) { return <FullScreenLoader text="Cargando aplicación..." /> }
+  if (financialInfoError) {
     return (
       <div className={cn('p-4 border border-red-500/20 rounded-xl text-center bg-red-500/10 text-red-500')}>
-        Error al cargar los datos: {error.message}
+        Error al cargar los datos: {financialInfoError.message}
       </div>
     )
   }
 
   const graphicsText = getGraphicsText({ registerExpenses: chartData ?? [] })
-  if (isPendingCharData) return <LoaderPage text="Cargando datos..." />
+  if (isPendingCharData) return <FullScreenLoader text="Cargando datos..." />
 
-  if (isLoading) return <LoaderPage text="Cargando aplicación..." />
+  if (isLoading) return <FullScreenLoader text="Cargando aplicación..." />
 
   return (
     <section className={cn('w-[95%] max-w-7xl mx-auto overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
       <DashboardHeader />
       <main>
+        {/* Financial cards */}
         <div className={cn('p-4 grid grid-cols-1 gap-3 items-center md:grid-cols-2 lg:grid-cols-4')}>
           <FinancialCard
             title="Ingresos Totales"
             mainIcon={BanknoteArrowUp}
             mainIconBg="bg-cyan-100"
             mainIconColor="text-primary"
-            cashValue={data.totalIncome}
+            cashValue={financialInfo.totalIncome}
             recapIcon={MoveUpRight}
             recapText="+12.5% desde el mes pasado"
             recapTextColor="text-green-600"
@@ -55,7 +56,7 @@ function DashboardPage() {
             mainIcon={BanknoteArrowDown}
             mainIconBg="bg-red-100"
             mainIconColor="text-red-500"
-            cashValue={data.totalExpenses}
+            cashValue={financialInfo.totalExpenses}
             recapIcon={MoveUpRight}
             recapText="+2.4% desde el mes pasado"
             recapTextColor="text-red-600"
@@ -65,7 +66,7 @@ function DashboardPage() {
             mainIcon={Landmark}
             mainIconBg="bg-sky-100"
             mainIconColor="text-sky-500"
-            cashValue={data.balance}
+            cashValue={financialInfo.balance}
             recapIcon={Info}
             recapText="Actualizado hace 3 minutos"
             recapTextColor="text-indigo-500"
@@ -81,6 +82,7 @@ function DashboardPage() {
             recapTextColor="text-green-600"
           />
         </div>
+        {/* Charts */}
         <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
           <article className={cn('p-4 flex flex-col justify-between gap-4 rounded-2xl bg-neutral-light/20')}>
             <div className={cn('flex justify-between items-start')}>

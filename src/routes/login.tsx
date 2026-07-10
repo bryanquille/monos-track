@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { useAuthStore } from '../shared/stores/authStore'
+import { useAuthStore } from '../features/auth/store/authStore'
 import { supabase } from '../shared/lib/supabase'
 import LoginPage from '../features/auth/pages/LoginPage';
 

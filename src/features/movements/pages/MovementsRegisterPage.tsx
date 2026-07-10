@@ -3,14 +3,12 @@ import { cn } from "../../../shared/utils/cn";
 import { useState } from "react";
 import MovementsRegisterForm from "../components/MovementsRegisterForm";
 import UserName from "../../../shared/components/UserName";
-import { Toaster } from "sileo";
 
 function MovementsRegisterPage() {
   const [isIncome, setIsIncome] = useState(true)
 
   return (
     <>
-      <Toaster position="top-center"/>
       <section className={cn('w-[95%] max-w-7xl mx-auto overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
         <header className={cn('p-4 flex flex-col justify-center gap-8 bg-neutral-light/50 dark:bg-secondary-light md:p-8')}>
           <UserName />

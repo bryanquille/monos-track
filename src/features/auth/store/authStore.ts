@@ -15,7 +15,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   setSession: (user) => set({ user, isLoading: false }),
   setLoading: (isLoading) => set({ isLoading }),
   logout: async () => {
-    const { supabase } = await import('../lib/supabase')
+    const { supabase } = await import('../../../shared/lib/supabase')
     await supabase.auth.signOut()
     set({ user: null, isLoading: false })
   }

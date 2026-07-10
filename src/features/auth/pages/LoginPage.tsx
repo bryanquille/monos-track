@@ -8,7 +8,7 @@ function LoginPage() {
     <>
       <div className='relative w-full flex flex-row-reverse justify-center items-center'>
         <DarkThemeButton className='absolute top-4 right-6' />
-        <section className='w-full h-screen flex flex-col justify-center items-center md:w-[50%] dark:bg-primary-dark dark:shadow-xl/50 dark:shadow-neutral-light'>
+        <section className='w-full h-screen flex flex-col justify-center items-center dark:bg-primary-dark dark:shadow-xl/50 dark:shadow-neutral-light lg:w-1/2'>
           <header className='w-full flex flex-col-reverse justify-center items-center'>
             <div className='w-[95%] mt-6 text-center'>
               <h1 className='text-2xl font-bold dark:text-neutral-dark'>Bienvenido de nuevo</h1>
@@ -34,7 +34,7 @@ function LoginPage() {
             </p>
           </footer>
         </section>
-        <div className='hidden w-[50%] h-screen md:flex md:flex-col justify-center items-center gap-2 bg-radial from-secondary-dark from-5% to-primary dark:from-secondary-light dark:from-30% dark:to-primary-dark'>
+        <div className='hidden w-[50%] h-screen lg:flex lg:flex-col justify-center items-center gap-2 bg-radial from-secondary-dark from-5% to-primary dark:from-secondary-light dark:from-30% dark:to-primary-dark'>
           <div className='w-[90%] max-w-107.5 mt-10 flex flex-col justify-center items-center gap-1 md:mt-[unset] md:flex-row md:gap-2 lg:w-[85%]'>
             <img
               src={logo}

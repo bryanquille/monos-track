@@ -1,11 +1,11 @@
 import { cn } from "../utils/cn";
 import Loader from "./Loader";
 
-interface LoaderPageProps {
+interface FullScreenLoaderProps {
   text?: string
 }
 
-function LoaderPage({ text }: LoaderPageProps) {
+function FullScreenLoader({ text }: FullScreenLoaderProps) {
   return (
     <div className={cn('w-full h-full min-h-screen grid place-items-center')}>
       <Loader text={text} />
@@ -13,4 +13,4 @@ function LoaderPage({ text }: LoaderPageProps) {
   )
 }
 
-export default LoaderPage
+export default FullScreenLoader

@@ -2,7 +2,7 @@ import { cn } from "../../utils/cn"
 import { useHambMenu } from "../../stores/hambMenuStore"
 import LoginButton from "../../../features/auth/components/LoginButton"
 import RegisterButton from "../../../features/auth/components/RegisterButton"
-import { useAuthStore } from "../../stores/authStore";
+import { useAuthStore } from "../../../features/auth/store/authStore";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { LogOut } from "lucide-react";
 import DarkThemeButton from "../../../shared/components/DarkThemeButton";
