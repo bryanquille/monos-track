@@ -1,13 +1,13 @@
 import { monthNames } from "../../../shared/constants/constants.ts";
 import { dataByYear } from "../utils/dataByYear.ts";
 
-interface mockDataComprehensiveTypes {
+interface mockFinancialDataTypes {
   movement_type: string;
   amount: number;
   movement_date: string;
 }
 
-const mockDataComprehensive = [
+export const mockFinancialData = [
   // --- Noviembre 2025 ---
   { movement_type: 'income', amount: 1200, movement_date: '2025-11-02' },
   { movement_type: 'expense', amount: 45, movement_date: '2025-11-05' },
@@ -91,14 +91,14 @@ const currentMonth = new Date().getMonth() // Get current month
 const currentYear = String(new Date().getFullYear())  // Get current year
 
 // Get the array of data filtered by year
-const dataByYears = dataByYear({ data: mockDataComprehensive, year: currentYear })
+const dataByYears = dataByYear({ data: mockFinancialData, year: currentYear })
 
 // Create a list of months
 const monthNamesList = monthNames.map(month => month.toLowerCase())
 
 
 // Create an object with the months as a key with an empty array as value
-const dataByMonths: Record<string, mockDataComprehensiveTypes[]> = {
+const dataByMonths: Record<string, mockFinancialDataTypes[]> = {
   enero: [],
   febrero: [],
   marzo: [],

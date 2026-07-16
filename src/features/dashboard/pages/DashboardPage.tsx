@@ -1,8 +1,7 @@
 import { useAuthStore } from "../../auth/store/authStore";
 import { cn } from "../../../shared/utils/cn";
-import { BanknoteArrowDown, BanknoteArrowUp, CircleCheck, Info, Landmark, MoveUpRight, PiggyBank } from "lucide-react";
 import FinancialCard from "../components/FinancialCard";
-import { useFinancialSummary } from "../hooks/useFinancialSummary";
+// import { useFinancialSummary } from "../hooks/useFinancialSummary";
 import DashboardHeader from "../components/DashboardHeader";
 import { useExpensesByCategory } from "../hooks/useExpensesByCategory";
 import ExpensePercentageInfo from "../components/ExpensePercentageInfo";
@@ -11,41 +10,76 @@ import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
 import IncomeExpenseBars from "../components/IncomeExpenseBars";
 import { getGraphicsText } from "../utils/getGraphicsText";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
-// import { useQuery } from "@tanstack/react-query";
-// import { supabase } from "../../../shared/lib/supabase";
+import { mockFinancialData } from "../mocks/mockup-data";
 
 function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
 
-  const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError } = useFinancialSummary()
+  // const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError } = useFinancialSummary()
   const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
   const { data: incomesVsExpenses, isPending: isIncomesVsExpensesPending, error: incomesVsExpensesError } = useIncomesVsExpenses()
-  // This part is only to get data, delte after using
-  // const { data: mockupData, error: mockupDataError } = useQuery({
-  //   queryKey: ['mockup-data'],
-  //   queryFn: async () => {
-  //     const { data, error } = await supabase
-  //       .from('movements')
-  //       .select('movement_type, amount, movement_date')
 
-  //     if (error) throw new Error(error.message)
-  //     if (!data) return []
+  console.log(isIncomesVsExpensesPending, incomesVsExpensesError)
 
-  //     return data
-  //   }
-  // })
-  // console.log(mockupData, mockupDataError)
+  // if (isFinancialInfoPending) { return <FullScreenLoader text="Cargando aplicación..." /> }
+  // if (financialInfoError) {
+  //   return (
+  //     <div className={cn('p-4 border border-red-500/20 rounded-xl text-center bg-red-500/10 text-red-500')}>
+  //       Error al cargar los datos: {financialInfoError.message}
+  //     </div>
+  //   )
+  // }
 
-  console.log(incomesVsExpenses, isIncomesVsExpensesPending, incomesVsExpensesError)
 
-  if (isFinancialInfoPending) { return <FullScreenLoader text="Cargando aplicación..." /> }
-  if (financialInfoError) {
-    return (
-      <div className={cn('p-4 border border-red-500/20 rounded-xl text-center bg-red-500/10 text-red-500')}>
-        Error al cargar los datos: {financialInfoError.message}
-      </div>
-    )
+
+
+
+  /* Getting financial data */
+  // For empty data, no data registered yet
+  // const financialData = {
+  //   totalIncome: null,
+  //   totalExpense: null,
+  //   totalBalance: null,
+  // }
+
+  // Getting current date
+  const currentMonth = new Date().getMonth() + 1 // Get current month
+  const currentYear = String(new Date().getFullYear())  // Get current year
+
+  // Get the array of data filtered by year
+  const filteredByYearData = mockFinancialData.filter(item => {
+    return item.movement_date.slice(0, 4) === currentYear
+  })
+
+  // Get the arrat of data filtered by month
+  const filteredByMonthData = filteredByYearData.filter(item => {
+    return Number(item.movement_date.slice(5, 7)) === currentMonth
+  })
+
+  // Get the total information data
+  const totalIncome = filteredByMonthData
+    .filter(item => item.movement_type === 'income')
+    .reduce((acc, item) => acc + item.amount, 0)
+
+  const totalExpense = filteredByMonthData
+    .filter(item => item.movement_type === 'expense')
+    .reduce((acc, item) => acc + item.amount, 0)
+
+  const financialData = {
+    totalIncome,
+    totalExpense,
+    totalBalance: totalIncome - totalExpense,
   }
+
+  const lastMonthFinancialData = {
+    lastMonthTotalIncome: 1542,
+    lastMonthTotalExpense: 840,
+    lastMonthTotalBalance: 1542 - 840
+  }
+
+
+
+
 
   const graphicsText = getGraphicsText({ registerExpenses: chartData ?? [] })
   if (isPendingCharData) return <FullScreenLoader text="Cargando datos..." />
@@ -56,8 +90,7 @@ function DashboardPage() {
     <section className={cn('w-[95%] max-w-7xl mx-auto overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
       <DashboardHeader />
       <main>
-        {/* Financial cards */}
-        <div className={cn('p-4 grid grid-cols-1 gap-3 items-center md:grid-cols-2 lg:grid-cols-4')}>
+        {/* <div className={cn('p-4 grid grid-cols-1 gap-3 items-center md:grid-cols-2 lg:grid-cols-4')}>
           <FinancialCard
             title="Ingresos Totales"
             mainIcon={BanknoteArrowUp}
@@ -98,6 +131,36 @@ function DashboardPage() {
             recapText="ej. meta lograda al 85%"
             recapTextColor="text-green-600"
           />
+        </div> */}
+        {/* Filtros */}
+        <div className={cn('p-4')}>
+          <h2>Filtrar</h2>
+          <form>
+            <div>
+              <label htmlFor="year">Año</label>
+              <select name="year" id="year">
+                <option value="">Selecciona un año</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="month">Mes</label>
+              <select name="month" id="month">
+                <option value="">Selecciona un mes</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        {/* Financial cards */}
+        <div className={cn('p-4 grid grid-cols-1 gap-3 items-center md:grid-cols-2 lg:grid-cols-3')}>
+          {Object.entries(financialData).map((item, index) => {
+            return (
+              <FinancialCard
+                key={index}
+                title={item[0]}
+                cashValue={item[1]}
+              />
+            )
+          })}
         </div>
         {/* Charts */}
         <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
