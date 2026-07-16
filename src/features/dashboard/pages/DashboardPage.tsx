@@ -11,6 +11,8 @@ import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
 import IncomeExpenseBars from "../components/IncomeExpenseBars";
 import { getGraphicsText } from "../utils/getGraphicsText";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
+// import { useQuery } from "@tanstack/react-query";
+// import { supabase } from "../../../shared/lib/supabase";
 
 function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
@@ -18,6 +20,21 @@ function DashboardPage() {
   const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError } = useFinancialSummary()
   const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
   const { data: incomesVsExpenses, isPending: isIncomesVsExpensesPending, error: incomesVsExpensesError } = useIncomesVsExpenses()
+  // This part is only to get data, delte after using
+  // const { data: mockupData, error: mockupDataError } = useQuery({
+  //   queryKey: ['mockup-data'],
+  //   queryFn: async () => {
+  //     const { data, error } = await supabase
+  //       .from('movements')
+  //       .select('movement_type, amount, movement_date')
+
+  //     if (error) throw new Error(error.message)
+  //     if (!data) return []
+
+  //     return data
+  //   }
+  // })
+  // console.log(mockupData, mockupDataError)
 
   console.log(incomesVsExpenses, isIncomesVsExpensesPending, incomesVsExpensesError)
 
@@ -78,7 +95,7 @@ function DashboardPage() {
             mainIconColor="text-blue-500"
             cashValue="40.00"
             recapIcon={CircleCheck}
-            recapText="meta lograda al 85%"
+            recapText="ej. meta lograda al 85%"
             recapTextColor="text-green-600"
           />
         </div>
