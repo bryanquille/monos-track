@@ -14,16 +14,24 @@ function FinancialCard({
   lastMonthTotalIncome,
   lastMonthTotalExpense,
 }: FinancialCardProps) {
+
   let message = ''
   let percentageOfDifference = 0
+
   if (title === 'totalIncome' && cashValue && lastMonthTotalIncome) {
     percentageOfDifference = ((cashValue - lastMonthTotalIncome) * 100) / lastMonthTotalIncome
-    message = percentageOfDifference > 0
-      ? `+${Math.abs(percentageOfDifference)}% desde el mes pasado`
-      : percentageOfDifference === 0
-        ? '0% desde el mes pasado'
-        : `-${Math.abs(percentageOfDifference)}% desde el mes pasado`
+    message = percentageOfDifference === 0
+      ? '0% desde el mes pasado'
+      : `${Math.abs(percentageOfDifference)}% desde el mes pasado`
   }
+
+  if (title === 'totalExpense' && cashValue && lastMonthTotalExpense) {
+    percentageOfDifference = ((cashValue - lastMonthTotalExpense) * 100) / lastMonthTotalExpense
+    message = percentageOfDifference === 0
+      ? '0% desde el mes pasado'
+      : `${Math.abs(percentageOfDifference)}% desde el mes pasado`
+  }
+
   return (
     <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
       <div className={cn('flex flex-row-reverse justify-end items-center gap-2')}>

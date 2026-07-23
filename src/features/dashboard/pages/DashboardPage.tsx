@@ -74,7 +74,6 @@ function DashboardPage() {
   const lastMonthFinancialData = {
     lastMonthTotalIncome: 1542,
     lastMonthTotalExpense: 840,
-    lastMonthTotalBalance: 1542 - 840
   }
 
 
@@ -158,6 +157,8 @@ function DashboardPage() {
                 key={index}
                 title={item[0]}
                 cashValue={item[1]}
+                lastMonthTotalExpense={lastMonthFinancialData.lastMonthTotalExpense}
+                lastMonthTotalIncome={lastMonthFinancialData.lastMonthTotalIncome}
               />
             )
           })}
