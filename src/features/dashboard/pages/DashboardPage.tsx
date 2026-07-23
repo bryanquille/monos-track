@@ -17,9 +17,11 @@ function DashboardPage() {
 
   // const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError } = useFinancialSummary()
   const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
-  const { data: incomesVsExpenses, isPending: isIncomesVsExpensesPending, error: incomesVsExpensesError } = useIncomesVsExpenses()
-
-  console.log(isIncomesVsExpensesPending, incomesVsExpensesError)
+  const {
+    data: incomesVsExpenses,
+    // isPending: isIncomesVsExpensesPending,
+    // error: incomesVsExpensesError
+  } = useIncomesVsExpenses()
 
   // if (isFinancialInfoPending) { return <FullScreenLoader text="Cargando aplicación..." /> }
   // if (financialInfoError) {
@@ -72,7 +74,7 @@ function DashboardPage() {
   }
 
   const lastMonthFinancialData = {
-    lastMonthTotalIncome: 1542,
+    lastMonthTotalIncome: 1532,
     lastMonthTotalExpense: 840,
   }
 

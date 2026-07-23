@@ -120,13 +120,13 @@ dataByYears.forEach(item => {
 })
 
 // Calculating the total incomes and expenses of the current month
-const totalIncomeValue = dataByMonths[monthNamesList[currentMonth]]
+export const totalIncomeValue = dataByMonths[monthNamesList[currentMonth]]
   .filter(item => item.movement_type === 'income')
   .reduce((acc, item) => acc + item.amount, 0)
 
-const totalExpenseValue = dataByMonths[monthNamesList[currentMonth]]
+export const totalExpenseValue = dataByMonths[monthNamesList[currentMonth]]
   .filter(item => item.movement_type === 'expense')
   .reduce((acc, item) => acc + item.amount, 0)
 
-console.log(totalIncomeValue)
-console.log(totalExpenseValue)
+// console.log(totalIncomeValue)
+// console.log(totalExpenseValue)

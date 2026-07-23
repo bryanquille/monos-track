@@ -1,5 +1,5 @@
 import { cn } from "../../../shared/utils/cn";
-import { BanknoteArrowDown, BanknoteArrowUp, Info } from "lucide-react";
+import { BanknoteArrowDown, BanknoteArrowUp, CircleEqual, Info, TrendingDown, TrendingUp } from "lucide-react";
 
 interface FinancialCardProps {
   title: string
@@ -22,14 +22,18 @@ function FinancialCard({
     percentageOfDifference = ((cashValue - lastMonthTotalIncome) * 100) / lastMonthTotalIncome
     message = percentageOfDifference === 0
       ? '0% desde el mes pasado'
-      : `${Math.abs(percentageOfDifference)}% desde el mes pasado`
+      : `${Math.abs(percentageOfDifference).toFixed(2)}% desde el mes pasado`
   }
 
   if (title === 'totalExpense' && cashValue && lastMonthTotalExpense) {
     percentageOfDifference = ((cashValue - lastMonthTotalExpense) * 100) / lastMonthTotalExpense
     message = percentageOfDifference === 0
       ? '0% desde el mes pasado'
-      : `${Math.abs(percentageOfDifference)}% desde el mes pasado`
+      : `${Math.abs(percentageOfDifference).toFixed(2)}% desde el mes pasado`
+  }
+
+  if (title === 'totalBalance' && cashValue) {
+    message = 'Actualizado hace 3 min'
   }
 
   return (
@@ -62,20 +66,44 @@ function FinancialCard({
       <p className={cn('font-Geist-Mono font-semibold text-2xl')}>
         ${cashValue ? cashValue : '--,--'}
       </p>
-      <p className={cn(
-        `flex flex-row gap-2 text-sm ${cashValue ? 'text-green-500' : 'text-indigo-500'}`
-      )}>
-        {cashValue
-          ? title === 'totalIncome'
-          : <Info size={18} />
-        }
-        <span>
-          {cashValue
-            ? message
-            : 'Sin datos para mostrar'
+      {cashValue
+        ? <p className={cn('text-sm')}>
+          {title === 'totalIncome'
+            ? percentageOfDifference > 0
+              ? <span className={cn('flex flex-row gap-2 text-green-500')}>
+                <TrendingUp size={18} /> +{message}
+              </span>
+              : percentageOfDifference < 0
+                ? <span className={cn('flex flex-row gap-2 text-red-500')}>
+                  <TrendingDown size={18} /> -{message}
+                </span>
+                : percentageOfDifference === 0
+                && <span className={cn('flex flex-row gap-2 text-indigo-500')}>
+                  <CircleEqual size={18} /> {message}
+                </span>
+            : title === 'totalExpense'
+              ? percentageOfDifference > 0
+                ? <span className={cn('flex flex-row gap-2 text-red-500')}>
+                  <TrendingUp size={18} /> +{message}
+                </span>
+                : percentageOfDifference < 0
+                  ? <span className={cn('flex flex-row gap-2 text-green-500')}>
+                    <TrendingDown size={18} /> -{message}
+                  </span>
+                  : percentageOfDifference === 0
+                  && <span className={cn('flex flex-row gap-2 text-indigo-500')}>
+                    <CircleEqual size={18} /> {message}
+                  </span>
+              : title === 'totalBalance'
+              && <span className={cn('flex flex-row gap-2 text-indigo-500')}>
+                <Info size={18} /> {message}
+              </span>
           }
-        </span>
-      </p>
+        </p>
+        : <p className={cn('flex flex-row gap-2 text-sm text-indigo-500')}>
+          <Info size={18} /> Sin datos para mostrar
+        </p>
+      }
     </article>
   )
 }
