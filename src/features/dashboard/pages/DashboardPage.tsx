@@ -11,8 +11,10 @@ import IncomeExpenseBars from "../components/IncomeExpenseBars";
 import { getGraphicsText } from "../utils/getGraphicsText";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { mockFinancialData } from "../mocks/mockup-data";
+import { useForm } from "react-hook-form";
 
 function DashboardPage() {
+  const { register } = useForm()
   const isLoading = useAuthStore((state) => state.isLoading)
 
   // const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError } = useFinancialSummary()
@@ -91,61 +93,25 @@ function DashboardPage() {
     <section className={cn('w-[95%] max-w-7xl mx-auto overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
       <DashboardHeader />
       <main>
-        {/* <div className={cn('p-4 grid grid-cols-1 gap-3 items-center md:grid-cols-2 lg:grid-cols-4')}>
-          <FinancialCard
-            title="Ingresos Totales"
-            mainIcon={BanknoteArrowUp}
-            mainIconBg="bg-cyan-100"
-            mainIconColor="text-primary"
-            cashValue={financialInfo.totalIncome}
-            recapIcon={MoveUpRight}
-            recapText="+12.5% desde el mes pasado"
-            recapTextColor="text-green-600"
-          />
-          <FinancialCard
-            title="Gastos Totales"
-            mainIcon={BanknoteArrowDown}
-            mainIconBg="bg-red-100"
-            mainIconColor="text-red-500"
-            cashValue={financialInfo.totalExpenses}
-            recapIcon={MoveUpRight}
-            recapText="+2.4% desde el mes pasado"
-            recapTextColor="text-red-600"
-          />
-          <FinancialCard
-            title="Saldo Actual"
-            mainIcon={Landmark}
-            mainIconBg="bg-sky-100"
-            mainIconColor="text-sky-500"
-            cashValue={financialInfo.balance}
-            recapIcon={Info}
-            recapText="Actualizado hace 3 minutos"
-            recapTextColor="text-indigo-500"
-          />
-          <FinancialCard
-            title="Ahorro mensual"
-            mainIcon={PiggyBank}
-            mainIconBg="bg-blue-100"
-            mainIconColor="text-blue-500"
-            cashValue="40.00"
-            recapIcon={CircleCheck}
-            recapText="ej. meta lograda al 85%"
-            recapTextColor="text-green-600"
-          />
-        </div> */}
         {/* Filtros */}
         <div className={cn('p-4')}>
           <h2>Filtrar</h2>
           <form>
             <div>
               <label htmlFor="year">Año</label>
-              <select name="year" id="year">
+              <select
+                id="year"
+                {...register('year')}
+              >
                 <option value="">Selecciona un año</option>
               </select>
             </div>
             <div>
               <label htmlFor="month">Mes</label>
-              <select name="month" id="month">
+              <select
+                id="month"
+                {...register('month')}
+              >
                 <option value="">Selecciona un mes</option>
               </select>
             </div>
