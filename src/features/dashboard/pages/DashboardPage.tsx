@@ -94,22 +94,34 @@ function DashboardPage() {
       <DashboardHeader />
       <main>
         {/* Filtros */}
-        <div className={cn('p-4')}>
-          <h2>Filtrar</h2>
-          <form>
-            <div>
-              <label htmlFor="year">Año</label>
+        <div className={cn('w-fit ml-auto px-8 py-4')}>
+          <h2 className={cn('mb-2 text-center font-semibold')}>Filtrar</h2>
+          <form className={cn('flex items-center gap-6')}>
+            <div className={cn('flex items-center gap-1.5')}>
+              <label
+                htmlFor="year"
+                className={cn('opacity-70')}
+              >
+                Año
+              </label>
               <select
                 id="year"
+                className={cn('py-1 px-2 border-2 border-gray-500 rounded-md')}
                 {...register('year')}
               >
                 <option value="">Selecciona un año</option>
               </select>
             </div>
-            <div>
-              <label htmlFor="month">Mes</label>
+            <div className={cn('flex items-center gap-1.5')}>
+              <label
+                htmlFor="month"
+                className={cn('opacity-70')}
+              >
+                Mes
+              </label>
               <select
                 id="month"
+                className={cn('py-1 px-2 border-2 border-gray-500 rounded-md')}
                 {...register('month')}
               >
                 <option value="">Selecciona un mes</option>
