@@ -11,10 +11,11 @@ import IncomeExpenseBars from "../components/IncomeExpenseBars";
 import { getGraphicsText } from "../utils/getGraphicsText";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { mockFinancialData } from "../mocks/mockup-data";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import { monthNames } from "../../../shared/constants/constants";
 
 function DashboardPage() {
-  const { register } = useForm()
+  const { register, control } = useForm()
   const isLoading = useAuthStore((state) => state.isLoading)
 
   // const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError } = useFinancialSummary()
@@ -46,9 +47,29 @@ function DashboardPage() {
   //   totalBalance: null,
   // }
 
+  // Getting a list of available years in data
+  const availableYears = Array.from(new Set(mockFinancialData.map(item => item.movement_date.slice(0, 4))))
+  availableYears.unshift('noYearSelected')
+
   // Getting current date
   const currentMonth = new Date().getMonth() + 1 // Get current month
   const currentYear = String(new Date().getFullYear())  // Get current year
+
+  const selectedYear = useWatch({
+    control,
+    name: 'year'
+  })
+
+  // Getting the list of available months
+  const getAvailableMonths = (SelectedYear: string, currentYear: string) => {
+    const currentMonth = new Date().getMonth()
+    if (SelectedYear === currentYear) {
+      return monthNames.filter((_, index) => index <= currentMonth)
+    } else return monthNames
+  }
+  // TODO: fix an issue, using a useEffect
+  const availableMonths = getAvailableMonths(selectedYear, currentYear)
+  availableMonths.unshift('noMonthSelected')
 
   // Get the array of data filtered by year
   const filteredByYearData = mockFinancialData.filter(item => {
@@ -109,7 +130,16 @@ function DashboardPage() {
                 className={cn('py-1 px-2 border-2 border-gray-500 rounded-md')}
                 {...register('year')}
               >
-                <option value="">Selecciona un año</option>
+                {
+                  availableYears.map(item => (
+                    <option
+                      key={item}
+                      value={item}
+                    >
+                      {item === 'noYearSelected' ? 'Escoger un año' : item}
+                    </option>
+                  ))
+                }
               </select>
             </div>
             <div className={cn('flex items-center gap-1.5')}>
@@ -124,7 +154,16 @@ function DashboardPage() {
                 className={cn('py-1 px-2 border-2 border-gray-500 rounded-md')}
                 {...register('month')}
               >
-                <option value="">Selecciona un mes</option>
+                {
+                  availableMonths.map(month => (
+                    <option
+                      key={month.toLowerCase()}
+                      value={month.toLowerCase()}
+                    >
+                      {month === 'noMonthSelected' ? 'Escoge un mes' : month}
+                    </option>
+                  ))
+                }
               </select>
             </div>
           </form>
