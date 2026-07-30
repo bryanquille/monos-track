@@ -13,6 +13,7 @@ import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { mockFinancialData } from "../mocks/mockup-data";
 import { useForm, useWatch } from "react-hook-form";
 import { monthNames } from "../../../shared/constants/constants";
+import { useEffect, useState } from "react";
 
 function DashboardPage() {
   const { register, control } = useForm()
@@ -60,16 +61,23 @@ function DashboardPage() {
     name: 'year'
   })
 
+  const [availableMonths, setAvailableMonths] = useState<string[]>([])
+  useEffect(() => {
+    const getAvailableMonths = (SelectedYear: string, currentYear: string) => {
+      const currentMonth = new Date().getMonth()
+      if (SelectedYear === currentYear) {
+        return monthNames.filter((_, index) => index <= currentMonth)
+      } else return monthNames
+    }
+    // TODO: fix an issue, using a useEffect
+    const gottenAvailableMonths = getAvailableMonths(selectedYear, currentYear)
+    gottenAvailableMonths.unshift('noMonthSelected')
+
+    setAvailableMonths(gottenAvailableMonths)
+  }, [currentYear, selectedYear])
+
   // Getting the list of available months
-  const getAvailableMonths = (SelectedYear: string, currentYear: string) => {
-    const currentMonth = new Date().getMonth()
-    if (SelectedYear === currentYear) {
-      return monthNames.filter((_, index) => index <= currentMonth)
-    } else return monthNames
-  }
-  // TODO: fix an issue, using a useEffect
-  const availableMonths = getAvailableMonths(selectedYear, currentYear)
-  availableMonths.unshift('noMonthSelected')
+
 
   // Get the array of data filtered by year
   const filteredByYearData = mockFinancialData.filter(item => {
