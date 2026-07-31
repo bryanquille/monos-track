@@ -115,9 +115,9 @@ function DashboardPage() {
       <DashboardHeader />
       <main>
         {/* Filtros */}
-        <div className={cn('w-fit ml-auto px-8 py-4')}>
+        <div className={cn('w-fit mx-auto px-8 py-4 md:mx-[unset] md:ml-auto')}>
           <h2 className={cn('mb-2 text-center font-semibold')}>Filtrar</h2>
-          <form className={cn('flex items-center gap-6')}>
+          <form className={cn('flex flex-col items-center gap-4 md:flex-row md:gap-6')}>
             <div className={cn('flex items-center gap-1.5')}>
               <label
                 htmlFor="year"
@@ -135,6 +135,7 @@ function DashboardPage() {
                     <option
                       key={item}
                       value={item}
+                      className={cn('dark:text-secondary-light')}
                     >
                       {item === 'noYearSelected' ? 'Escoger un año' : item}
                     </option>
@@ -159,6 +160,7 @@ function DashboardPage() {
                     <option
                       key={month.toLowerCase()}
                       value={month.toLowerCase()}
+                      className={cn('dark:text-secondary-light')}
                     >
                       {month === 'noMonthSelected' ? 'Escoge un mes' : month}
                     </option>
