@@ -89,7 +89,6 @@ export const mockFinancialData = [
 // Get a list of available years in data
 const availableYears = Array.from(new Set(mockFinancialData.map(item => item.movement_date.slice(0, 4))))
 availableYears.unshift('none')
-console.log(availableYears)
 
 // Getting current date
 const currentMonth = new Date().getMonth() // Get current month

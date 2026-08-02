@@ -16,7 +16,12 @@ import { monthNames } from "../../../shared/constants/constants";
 import { useMemo } from "react";
 
 function DashboardPage() {
-  const { register, control } = useForm()
+  const { register, control } = useForm({
+    defaultValues: {
+      'year': 'noYearSelected',
+      'month': 'nomonthselected'
+    }
+  })
   const isLoading = useAuthStore((state) => state.isLoading)
 
   // const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError } = useFinancialSummary()
@@ -49,8 +54,12 @@ function DashboardPage() {
   // }
 
   // Getting a list of available years in data
-  const availableYears = Array.from(new Set(mockFinancialData.map(item => item.movement_date.slice(0, 4))))
-  availableYears.unshift('noYearSelected')
+  const availableYears = useMemo(() => {
+    const prevArray = Array.from(
+      new Set(mockFinancialData.map(item => item.movement_date.slice(0, 4)))
+    )
+    return ['noYearSelected', ...prevArray]
+  }, [])
 
   // Getting current date
   const currentMonth = new Date().getMonth() + 1 // Get current month
@@ -61,34 +70,54 @@ function DashboardPage() {
     name: 'year'
   })
 
+  const selectedMonth = useWatch({
+    control,
+    name: 'month'
+  })
+
   // Getting the list of available months by year
   const availableMonths = useMemo(() => {
     const currentMonthIndex = new Date().getMonth()
     const filteredMonths = selectedYear === currentYear
-      ? monthNames.filter((_, index) => index === currentMonthIndex)
+      ? monthNames.filter((_, index) => index <= currentMonthIndex)
       : monthNames
     return ['noMonthSelected', ...filteredMonths]
   }, [currentYear, selectedYear])
 
-
   // Get the array of data filtered by year
-  const filteredByYearData = mockFinancialData.filter(item => {
-    return item.movement_date.slice(0, 4) === currentYear
-  })
+  const filteredByYearData = useMemo(() => {
+    return mockFinancialData.filter(item => {
+      if (selectedYear === 'noYearSelected') {
+        return item.movement_date.slice(0, 4) === currentYear
+      } else {
+        return item.movement_date.slice(0, 4) === selectedYear
+      }
+    })
+  }, [currentYear, selectedYear])
 
   // Get the arrat of data filtered by month
-  const filteredByMonthData = filteredByYearData.filter(item => {
-    return Number(item.movement_date.slice(5, 7)) === currentMonth
-  })
+  const filteredByMonthData = useMemo(() => {
+    return filteredByYearData.filter(item => {
+      if (selectedMonth === 'nomonthselected') {
+        return Number(item.movement_date.slice(5, 7)) === currentMonth
+      } else {
+        return Number(item.movement_date.slice(5, 7)) === monthNames.indexOf(selectedMonth)
+      }
+    })
+  }, [currentMonth, filteredByYearData, selectedMonth])
 
   // Get the total information data
-  const totalIncome = filteredByMonthData
-    .filter(item => item.movement_type === 'income')
-    .reduce((acc, item) => acc + item.amount, 0)
+  const totalIncome = useMemo(() => {
+    return filteredByMonthData
+      .filter(item => item.movement_type === 'income')
+      .reduce((acc, item) => acc + item.amount, 0)
+  }, [filteredByMonthData])
 
-  const totalExpense = filteredByMonthData
-    .filter(item => item.movement_type === 'expense')
-    .reduce((acc, item) => acc + item.amount, 0)
+  const totalExpense = useMemo(() => {
+    return filteredByMonthData
+      .filter(item => item.movement_type === 'expense')
+      .reduce((acc, item) => acc + item.amount, 0)
+  }, [filteredByMonthData])
 
   const financialData = {
     totalIncome,
