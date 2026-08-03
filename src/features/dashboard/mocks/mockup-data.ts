@@ -83,7 +83,13 @@ export const mockFinancialData = [
   { movement_type: 'expense', amount: 40, movement_date: '2026-07-03' },
   { movement_type: 'expense', amount: 110, movement_date: '2026-07-08' },
   { movement_type: 'expense', amount: 25, movement_date: '2026-07-12' },
-  { movement_type: 'income', amount: 80, movement_date: '2026-07-14' }
+  { movement_type: 'income', amount: 80, movement_date: '2026-07-14' },
+
+  // --- Agosto 2026 (Mes actual, datos parciales hasta la fecha) ---
+  { movement_type: 'income', amount: 1320, movement_date: '2026-08-01' },
+  { movement_type: 'expense', amount: 42.28, movement_date: '2026-08-02' },
+  { movement_type: 'expense', amount: 215, movement_date: '2026-08-02' },
+
 ]
 
 // Get a list of available years in data
