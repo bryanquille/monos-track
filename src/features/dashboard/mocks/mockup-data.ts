@@ -89,6 +89,7 @@ export const mockFinancialData = [
   { movement_type: 'income', amount: 1320, movement_date: '2026-08-01' },
   { movement_type: 'expense', amount: 42.28, movement_date: '2026-08-02' },
   { movement_type: 'expense', amount: 215, movement_date: '2026-08-02' },
+  { movement_type: 'expense', amount: 75, movement_date: '2026-08-03' },
 
 ]
 
