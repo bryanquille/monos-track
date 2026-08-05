@@ -16,10 +16,14 @@ import { monthNames } from "../../../shared/constants/constants";
 import { useMemo } from "react";
 
 function DashboardPage() {
+  // Getting current date
+  const currentMonth = new Date().getMonth() + 1 // Get current month index
+  const currentYear = String(new Date().getFullYear())  // Get current year
+
   const { register, control } = useForm({
     defaultValues: {
-      'year': 'noYearSelected',
-      'month': 'nomonthselected'
+      'year': currentYear,
+      'month': monthNames[currentMonth - 1].toLowerCase()
     }
   })
   const isLoading = useAuthStore((state) => state.isLoading)
@@ -61,9 +65,7 @@ function DashboardPage() {
     return ['noYearSelected', ...prevArray]
   }, [])
 
-  // Getting current date
-  const currentMonth = new Date().getMonth() + 1 // Get current month
-  const currentYear = String(new Date().getFullYear())  // Get current year
+
 
   const selectedYear = useWatch({
     control,
@@ -101,7 +103,8 @@ function DashboardPage() {
       if (selectedMonth === 'nomonthselected') {
         return Number(item.movement_date.slice(5, 7)) === currentMonth
       } else {
-        return Number(item.movement_date.slice(5, 7)) === monthNames.indexOf(selectedMonth)
+        const camelMonth = selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)
+        return Number(item.movement_date.slice(5, 7)) === monthNames.indexOf(camelMonth)
       }
     })
   }, [currentMonth, filteredByYearData, selectedMonth])
