@@ -27,7 +27,7 @@ function DashboardPage() {
   })
   const isLoading = useAuthStore((state) => state.isLoading)
 
-  // const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError } = useFinancialSummary()
+  // const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError, dataUpdatedAt } = useFinancialSummary()
   const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
   const {
     data: incomesVsExpenses,
