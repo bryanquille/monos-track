@@ -144,3 +144,13 @@ export const totalExpenseValue = dataByMonths[monthNamesList[currentMonth]]
 
 // console.log(totalIncomeValue)
 // console.log(totalExpenseValue)
+
+export const getLastDate = (mockData: mockFinancialDataTypes[]) => {
+  if (!mockData) return;
+
+  const sortDataByDate = [...mockData].sort((a, b) => (
+    new Date(b.movement_date).getTime() - new Date(a.movement_date).getTime()
+  ))
+
+  return new Date(sortDataByDate[0].movement_date).getTime()
+}

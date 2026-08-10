@@ -1,9 +1,11 @@
 import { cn } from "../../../shared/utils/cn";
 import { BanknoteArrowDown, BanknoteArrowUp, CircleEqual, Info, TrendingDown, TrendingUp } from "lucide-react";
+import { useTimeAgo } from "../hooks/useTimeAgo";
 
 interface FinancialCardProps {
   title: string
   cashValue: number | null
+  lastUpdatedDate: number
   lastMonthTotalIncome: number | null
   lastMonthTotalExpense: number | null
 }
@@ -11,6 +13,7 @@ interface FinancialCardProps {
 function FinancialCard({
   title,
   cashValue,
+  lastUpdatedDate,
   lastMonthTotalIncome,
   lastMonthTotalExpense,
 }: FinancialCardProps) {
@@ -32,8 +35,10 @@ function FinancialCard({
       : `${Math.abs(percentageOfDifference).toFixed(2)}% desde el mes pasado`
   }
 
+
+  const newMessage = useTimeAgo(lastUpdatedDate)
   if (title === 'totalBalance' && cashValue) {
-    message = 'Actualizado hace 3 min'
+    message = `Actulizado ${newMessage}`
   }
 
   return (

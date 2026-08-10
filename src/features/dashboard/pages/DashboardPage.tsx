@@ -13,6 +13,7 @@ import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { useForm, useWatch } from "react-hook-form";
 import { monthNames } from "../../../shared/constants/constants";
 import { useFilteredData } from "../hooks/useFilteredData";
+import { getLastDate, mockFinancialData } from "../mocks/mockup-data";
 
 function DashboardPage() {
   // Getting current date
@@ -72,6 +73,8 @@ function DashboardPage() {
     financialData,
     lastMonthFinancialData
   } = useFilteredData({ selectedYear, currentYear, selectedMonth, currentMonth })
+
+  const lastUpdatedDate = getLastDate(mockFinancialData)
 
 
 
@@ -149,6 +152,7 @@ function DashboardPage() {
                 key={index}
                 title={item[0]}
                 cashValue={item[1]}
+                lastUpdatedDate={lastUpdatedDate ?? 0}
                 lastMonthTotalExpense={lastMonthFinancialData.lastMonthTotalExpense}
                 lastMonthTotalIncome={lastMonthFinancialData.lastMonthTotalIncome}
               />
