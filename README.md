@@ -29,6 +29,10 @@ Monos Track es una aplicación web para el seguimiento de finanzas personales cr
 - Lucide React
 - Sileo
 - ESLint
+ - TanStack React Query Devtools
+ - TanStack Router Devtools
+ - @tailwindcss/vite (Tailwind Vite plugin)
+ - Prettier
 
 ## Estructura principal del proyecto
 
@@ -92,6 +96,8 @@ VITE_SUPABASE_PUBLISHABLE_KEY=tu_supabase_anon_key
 - `src/features/auth/store/authStore.ts`: Maneja usuario, carga de sesión y logout.
 - `src/routes/_app/dashboard/index.tsx`: Protege el acceso al dashboard con `beforeLoad`.
 - `src/features/movements/api/movements.api.ts`: Envía movimientos a Supabase y guarda recibos en el bucket `receipts`.
+ - `src/routeTree.gen.ts`: Archivo generado con la estructura de rutas usada por TanStack Router.
+ - Devtools: `@tanstack/react-query-devtools` y `@tanstack/react-router-devtools` están disponibles en desarrollo para inspección de queries y rutas.
 
 ## Notas adicionales
 
@@ -137,6 +143,10 @@ Monos Track is a web application for tracking personal finances built with React
 - Lucide React
 - Sileo
 - ESLint
+ - TanStack React Query Devtools
+ - TanStack Router Devtools
+ - @tailwindcss/vite (Tailwind Vite plugin)
+ - Prettier
 
 ## Project structure
 
@@ -200,6 +210,8 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
 - `src/features/auth/store/authStore.ts`: User session state and logout.
 - `src/routes/_app/dashboard/index.tsx`: Dashboard route protection and redirect.
 - `src/features/movements/api/movements.api.ts`: Movement submission and receipt upload.
+ - `src/routeTree.gen.ts`: Generated route tree used by the router and route helpers.
+ - Devtools: development-only tooling for inspecting TanStack Query and Router are included as dev dependencies and can be enabled in `src/main.tsx` during development.
 
 ## Notes
 
