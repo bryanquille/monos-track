@@ -9,6 +9,7 @@ interface FilteredDataProps {
   currentMonth: number
 }
 
+// TODO: Refactor the hook (repeated functions)
 export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, currentMonth }: FilteredDataProps) => {
   // Getting a list of available years in data
   const availableYears = useMemo(() => {
@@ -68,7 +69,6 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, curr
     totalBalance: totalIncome - totalExpense,
   }
 
-  // TODO: Update to get the data of the last month
   const lastMonthFinancialData = useMemo(() => {
     if (selectedMonth === 'enero') {
       const lastYear = String(Number(selectedYear) - 1)
@@ -89,9 +89,26 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, curr
         lastMonthTotalExpense,
       }
     } else {
+      const lastMonthIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
+      const lastMonthIndexStr = String(lastMonthIndex).length === 1 ? `0${String(lastMonthIndex)}` : String(lastMonthIndex)
+      const filteredDataOfLastMonth = mockFinancialData.filter(item => (
+        item.movement_date.slice(5, 7) === lastMonthIndexStr
+      ))
+      if (filteredDataOfLastMonth.length === 0) {
+        return {
+          lastMonthTotalIncome: 0,
+          lastMonthTotalExpense: 0,
+        }
+      }
+      const lastMonthTotalIncome = filteredDataOfLastMonth
+        .filter(item => item.movement_type === 'income')
+        .reduce((acc, item) => acc + item.amount, 0)
+      const lastMonthTotalExpense = filteredDataOfLastMonth
+        .filter(item => item.movement_type === 'expense')
+        .reduce((acc, item) => acc + item.amount, 0)
       return {
-        lastMonthTotalIncome: 0,
-        lastMonthTotalExpense: 0,
+        lastMonthTotalIncome,
+        lastMonthTotalExpense,
       }
     }
   }, [selectedMonth, selectedYear])

@@ -21,6 +21,10 @@ function FinancialCard({
   let message = ''
   let percentageOfDifference = 0
 
+  if (lastMonthTotalIncome === 0 || lastMonthTotalIncome === 0) {
+    message = '0% desde el mes pasado'
+  }
+
   if (title === 'totalIncome' && cashValue && lastMonthTotalIncome) {
     percentageOfDifference = ((cashValue - lastMonthTotalIncome) * 100) / lastMonthTotalIncome
     message = percentageOfDifference === 0
