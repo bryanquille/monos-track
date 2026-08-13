@@ -44,7 +44,7 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, curr
         return Number(item.movement_date.slice(5, 7)) === currentMonth
       } else {
         const camelMonth = selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)
-        return Number(item.movement_date.slice(5, 7)) === monthNames.indexOf(camelMonth)
+        return Number(item.movement_date.slice(5, 7)) === monthNames.indexOf(camelMonth) + 1
       }
     })
   }, [currentMonth, filteredByYearData, selectedMonth])
@@ -68,11 +68,33 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, curr
     totalBalance: totalIncome - totalExpense,
   }
 
-  // Update to get the data of the last month
-  const lastMonthFinancialData = {
-    lastMonthTotalIncome: 1532,
-    lastMonthTotalExpense: 840,
-  }
+  // TODO: Update to get the data of the last month
+  const lastMonthFinancialData = useMemo(() => {
+    if (selectedMonth === 'enero') {
+      const lastYear = String(Number(selectedYear) - 1)
+      const filteredDataByLastYear = mockFinancialData.filter(item => (
+        item.movement_date.slice(0, 4) === lastYear
+      ))
+      const filteredDataOfDecember = filteredDataByLastYear.filter(item => (
+        item.movement_date.slice(5, 7) === '12'
+      ))
+      const lastMonthTotalIncome = filteredDataOfDecember
+        .filter(item => item.movement_type === 'income')
+        .reduce((acc, item) => acc + item.amount, 0)
+      const lastMonthTotalExpense = filteredDataOfDecember
+        .filter(item => item.movement_type === 'expense')
+        .reduce((acc, item) => acc + item.amount, 0)
+      return {
+        lastMonthTotalIncome,
+        lastMonthTotalExpense,
+      }
+    } else {
+      return {
+        lastMonthTotalIncome: 0,
+        lastMonthTotalExpense: 0,
+      }
+    }
+  }, [selectedMonth, selectedYear])
 
   return {
     availableYears,

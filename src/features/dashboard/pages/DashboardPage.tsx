@@ -73,7 +73,7 @@ function DashboardPage() {
     financialData,
     lastMonthFinancialData
   } = useFilteredData({ selectedYear, currentYear, selectedMonth, currentMonth })
-
+  // console.log(financialData)
   const lastUpdatedDate = getLastDate(mockFinancialData)
 
 
