@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { mockFinancialData } from "../mocks/mockup-data";
 import { monthNames } from "../../../shared/constants/constants";
+import { dataByMonth, dataByYear } from "../utils/filterDataFunctions";
 
 interface FilteredDataProps {
   selectedYear: string
@@ -72,12 +73,8 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, curr
   const lastMonthFinancialData = useMemo(() => {
     if (selectedMonth === 'enero') {
       const lastYear = String(Number(selectedYear) - 1)
-      const filteredDataByLastYear = mockFinancialData.filter(item => (
-        item.movement_date.slice(0, 4) === lastYear
-      ))
-      const filteredDataOfDecember = filteredDataByLastYear.filter(item => (
-        item.movement_date.slice(5, 7) === '12'
-      ))
+      const filteredDataByLastYear = dataByYear(mockFinancialData, lastYear)
+      const filteredDataOfDecember = dataByMonth(filteredDataByLastYear, '12')
       const lastMonthTotalIncome = filteredDataOfDecember
         .filter(item => item.movement_type === 'income')
         .reduce((acc, item) => acc + item.amount, 0)
@@ -90,10 +87,10 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, curr
       }
     } else {
       const lastMonthIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
-      const lastMonthIndexStr = String(lastMonthIndex).length === 1 ? `0${String(lastMonthIndex)}` : String(lastMonthIndex)
-      const filteredDataOfLastMonth = mockFinancialData.filter(item => (
-        item.movement_date.slice(5, 7) === lastMonthIndexStr
-      ))
+      const lastMonthIndexStr = String(lastMonthIndex).length === 1
+        ? `0${String(lastMonthIndex)}`
+        : String(lastMonthIndex)
+      const filteredDataOfLastMonth = dataByMonth(mockFinancialData, lastMonthIndexStr)
       if (filteredDataOfLastMonth.length === 0) {
         return {
           lastMonthTotalIncome: 0,
