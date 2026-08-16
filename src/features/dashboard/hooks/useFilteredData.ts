@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { mockFinancialData } from "../mocks/mockup-data";
 import { monthNames } from "../../../shared/constants/constants";
-import { dataByMonth, dataByYear } from "../utils/filterDataFunctions";
+import { dataByMonth, dataByYear, totalExpenseFromData, totalIncomeFromData } from "../utils/filterDataFunctions";
 
 interface FilteredDataProps {
   selectedYear: string
@@ -53,15 +53,11 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, curr
 
   // Get the total information data
   const totalIncome = useMemo(() => {
-    return filteredByMonthData
-      .filter(item => item.movement_type === 'income')
-      .reduce((acc, item) => acc + item.amount, 0)
+    return totalIncomeFromData(filteredByMonthData)
   }, [filteredByMonthData])
 
   const totalExpense = useMemo(() => {
-    return filteredByMonthData
-      .filter(item => item.movement_type === 'expense')
-      .reduce((acc, item) => acc + item.amount, 0)
+    return totalExpenseFromData(filteredByMonthData)
   }, [filteredByMonthData])
 
   const financialData = {
@@ -75,12 +71,8 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, curr
       const lastYear = String(Number(selectedYear) - 1)
       const filteredDataByLastYear = dataByYear(mockFinancialData, lastYear)
       const filteredDataOfDecember = dataByMonth(filteredDataByLastYear, '12')
-      const lastMonthTotalIncome = filteredDataOfDecember
-        .filter(item => item.movement_type === 'income')
-        .reduce((acc, item) => acc + item.amount, 0)
-      const lastMonthTotalExpense = filteredDataOfDecember
-        .filter(item => item.movement_type === 'expense')
-        .reduce((acc, item) => acc + item.amount, 0)
+      const lastMonthTotalIncome = totalIncomeFromData(filteredDataOfDecember)
+      const lastMonthTotalExpense = totalExpenseFromData(filteredDataOfDecember)
       return {
         lastMonthTotalIncome,
         lastMonthTotalExpense,
@@ -97,12 +89,8 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, curr
           lastMonthTotalExpense: 0,
         }
       }
-      const lastMonthTotalIncome = filteredDataOfLastMonth
-        .filter(item => item.movement_type === 'income')
-        .reduce((acc, item) => acc + item.amount, 0)
-      const lastMonthTotalExpense = filteredDataOfLastMonth
-        .filter(item => item.movement_type === 'expense')
-        .reduce((acc, item) => acc + item.amount, 0)
+      const lastMonthTotalIncome = totalIncomeFromData(filteredDataOfLastMonth)
+      const lastMonthTotalExpense = totalExpenseFromData(filteredDataOfLastMonth)
       return {
         lastMonthTotalIncome,
         lastMonthTotalExpense,

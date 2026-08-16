@@ -15,3 +15,15 @@ export const dataByMonth = (data: dataTypes[], month: string) => {
     return item.movement_date.slice(5, 7) === month
   })
 }
+
+export const totalIncomeFromData = (data: dataTypes[]) => {
+  return data
+    .filter(item => item.movement_type === 'income')
+    .reduce((acc, item) => acc + item.amount, 0)
+}
+
+export const totalExpenseFromData = (data: dataTypes[]) => {
+  return data
+    .filter(item => item.movement_type === 'expense')
+    .reduce((acc, item) => acc + item.amount, 0)
+}
