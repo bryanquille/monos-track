@@ -73,7 +73,7 @@ function FinancialCard({
         </div>
       </div>
       <p className={cn('font-Geist-Mono font-semibold text-2xl')}>
-        ${cashValue ? cashValue : '--,--'}
+        ${cashValue ? cashValue.toFixed(2) : '--,--'}
       </p>
       {cashValue
         ? <p className={cn('text-sm')}>

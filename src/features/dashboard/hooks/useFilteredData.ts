@@ -10,8 +10,7 @@ interface FilteredDataProps {
   currentMonth: number
 }
 
-// TODO: Refactor the hook (repeated functions)
-export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, currentMonth }: FilteredDataProps) => {
+export const useFilteredData = ({ selectedYear, currentYear, selectedMonth }: FilteredDataProps) => {
   // Getting a list of available years in data
   const availableYears = useMemo(() => {
     const prevArray = Array.from(
@@ -41,15 +40,15 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, curr
 
   // Get the arrat of data filtered by month
   const filteredByMonthData = useMemo(() => {
-    return filteredByYearData.filter(item => {
-      if (selectedMonth === 'nomonthselected') {
-        return Number(item.movement_date.slice(5, 7)) === currentMonth
-      } else {
-        const camelMonth = selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)
+    if (selectedMonth === 'nomonthselected') {
+      return filteredByYearData
+    } else {
+      const camelMonth = selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)
+      return filteredByYearData.filter(item => {
         return Number(item.movement_date.slice(5, 7)) === monthNames.indexOf(camelMonth) + 1
-      }
-    })
-  }, [currentMonth, filteredByYearData, selectedMonth])
+      })
+    }
+  }, [filteredByYearData, selectedMonth])
 
   // Get the total information data
   const totalIncome = useMemo(() => {
