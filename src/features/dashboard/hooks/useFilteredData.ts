@@ -1,23 +1,28 @@
 import { useMemo } from "react";
-import { mockFinancialData } from "../mocks/mockup-data";
 import { monthNames } from "../../../shared/constants/constants";
 import { dataByMonth, dataByYear, totalExpenseFromData, totalIncomeFromData } from "../utils/filterDataFunctions";
+
+export interface FinancialDataTypes {
+  movement_type: string
+  amount: number
+  movement_date: string
+}
 
 interface FilteredDataProps {
   selectedYear: string
   currentYear: string
   selectedMonth: string
-  currentMonth: number
+  financialData: FinancialDataTypes[]
 }
 
-export const useFilteredData = ({ selectedYear, currentYear, selectedMonth }: FilteredDataProps) => {
+export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, financialData }: FilteredDataProps) => {
   // Getting a list of available years in data
   const availableYears = useMemo(() => {
     const prevArray = Array.from(
-      new Set(mockFinancialData.map(item => item.movement_date.slice(0, 4)))
+      new Set(financialData.map(item => item.movement_date.slice(0, 4)))
     )
     return ['noYearSelected', ...prevArray]
-  }, [])
+  }, [financialData])
 
   const availableMonths = useMemo(() => {
     const currentMonthIndex = new Date().getMonth()
@@ -29,14 +34,14 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth }: Fi
 
   // Get the array of data filtered by year
   const filteredByYearData = useMemo(() => {
-    return mockFinancialData.filter(item => {
+    return financialData.filter(item => {
       if (selectedYear === 'noYearSelected') {
         return item.movement_date.slice(0, 4) === currentYear
       } else {
         return item.movement_date.slice(0, 4) === selectedYear
       }
     })
-  }, [currentYear, selectedYear])
+  }, [currentYear, selectedYear, financialData])
 
   // Get the arrat of data filtered by month
   const filteredByMonthData = useMemo(() => {
@@ -59,7 +64,7 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth }: Fi
     return totalExpenseFromData(filteredByMonthData)
   }, [filteredByMonthData])
 
-  const financialData = {
+  const financialDataOutput = {
     totalIncome,
     totalExpense,
     totalBalance: totalIncome - totalExpense,
@@ -68,7 +73,7 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth }: Fi
   const lastMonthFinancialData = useMemo(() => {
     if (selectedMonth === 'enero') {
       const lastYear = String(Number(selectedYear) - 1)
-      const filteredDataByLastYear = dataByYear(mockFinancialData, lastYear)
+      const filteredDataByLastYear = dataByYear(financialData, lastYear)
       const filteredDataOfDecember = dataByMonth(filteredDataByLastYear, '12')
       const lastMonthTotalIncome = totalIncomeFromData(filteredDataOfDecember)
       const lastMonthTotalExpense = totalExpenseFromData(filteredDataOfDecember)
@@ -81,7 +86,7 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth }: Fi
       const lastMonthIndexStr = String(lastMonthIndex).length === 1
         ? `0${String(lastMonthIndex)}`
         : String(lastMonthIndex)
-      const filteredDataOfLastMonth = dataByMonth(mockFinancialData, lastMonthIndexStr)
+      const filteredDataOfLastMonth = dataByMonth(financialData, lastMonthIndexStr)
       if (filteredDataOfLastMonth.length === 0) {
         return {
           lastMonthTotalIncome: 0,
@@ -95,12 +100,12 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth }: Fi
         lastMonthTotalExpense,
       }
     }
-  }, [selectedMonth, selectedYear])
+  }, [selectedMonth, selectedYear, financialData])
 
   return {
     availableYears,
     availableMonths,
-    financialData,
+    financialDataOutput,
     lastMonthFinancialData,
   }
 }

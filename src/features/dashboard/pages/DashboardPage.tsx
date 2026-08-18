@@ -12,8 +12,10 @@ import { getGraphicsText } from "../utils/getGraphicsText";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { useForm, useWatch } from "react-hook-form";
 import { monthNames } from "../../../shared/constants/constants";
-import { useFilteredData } from "../hooks/useFilteredData";
-import { getLastDate, mockFinancialData } from "../mocks/mockup-data";
+import { useFilteredData, type FinancialDataTypes } from "../hooks/useFilteredData";
+// import { getLastDate } from "../mocks/mockup-data";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "../../../shared/lib/supabase";
 
 function DashboardPage() {
   // Getting current date
@@ -28,7 +30,6 @@ function DashboardPage() {
   })
   const isLoading = useAuthStore((state) => state.isLoading)
 
-  // const { data: financialInfo, isPending: isFinancialInfoPending, error: financialInfoError, dataUpdatedAt } = useFinancialSummary()
   const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
   const {
     data: incomesVsExpenses,
@@ -36,26 +37,22 @@ function DashboardPage() {
     // error: incomesVsExpensesError
   } = useIncomesVsExpenses()
 
-  // if (isFinancialInfoPending) { return <FullScreenLoader text="Cargando aplicación..." /> }
-  // if (financialInfoError) {
-  //   return (
-  //     <div className={cn('p-4 border border-red-500/20 rounded-xl text-center bg-red-500/10 text-red-500')}>
-  //       Error al cargar los datos: {financialInfoError.message}
-  //     </div>
-  //   )
-  // }
+  const {
+    data: financialData,
+    dataUpdatedAt: lastUpdatedDate
+    // error: financialDataError,
+    // isPending: isFinancialDataPending
+  } = useQuery<FinancialDataTypes[]>({
+    queryKey: ['financial-data'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('movements')
+        .select('movement_type, amount, movement_date')
 
-
-
-
-
-  /* Getting financial data */
-  // For empty data, no data registered yet
-  // const financialData = {
-  //   totalIncome: null,
-  //   totalExpense: null,
-  //   totalBalance: null,
-  // }
+      if (error) throw new Error(error.message)
+      return data as FinancialDataTypes[]
+    }
+  })
 
   const selectedYear = useWatch({
     control,
@@ -70,14 +67,9 @@ function DashboardPage() {
   const {
     availableYears,
     availableMonths,
-    financialData,
+    financialDataOutput,
     lastMonthFinancialData
-  } = useFilteredData({ selectedYear, currentYear, selectedMonth, currentMonth })
-  // console.log(financialData)
-  const lastUpdatedDate = getLastDate(mockFinancialData)
-
-
-
+  } = useFilteredData({ selectedYear, currentYear, selectedMonth, financialData: financialData ?? [] })
 
   const graphicsText = getGraphicsText({ registerExpenses: chartData ?? [] })
   if (isPendingCharData) return <FullScreenLoader text="Cargando datos..." />
@@ -146,7 +138,7 @@ function DashboardPage() {
         </div>
         {/* Financial cards */}
         <div className={cn('p-4 grid grid-cols-1 gap-3 items-center md:grid-cols-2 lg:grid-cols-3')}>
-          {Object.entries(financialData).map((item, index) => {
+          {Object.entries(financialDataOutput).map((item, index) => {
             return (
               <FinancialCard
                 key={index}
