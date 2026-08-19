@@ -1,9 +1,9 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { cn } from "../../../shared/utils/cn";
-import { ChevronDown, CloudUpload } from "lucide-react";
+import { CheckCircle2, ChevronDown, CloudUpload, FileText, X } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, MovementsSchema, type MovementsData } from "../schemas/movementsSchema";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useCreateMovement } from "../hooks/useCreateMovement";
 
 interface MovementsRegisterFormProps {
@@ -16,6 +16,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
     handleSubmit,
     setValue,
     reset,
+    watch,
     formState: { errors }
   } = useForm<MovementsData>({
     resolver: zodResolver(MovementsSchema),
@@ -23,6 +24,20 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
       movementType: isIncome ? 'income' : 'expense'
     }
   })
+
+  const receiptFileList = watch('receiptUpload') as unknown as FileList | undefined
+  const selectedFile = receiptFileList && receiptFileList.length > 0 ? receiptFileList[0] : null
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  useEffect(() => {
+    if (!selectedFile || !selectedFile.type.startsWith('image/')) {
+      setPreviewUrl(null)
+      return
+    }
+    const objectUrl = URL.createObjectURL(selectedFile)
+    setPreviewUrl(objectUrl)
+
+    return () => URL.revokeObjectURL(objectUrl)
+  }, [selectedFile])
 
   useEffect(() => {
     setValue('movementType', isIncome ? 'income' : 'expense')
@@ -34,8 +49,15 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
     mutate(data, {
       onSuccess: () => {
         reset()
+        setPreviewUrl(null)
       }
     })
+  }
+
+  const handleRemoveFile = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setValue('receiptUpload', undefined as unknown as FileList)
+    setPreviewUrl(null)
   }
 
   return (
@@ -165,6 +187,82 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
       </div>
       <div className={cn('flex flex-col gap-1')}>
         <span>Comprobante/Adjunto (Opcional)</span>
+
+        {/* Input Oculto */}
+        <input
+          type="file"
+          id="receiptUpload"
+          className={cn('hidden')}
+          accept=".pdf, .png, .jpg, .jpeg"
+          {...register('receiptUpload')}
+        />
+
+        {selectedFile ? (
+          /* VISTA 1: Cuando YA hay un archivo seleccionado */
+          <div className={cn('relative p-3 border-2 border-emerald-500/70 rounded-md bg-emerald-500/10 flex flex-col items-center justify-center gap-2 min-h-30')}>
+            <button
+              type="button"
+              onClick={handleRemoveFile}
+              className={cn('absolute top-2 right-2 p-1 rounded-full bg-red-500/20 text-red-500 hover:bg-red-500/40 transition-colors')}
+              title="Quitar archivo"
+            >
+              <X size={16} />
+            </button>
+
+            {previewUrl ? (
+              /* Previsualización de Imagen */
+              <div className={cn('flex flex-col items-center gap-2 w-full')}>
+                <div className={cn('relative w-full h-20 rounded overflow-hidden border border-emerald-500/30')}>
+                  <img
+                    src={previewUrl}
+                    alt="Previsualización del comprobante"
+                    className={cn('w-full h-full object-cover')}
+                  />
+                </div>
+                <span className={cn('text-xs text-emerald-600 dark:text-emerald-400 font-medium truncate max-w-[200px]')}>
+                  {selectedFile.name}
+                </span>
+              </div>
+            ) : (
+              /* Previsualización de Documento (ej. PDF) */
+              <div className={cn('flex items-center gap-3 w-full px-2')}>
+                <div className={cn('p-2 rounded-lg bg-emerald-500/20 text-emerald-500')}>
+                  <FileText size={24} />
+                </div>
+                <div className={cn('flex flex-col overflow-hidden text-left')}>
+                  <span className={cn('text-sm font-medium text-emerald-600 dark:text-emerald-400 truncate')}>
+                    {selectedFile.name}
+                  </span>
+                  <span className={cn('text-xs text-gray-500 dark:text-neutral-dark/60')}>
+                    {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                  </span>
+                </div>
+                <CheckCircle2 size={18} className={cn('ml-auto text-emerald-500 flex-shrink-0')} />
+              </div>
+            )}
+          </div>
+        ) : (
+          /* VISTA 2: Estado inicial cuando no se ha subido ningún archivo */
+          <label
+            htmlFor="receiptUpload"
+            className={cn('cursor-pointer w-full h-30 flex flex-col justify-center items-center gap-0.5 border-2 border-dashed rounded-md bg-neutral-light/30 dark:bg-primary-dark/50 hover:border-primary transition-colors')}
+          >
+            <span className={cn('p-2 rounded-full bg-white dark:bg-tertiary-dark')}>
+              <CloudUpload strokeWidth={3} className={cn('text-neutral-light/70')} />
+            </span>
+            <span>Haz clic para subir o arrastra un archivo</span>
+            <span className={cn('text-sm text-gray-text/80 dark:text-neutral-dark/50')}>
+              PDF, PNG O JPG (Máx. 10MB)
+            </span>
+          </label>
+        )}
+
+        {errors.receiptUpload && (
+          <span className={cn('text-sm text-red-500')}>{errors.receiptUpload.message}</span>
+        )}
+      </div>
+      {/* <div className={cn('flex flex-col gap-1')}>
+        <span>Comprobante/Adjunto (Opcional)</span>
         <label
           htmlFor="receiptUpload"
           className={cn('cursor-pointer w-full h-30 flex flex-col justify-center items-center gap-0.5 border-2 border-dashed rounded-md bg-neutral-light/30 dark:bg-primary-dark/50')}
@@ -185,7 +283,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
         {errors.receiptUpload &&
           <span className={cn('text-sm text-red-500')}>{errors.receiptUpload.message}</span>
         }
-      </div>
+      </div> */}
       <button
         type="submit"
         disabled={isPending}
