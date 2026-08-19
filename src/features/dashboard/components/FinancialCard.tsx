@@ -39,7 +39,6 @@ function FinancialCard({
       : `${Math.abs(percentageOfDifference).toFixed(2)}% desde el mes pasado`
   }
 
-
   const newMessage = useTimeAgo(lastUpdatedDate)
   if (title === 'totalBalance' && cashValue) {
     message = `Actulizado ${newMessage}`

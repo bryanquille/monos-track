@@ -1,7 +1,6 @@
 import { useAuthStore } from "../../auth/store/authStore";
 import { cn } from "../../../shared/utils/cn";
 import FinancialCard from "../components/FinancialCard";
-// import { useFinancialSummary } from "../hooks/useFinancialSummary";
 import DashboardHeader from "../components/DashboardHeader";
 import { useExpensesByCategory } from "../hooks/useExpensesByCategory";
 import ExpensePercentageInfo from "../components/ExpensePercentageInfo";
@@ -13,9 +12,9 @@ import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { useForm, useWatch } from "react-hook-form";
 import { monthNames } from "../../../shared/constants/constants";
 import { useFilteredData, type FinancialDataTypes } from "../hooks/useFilteredData";
-// import { getLastDate } from "../mocks/mockup-data";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../shared/lib/supabase";
+import { useMemo } from "react";
 
 function DashboardPage() {
   // Getting current date
@@ -39,7 +38,6 @@ function DashboardPage() {
 
   const {
     data: financialData,
-    dataUpdatedAt: lastUpdatedDate
     // error: financialDataError,
     // isPending: isFinancialDataPending
   } = useQuery<FinancialDataTypes[]>({
@@ -47,12 +45,26 @@ function DashboardPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('movements')
-        .select('movement_type, amount, movement_date')
+        .select('movement_type, amount, movement_date, created_at')
 
       if (error) throw new Error(error.message)
       return data as FinancialDataTypes[]
     }
   })
+
+  const getLastDate = (financialData: FinancialDataTypes[] | undefined) => {
+    if (!financialData || financialData.length === 0) return 0;
+
+    const sortDataByDate = [...financialData].sort((a, b) => (
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    ))
+
+    return new Date(sortDataByDate[0].created_at).getTime()
+  }
+
+  const lastUpdatedDate = useMemo(() => {
+    return getLastDate(financialData ?? [])
+  }, [financialData])
 
   const selectedYear = useWatch({
     control,
