@@ -219,7 +219,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
                     className={cn('w-full h-full object-cover')}
                   />
                 </div>
-                <span className={cn('text-xs text-emerald-600 dark:text-emerald-400 font-medium truncate max-w-[200px]')}>
+                <span className={cn('text-xs text-emerald-600 dark:text-emerald-400 font-medium truncate max-w-50')}>
                   {selectedFile.name}
                 </span>
               </div>
@@ -237,7 +237,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
                     {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                   </span>
                 </div>
-                <CheckCircle2 size={18} className={cn('ml-auto text-emerald-500 flex-shrink-0')} />
+                <CheckCircle2 size={18} className={cn('ml-auto text-emerald-500 shrink-0')} />
               </div>
             )}
           </div>
