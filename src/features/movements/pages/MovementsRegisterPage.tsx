@@ -3,6 +3,7 @@ import { cn } from "../../../shared/utils/cn";
 import { useState } from "react";
 import MovementsRegisterForm from "../components/MovementsRegisterForm";
 import UserName from "../../../shared/components/UserName";
+import RegisteredMovementsList from "../components/RegisteredMovementsList";
 
 function MovementsRegisterPage() {
   const [isIncome, setIsIncome] = useState(true)
@@ -58,6 +59,9 @@ function MovementsRegisterPage() {
             </div>
           </article>
         </footer>
+      </section>
+      <section>
+        <RegisteredMovementsList />
       </section>
     </>
   )
