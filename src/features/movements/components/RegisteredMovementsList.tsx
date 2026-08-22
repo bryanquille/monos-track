@@ -1,14 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../shared/lib/supabase";
+import { cn } from "../../../shared/utils/cn";
+import { Edit, Eye, Trash2 } from "lucide-react";
 
 interface FinancialDataListTypes {
-  movement_type: string;
-  amount: number;
-  category: string;
-  payment_method: string;
-  movement_date: string;
-  created_at: string;
-  receipt_path: string;
+  amount: number
+  category: string
+  created_at: string
+  description: string
+  id: string
+  movement_date: string
+  movement_type: string
+  payment_method: string
+  receipt_path: string
+  user_id: string
 }
 
 function RegisteredMovementsList() {
@@ -19,16 +24,43 @@ function RegisteredMovementsList() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('movements')
-        .select('movement_type, amount, category, payment_method, movement_date, created_at, receipt_path')
+        .select('*')
+        .order('movement_date', { ascending: false })
 
       if (error) throw new Error(error.message)
-      return data as FinancialDataListTypes[]
+      return data as FinancialDataListTypes[] ?? []
     }
   })
 
-  console.log(financialDataList)
+  // console.log(financialDataList)
   return (
-    <div>RegisteredMovementsList</div>
+    <ul>
+      {financialDataList?.map(item => (
+        <li key={item.id}>
+          <div className={cn('pb-3 grid grid-cols-5 items-center gap-1 border-b-2 border-b-gray-600')}>
+            <span>{`
+              ${(new Date(item.created_at).getDate()).toString().padStart(2, '0')}
+              /${(new Date(item.created_at).getMonth() + 1).toString().padStart(2, '0')}
+              /${new Date(item.created_at).getFullYear()}
+            `}</span>
+            <span>{item.category}</span>
+            <span>{item.amount}</span>
+            <p>{item.description}</p>
+            <div className={cn('flex justify-center items-center gap-1.5')}>
+              <button type="button">
+                <Edit />
+              </button>
+              <button type="button">
+                <Trash2 />
+              </button>
+              <button type="button">
+                <Eye />
+              </button>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
   )
 }
 

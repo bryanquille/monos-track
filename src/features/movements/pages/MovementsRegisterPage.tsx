@@ -10,7 +10,7 @@ function MovementsRegisterPage() {
 
   return (
     <>
-      <section className={cn('w-[95%] max-w-7xl mx-auto overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
+      <section className={cn('w-[95%] max-w-7xl mx-auto mb-6 overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
         <header className={cn('p-4 flex flex-col justify-center gap-8 bg-neutral-light/50 dark:bg-secondary-light md:p-8')}>
           <UserName />
           <div className={cn('flex flex-col justify-center items-center gap-3 md:flex-row md:justify-evenly')}>
@@ -60,8 +60,14 @@ function MovementsRegisterPage() {
           </article>
         </footer>
       </section>
-      <section>
-        <RegisteredMovementsList />
+      <section className={cn('w-[95%] max-w-7xl mx-auto overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
+        <header>
+          <h2>Lista de registros</h2>
+        </header>
+        <main>
+          <RegisteredMovementsList />
+        </main>
+        <footer>Filtros</footer>
       </section>
     </>
   )
