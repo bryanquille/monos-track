@@ -47,14 +47,23 @@ function RegisteredMovementsList() {
             <span>{item.amount}</span>
             <p>{item.description}</p>
             <div className={cn('flex justify-center items-center gap-1.5')}>
-              <button type="button">
-                <Edit />
+              <button
+                type="button"
+                className={cn('cursor-pointer flex justify-center items-center gap-1.5')}
+              >
+                <Edit className={cn('hover:text-blue-500')} />
               </button>
-              <button type="button">
-                <Trash2 />
+              <button
+                type="button"
+                className={cn('cursor-pointer flex justify-center items-center gap-1.5')}
+              >
+                <Trash2 className={cn('hover:text-red-500')} />
               </button>
-              <button type="button">
-                <Eye />
+              <button
+                type="button"
+                className={cn('cursor-pointer flex justify-center items-center gap-1.5')}
+              >
+                <Eye className={cn('hover:text-green-500')} />
               </button>
             </div>
           </div>
