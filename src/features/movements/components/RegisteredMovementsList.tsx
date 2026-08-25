@@ -35,6 +35,13 @@ function RegisteredMovementsList() {
   // console.log(financialDataList)
   return (
     <ul>
+      <li className={cn('pb-3 grid grid-cols-5 items-center gap-1 border-b-2 border-b-gray-600 text-2xl font-medium')}>
+        <p>Fecha de registro</p>
+        <p>Categoría</p>
+        <p>Monto</p>
+        <p>Descripción</p>
+        <p>Acciones</p>
+      </li>
       {financialDataList?.map(item => (
         <li key={item.id}>
           <div className={cn('pb-3 grid grid-cols-5 items-center gap-1 border-b-2 border-b-gray-600')}>

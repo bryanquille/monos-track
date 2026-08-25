@@ -61,10 +61,10 @@ function MovementsRegisterPage() {
         </footer>
       </section>
       <section className={cn('w-[95%] max-w-7xl mx-auto overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
-        <header>
-          <h2>Lista de registros</h2>
+        <header className={cn('pt-6 px- flex justify-center items-center bg-neutral-light/50 dark:bg-secondary-light md:p-8')}>
+          <h2 className={cn('text-4xl')}>Lista de registros</h2>
         </header>
-        <main>
+        <main className={cn('p-4 md:p-8')}>
           <RegisteredMovementsList />
         </main>
         <footer>Filtros</footer>
