@@ -32,7 +32,6 @@ function RegisteredMovementsList() {
     }
   })
 
-  // console.log(financialDataList)
   return (
     <ul>
       <li className={cn('pb-3 grid grid-cols-5 items-center gap-1 border-b-2 border-b-gray-600 text-2xl font-medium')}>

@@ -8,6 +8,7 @@ Monos Track es una aplicación web para el seguimiento de finanzas personales cr
 - Rutas protegidas para dashboard, registro de movimientos y ajustes.
 - Dashboard financiero con métricas resumidas y comparativas.
 - Registro de movimientos con tipo, categoría, monto, fecha, método de pago y adjuntos.
+- Lista de movimientos registrados, ordenada por fecha, con acciones para editar, eliminar y consultar cada registro.
 - Carga opcional de comprobantes en PDF, PNG y JPG.
 - Tema claro/oscuro persistente con Zustand.
 - Validación de formularios con React Hook Form y Zod.
@@ -39,7 +40,7 @@ Monos Track es una aplicación web para el seguimiento de finanzas personales cr
 - `src/app/`: Configuración general y `RootComponent`.
 - `src/features/auth/`: Autenticación, formularios y estado de usuario.
 - `src/features/dashboard/`: Página de dashboard y hooks financieros.
-- `src/features/movements/`: Formulario de movimientos, API y validaciones.
+- `src/features/movements/`: Formulario, lista de movimientos registrados, API y validaciones.
 - `src/features/settings/`: Página de ajustes.
 - `src/features/home/`: Página pública de bienvenida.
 - `src/shared/`: Componentes reutilizables, utilidades, stores y Supabase.
@@ -96,6 +97,7 @@ VITE_SUPABASE_PUBLISHABLE_KEY=tu_supabase_anon_key
 - `src/features/auth/store/authStore.ts`: Maneja usuario, carga de sesión y logout.
 - `src/routes/_app/dashboard/index.tsx`: Protege el acceso al dashboard con `beforeLoad`.
 - `src/features/movements/api/movements.api.ts`: Envía movimientos a Supabase y guarda recibos en el bucket `receipts`.
+- `src/features/movements/components/RegisteredMovementsList.tsx`: Consulta y muestra los movimientos registrados desde Supabase.
  - `src/routeTree.gen.ts`: Archivo generado con la estructura de rutas usada por TanStack Router.
  - Devtools: `@tanstack/react-query-devtools` y `@tanstack/react-router-devtools` están disponibles en desarrollo para inspección de queries y rutas.
 
@@ -122,6 +124,7 @@ Monos Track is a web application for tracking personal finances built with React
 - Protected routes for dashboard, movements and settings.
 - Financial dashboard with summary metrics.
 - Movement registration with type, category, amount, date, payment method and attachments.
+- Registered movements list sorted by date, with edit, delete and view actions for each record.
 - Optional receipt upload in PDF, PNG and JPG.
 - Persistent dark/light theme with Zustand.
 - Form validation with React Hook Form and Zod.
@@ -153,7 +156,7 @@ Monos Track is a web application for tracking personal finances built with React
 - `src/app/`: App configuration and `RootComponent`.
 - `src/features/auth/`: Authentication, forms and user state.
 - `src/features/dashboard/`: Dashboard page and financial hooks.
-- `src/features/movements/`: Movement form, API and validation.
+- `src/features/movements/`: Movement form, registered movements list, API and validation.
 - `src/features/settings/`: Settings page.
 - `src/features/home/`: Public landing page.
 - `src/shared/`: Reusable components, utilities, stores and Supabase config.
@@ -210,6 +213,7 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
 - `src/features/auth/store/authStore.ts`: User session state and logout.
 - `src/routes/_app/dashboard/index.tsx`: Dashboard route protection and redirect.
 - `src/features/movements/api/movements.api.ts`: Movement submission and receipt upload.
+- `src/features/movements/components/RegisteredMovementsList.tsx`: Queries and displays registered movements from Supabase.
  - `src/routeTree.gen.ts`: Generated route tree used by the router and route helpers.
  - Devtools: development-only tooling for inspecting TanStack Query and Router are included as dev dependencies and can be enabled in `src/main.tsx` during development.
 
