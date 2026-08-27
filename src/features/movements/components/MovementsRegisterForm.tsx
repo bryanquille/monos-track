@@ -1,9 +1,9 @@
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { cn } from "../../../shared/utils/cn";
 import { CheckCircle2, ChevronDown, CloudUpload, FileText, X } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, MovementsSchema, type MovementsData } from "../schemas/movementsSchema";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useCreateMovement } from "../hooks/useCreateMovement";
 
 interface MovementsRegisterFormProps {
@@ -16,7 +16,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
     handleSubmit,
     setValue,
     reset,
-    watch,
+    control,
     formState: { errors }
   } = useForm<MovementsData>({
     resolver: zodResolver(MovementsSchema),
@@ -25,19 +25,21 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
     }
   })
 
-  const receiptFileList = watch('receiptUpload') as unknown as FileList | undefined
+  const receiptFileList = useWatch({
+    control,
+    name: 'receiptUpload'
+  }) as unknown as FileList | undefined
   const selectedFile = receiptFileList && receiptFileList.length > 0 ? receiptFileList[0] : null
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  useEffect(() => {
-    if (!selectedFile || !selectedFile.type.startsWith('image/')) {
-      setPreviewUrl(null)
-      return
-    }
-    const objectUrl = URL.createObjectURL(selectedFile)
-    setPreviewUrl(objectUrl)
-
-    return () => URL.revokeObjectURL(objectUrl)
+  const previewUrl = useMemo(() => {
+    if (!selectedFile || !selectedFile.type.startsWith('image/')) return null
+    return URL.createObjectURL(selectedFile)
   }, [selectedFile])
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+    }
+  }, [previewUrl])
 
   useEffect(() => {
     setValue('movementType', isIncome ? 'income' : 'expense')
@@ -49,7 +51,6 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
     mutate(data, {
       onSuccess: () => {
         reset()
-        setPreviewUrl(null)
       }
     })
   }
@@ -57,7 +58,6 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
   const handleRemoveFile = (e: React.MouseEvent) => {
     e.preventDefault()
     setValue('receiptUpload', undefined as unknown as FileList)
-    setPreviewUrl(null)
   }
 
   return (
