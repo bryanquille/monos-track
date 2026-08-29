@@ -198,7 +198,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
         />
 
         {selectedFile ? (
-          /* VISTA 1: Cuando YA hay un archivo seleccionado */
+          /* View 1: The file is selected */
           <div className={cn('relative p-3 border-2 border-emerald-500/70 rounded-md bg-emerald-500/10 flex flex-col items-center justify-center gap-2 min-h-30')}>
             <button
               type="button"
@@ -212,7 +212,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
             {previewUrl ? (
               /* Previsualización de Imagen */
               <div className={cn('flex flex-col items-center gap-2 w-full')}>
-                <div className={cn('relative w-full h-20 rounded overflow-hidden border border-emerald-500/30')}>
+                <div className={cn('relative w-4/5 h-20 rounded overflow-hidden border border-emerald-500/30')}>
                   <img
                     src={previewUrl}
                     alt="Previsualización del comprobante"
@@ -224,7 +224,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
                 </span>
               </div>
             ) : (
-              /* Previsualización de Documento (ej. PDF) */
+              /* Doc preview (PDF) */
               <div className={cn('flex items-center gap-3 w-full px-2')}>
                 <div className={cn('p-2 rounded-lg bg-emerald-500/20 text-emerald-500')}>
                   <FileText size={24} />
@@ -242,7 +242,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
             )}
           </div>
         ) : (
-          /* VISTA 2: Estado inicial cuando no se ha subido ningún archivo */
+          /* View 2: Initial state when no file has been uploaded */
           <label
             htmlFor="receiptUpload"
             className={cn('cursor-pointer w-full h-30 flex flex-col justify-center items-center gap-0.5 border-2 border-dashed rounded-md bg-neutral-light/30 dark:bg-primary-dark/50 hover:border-primary transition-colors')}
