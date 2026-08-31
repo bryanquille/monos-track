@@ -16,6 +16,15 @@ interface FinancialDataListTypes {
   user_id: string
 }
 
+const formatDate = (dateString: string): string => {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 function RegisteredMovementsList() {
   const {
     data: financialDataList,
@@ -29,7 +38,8 @@ function RegisteredMovementsList() {
 
       if (error) throw new Error(error.message)
       return data as FinancialDataListTypes[] ?? []
-    }
+    },
+    refetchOnMount: true
   })
 
   return (
@@ -44,11 +54,7 @@ function RegisteredMovementsList() {
       {financialDataList?.map(item => (
         <li key={item.id}>
           <div className={cn('pb-3 grid grid-cols-5 items-center gap-1 border-b-2 border-b-gray-600')}>
-            <span>{`
-              ${(new Date(item.created_at).getDate()).toString().padStart(2, '0')}
-              /${(new Date(item.created_at).getMonth() + 1).toString().padStart(2, '0')}
-              /${new Date(item.created_at).getFullYear()}
-            `}</span>
+            <span>{formatDate(item.movement_date)}</span>
             <span>{item.category}</span>
             <span>{item.amount}</span>
             <p>{item.description}</p>
