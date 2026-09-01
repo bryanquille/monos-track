@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../../shared/lib/supabase";
 import { cn } from "../../../shared/utils/cn";
 import { Edit, Eye, Trash2 } from "lucide-react";
@@ -23,6 +23,29 @@ const formatDate = (dateString: string): string => {
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
+}
+
+async function deleteMovement(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('movements')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    throw new Error(`Error al eliminar el registro: ${error.message}`);
+  }
+}
+
+function useDeleteMovement() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => deleteMovement(id),
+    onSuccess: () => {
+      // Invalida la lista en caché para que React Query la vuelva a cargar al instante
+      queryClient.invalidateQueries({ queryKey: ['financial-data'] });
+    },
+  });
 }
 
 function RegisteredMovementsList() {
