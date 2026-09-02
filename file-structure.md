@@ -1,51 +1,12 @@
 ```
 └── 📁src
+    └── 📁app
+        ├── App.tsx
+        ├── RootComponent.tsx
     └── 📁assets
         └── 📁images
             ├── monos-track-logo-circle.png
             ├── monos-track-logo.png
-    └── 📁components
-        └── 📁common
-            └── 📁footer
-                ├── Footer.tsx
-            └── 📁header
-                ├── BackScreen.tsx
-                ├── BrandLogo.tsx
-                ├── HamburguerMenuButton.tsx
-                ├── Header.tsx
-                ├── Navbar.tsx
-        └── 📁layouts
-            ├── AppLayout.tsx
-        └── 📁pages
-            └── 📁dashboardPage
-                ├── DashboardHeader.tsx
-                ├── DashboardPage.tsx
-                ├── ExpensePercentageInfo.tsx
-                ├── FinancialCard.tsx
-                ├── IncomeExpenseBars.tsx
-            └── 📁loginPage
-                ├── LoginPage.tsx
-                ├── LoginPageFooter.tsx
-                ├── LoginPageHeader.tsx
-                ├── LoginPageLeftSide.tsx
-                ├── LoginPageRightSide.tsx
-            └── 📁movementsRegisterPage
-                ├── MovementsRegisterPage.tsx
-            └── 📁registerPage
-                ├── RegisterPage.tsx
-                ├── RegisterPageFooter.tsx
-                ├── RegisterPageHeader.tsx
-                ├── RegisterPageLeftSide.tsx
-                ├── RegisterPageRightSide.tsx
-            └── 📁settingsPage
-                ├── SettingsPage.tsx
-            ├── HomePage.tsx
-            ├── LoaderPage.tsx
-            ├── RootComponent.tsx
-        └── 📁ui
-            ├── DarkThemeButton.tsx
-            ├── Loader.tsx
-            ├── UserName.tsx
     └── 📁features
         └── 📁auth
             └── 📁components
@@ -57,30 +18,53 @@
             └── 📁hooks
                 ├── useLoginForm.ts
                 ├── useRegisterForm.ts
+                ├── useShowPassword.ts
+            └── 📁pages
+                ├── LoginPage.tsx
+                ├── RegisterPage.tsx
             └── 📁schemas
                 ├── loginSchema.ts
                 ├── registerSchema.ts
-            └── 📁services
+            └── 📁store
+                ├── authStore.ts
+        └── 📁dashboard
+            └── 📁components
+                ├── DashboardHeader.tsx
+                ├── ExpensePercentageInfo.tsx
+                ├── FinancialCard.tsx
+                ├── IncomeExpenseBars.tsx
+            └── 📁hooks
+                ├── useExpensesByCategory.ts
+                ├── useFilteredData.ts
+                ├── useFinancialSummary.ts
+                ├── useIncomesVsExpenses.ts
+                ├── useTimeAgo.ts
+            └── 📁mocks
+                ├── mockup-data.ts
+            └── 📁pages
+                ├── DashboardPage.tsx
+            └── 📁utils
+                ├── filterDataFunctions.ts
+                ├── getGraphicsText.ts
+                ├── getTimeAgo.ts
+        └── 📁home
+            └── 📁pages
+                ├── HomePage.tsx
         └── 📁movements
             └── 📁api
                 ├── movements.api.ts
             └── 📁components
                 ├── MovementsRegisterForm.tsx
+                ├── RegisteredMovementsList.tsx
             └── 📁hooks
                 ├── useCreateMovement.ts
-                ├── useExpensesByCategory.ts
-                ├── useFinancialSummary.ts
-                ├── useIncomesVsExpenses.ts
+            └── 📁pages
+                ├── MovementsRegisterPage.tsx
             └── 📁schemas
                 ├── movementsSchema.ts
-            └── 📁utils
-                ├── getGraphicsText.ts
-        └── 📁profile
-    └── 📁hooks
-        ├── useElementWidthHeight.ts
-        ├── useShowPassword.ts
-    └── 📁lib
-        ├── supabase.ts
+        └── 📁settings
+            └── 📁pages
+                ├── SettingsPage.tsx
     └── 📁routes
         └── 📁_app
             └── 📁dashboard
@@ -92,15 +76,32 @@
         ├── _app.tsx
         ├── login.tsx
         ├── register.tsx
-    └── 📁store
-        ├── authStore.ts
-        ├── hambMenuStore.ts
-        ├── themeStore.ts
-    └── 📁types
-    └── 📁utils
-        ├── cn.ts
-        ├── constants.ts
-    ├── App.tsx
+    └── 📁shared
+        └── 📁components
+            └── 📁header
+                ├── BackScreen.tsx
+                ├── BrandLogo.tsx
+                ├── HamburguerMenuButton.tsx
+                ├── Header.tsx
+                ├── Navbar.tsx
+            ├── DarkThemeButton.tsx
+            ├── Footer.tsx
+            ├── FullScreenLoader.tsx
+            ├── Loader.tsx
+            ├── UserName.tsx
+        └── 📁constants
+            ├── constants.ts
+        └── 📁hooks
+            ├── useElementWidthHeight.ts
+        └── 📁layouts
+            ├── AppLayout.tsx
+        └── 📁lib
+            ├── supabase.ts
+        └── 📁stores
+            ├── hambMenuStore.ts
+            ├── themeStore.ts
+        └── 📁utils
+            ├── cn.ts
     ├── index.css
     ├── main.tsx
     └── routeTree.gen.ts
