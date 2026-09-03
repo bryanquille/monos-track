@@ -42,7 +42,6 @@ function useDeleteMovement() {
   return useMutation({
     mutationFn: (id: string) => deleteMovement(id),
     onSuccess: () => {
-      // Invalida la lista en caché para que React Query la vuelva a cargar al instante
       queryClient.invalidateQueries({ queryKey: ['financial-data'] })
     },
   })
@@ -67,21 +66,21 @@ function RegisteredMovementsList() {
 
   return (
     <ul>
-      <li className={cn('pb-3 grid grid-cols-5 items-center gap-1 border-b-2 border-b-gray-600 text-2xl font-medium')}>
+      <li className={cn('pb-3 grid grid-cols-3 items-center gap-1 border-b-2 border-b-gray-600 text-2xl font-medium md:grid-cols-5')}>
         <p>Fecha de registro</p>
-        <p>Categoría</p>
-        <p>Monto</p>
-        <p>Descripción</p>
+        <p className={cn('hidden md:block')}>Categoría</p>
+        <p className={cn('text-center')}>Monto</p>
+        <p className={cn('hidden md:block')}>Descripción</p>
         <p>Acciones</p>
       </li>
       {financialDataList?.map(item => (
         <li key={item.id}>
-          <div className={cn('pb-3 grid grid-cols-5 items-center gap-1 border-b-2 border-b-gray-600')}>
-            <span>{formatDate(item.movement_date)}</span>
-            <span>{item.category}</span>
-            <span>{item.amount}</span>
-            <p>{item.description}</p>
-            <div className={cn('flex justify-center items-center gap-1.5')}>
+          <div className={cn('pb-3 grid grid-cols-3 items-center gap-1 border-b-2 border-b-gray-600 md:grid-cols-5')}>
+            <p>{formatDate(item.movement_date)}</p>
+            <p className={cn('hidden md:block')}>{item.category}</p>
+            <p className={cn('text-center')}>{item.amount}</p>
+            <p className={cn('hidden md:block')}>{item.description}</p>
+            <div className={cn('flex justify-center items-center gap-4 md:gap-1.5')}>
               <button
                 type="button"
                 className={cn('cursor-pointer flex justify-center items-center gap-1.5')}
