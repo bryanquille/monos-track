@@ -73,7 +73,7 @@ function RegisteredMovementsList() {
         <p className={cn('hidden md:block')}>Descripción</p>
         <p>Acciones</p>
       </li>
-      {financialDataList?.map(item => (
+      {financialDataList?.slice(0, 10)?.map(item => (
         <li key={item.id}>
           <div className={cn('pb-3 grid grid-cols-3 items-center gap-1 border-b-2 border-b-gray-600 md:grid-cols-5')}>
             <p>{formatDate(item.movement_date)}</p>
