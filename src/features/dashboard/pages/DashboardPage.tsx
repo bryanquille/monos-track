@@ -15,6 +15,7 @@ import { useFilteredData, type FinancialDataTypes } from "../hooks/useFilteredDa
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../shared/lib/supabase";
 import { useMemo } from "react";
+import BarsChart from "../components/BarsChart";
 
 function DashboardPage() {
   // Getting current date
@@ -164,6 +165,10 @@ function DashboardPage() {
           })}
         </div>
         {/* Charts */}
+        {/* Bar Chart: Incomes vs Expenses */}
+        <div className={cn('w-full p-4 grid grid-cols-1 place-items-center dark:text-neutral-dark')}>
+          <BarsChart />
+        </div>
         <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
           <article className={cn('p-4 flex flex-col justify-between gap-4 rounded-2xl bg-neutral-light/20')}>
             <div className={cn('flex justify-between items-start')}>
