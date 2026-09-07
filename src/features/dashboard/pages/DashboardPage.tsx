@@ -16,7 +16,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../shared/lib/supabase";
 import { useMemo } from "react";
 import BarsChart from "../components/BarsChart";
-import { getAvailableYears } from "../utils/getAvailableYears";
 
 function DashboardPage() {
   // Getting current date
@@ -32,48 +31,6 @@ function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
 
   const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
-
-
-
-
-
-// Data for incomes vs expenses chart
-
-  // const {
-  //   data: incomesVsExpenses,
-  //   // isPending: isIncomesVsExpensesPending,
-  //   // error: incomesVsExpensesError
-  // } = useIncomesVsExpenses()
-
-  // Income vs Expenses data from Supabase
-
-  interface incomesVsExpensesData {
-    amount: number
-    movement_type: string
-    movement_date: string
-  }
-
-  const { data: incomesVsExpenses } = useQuery<incomesVsExpensesData[]>({
-    queryKey: ['incomes-vs-expenses'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('movements')
-        .select('amount, movement_type, movement_date')
-
-      if (error) throw new Error(error.message)
-      return data
-    }
-  })
-
-  const years = getAvailableYears(incomesVsExpenses ?? [])
-
-  console.log(incomesVsExpenses)
-  console.log(years)
-
-
-
-
-
 
   const {
     data: financialData,
@@ -121,6 +78,78 @@ function DashboardPage() {
     financialDataOutput,
     lastMonthFinancialData
   } = useFilteredData({ selectedYear, currentYear, selectedMonth, financialData: financialData ?? [] })
+
+
+
+
+
+  // Data for incomes vs expenses chart
+  // Income vs Expenses data from Supabase
+
+  interface incomesVsExpensesData {
+    amount: number
+    movement_type: string
+    movement_date: string
+  }
+
+  const { data: incomesVsExpenses } = useQuery<incomesVsExpensesData[]>({
+    queryKey: ['incomes-vs-expenses'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('movements')
+        .select('amount, movement_type, movement_date')
+
+      if (error) throw new Error(error.message)
+      return data
+    }
+  })
+
+  let labels: string[] = []
+  let incomesValues: number[] = []
+  let expensesValues: number[] = []
+
+  if (selectedMonth === 'nomonthselected' && selectedYear !== 'noYearSelected') {
+    // TODO: Add functionality for all the months of the year and available months for current year
+    console.log('here comes a new code')
+  } else {
+    // Get the last six months data based on the selected month and year
+    const startMonthIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
+    const lastSixMonthsIndex = Array.from({ length: 6 }, (_, i) => startMonthIndex - i)
+    const lastSixMonths = lastSixMonthsIndex.map(item => {
+      return item < 0
+        ? { year: Number(selectedYear) - 1, month: monthNames[item + 12] }
+        : { year: Number(selectedYear), month: monthNames[item] }
+    })
+
+    // Get the data for each of the 6 las months separated by incomes and expenses
+    const lastSixMonthsData = lastSixMonths.map(yearMonth => {
+      const dataArray = incomesVsExpenses?.filter(item => {
+        const itemYear = item.movement_date.slice(0, 4)
+        const itemMonth = monthNames[Number(item.movement_date.slice(5, 7)) - 1]
+        return itemYear === String(yearMonth.year) && itemMonth === yearMonth.month
+      })
+
+      const incomes = dataArray?.filter(item => item.movement_type === 'income')
+      const expenses = dataArray?.filter(item => item.movement_type === 'expense')
+
+      const incomesAmount = incomes?.reduce((acc, item) => acc + item.amount, 0)
+      const expensesAmount = expenses?.reduce((acc, item) => acc + item.amount, 0)
+      return {
+        year: yearMonth.year,
+        month: yearMonth.month,
+        incomesAmount,
+        expensesAmount
+      }
+    })
+
+    labels = lastSixMonthsData.map(item => `${item.month} ${item.year}`).reverse()
+    incomesValues = lastSixMonthsData.map(item => item.incomesAmount ?? 0).reverse()
+    expensesValues = lastSixMonthsData.map(item => item.expensesAmount ?? 0).reverse()
+  }
+
+
+
+
 
   const graphicsText = getGraphicsText({ registerExpenses: chartData ?? [] })
   if (isPendingCharData) return <FullScreenLoader text="Cargando datos..." />
@@ -205,7 +234,11 @@ function DashboardPage() {
         {/* Charts */}
         {/* Bar Chart: Incomes vs Expenses */}
         <div className={cn('w-full p-4 grid grid-cols-1 place-items-center dark:text-neutral-dark')}>
-          <BarsChart />
+          <BarsChart
+            labels={labels}
+            incomesValues={incomesValues}
+            expensesValues={expensesValues} 
+          />
         </div>
         <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
           {/* <article className={cn('p-4 flex flex-col justify-between gap-4 rounded-2xl bg-neutral-light/20')}>

@@ -19,12 +19,11 @@ ChartJS.register(
   Legend,
 )
 
-// TODO: Replace the options with the actual options from the backend
 const options = {
   responsive: true,
   scales: {
     x: {
-      grid:  {
+      grid: {
         color: 'rgba(217, 216, 215, 0.2)'
       },
       ticks: {
@@ -51,27 +50,29 @@ const options = {
   },
 }
 
-// TODO: Replace the data with the actual data from the backend
-const labels = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-
-// TODO: Replace the data with the actual data from the backend
-const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Ingresos',
-      data: [1, 2, 3, 4, 5],
-      backgroundColor: 'rgb(53, 162, 235)'
-    },
-    {
-      label: 'Gastos',
-      data: [0.5, 1, 3, 3.7, 6],
-      backgroundColor: 'rgb(255, 99, 132)'
-    }
-  ]
+interface BarsChartPropsTypes {
+  labels: string[]
+  incomesValues: number[]
+  expensesValues: number[]
 }
 
-function BarsChart() {
+function BarsChart({ labels, incomesValues, expensesValues }: BarsChartPropsTypes) {
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: 'Ingresos',
+        data: incomesValues,
+        backgroundColor: 'rgb(53, 162, 235)'
+      },
+      {
+        label: 'Gastos',
+        data: expensesValues,
+        backgroundColor: 'rgb(255, 99, 132)'
+      }
+    ]
+  }
+
   return (
     <div className={cn('w-full p-4 flex justify-center items-center rounded-2xl bg-neutral-light/20')}>
       <Bar

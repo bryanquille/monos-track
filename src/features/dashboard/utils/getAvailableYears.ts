@@ -5,6 +5,6 @@ interface financialData {
   created_at?: string
 }
 
-export const getAvailableYears = (list: financialData[]) => {
+export const getAvailableYears = (list: financialData[]): string[] => {
   return Array.from(new Set(list.map(item => item.movement_date.slice(0, 4))))
 }
