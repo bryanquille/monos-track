@@ -5,8 +5,8 @@ import DashboardHeader from "../components/DashboardHeader";
 import { useExpensesByCategory } from "../hooks/useExpensesByCategory";
 import ExpensePercentageInfo from "../components/ExpensePercentageInfo";
 import { EXPENSE_CATEGORIES } from "../../movements/schemas/movementsSchema";
-import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
-import IncomeExpenseBars from "../components/IncomeExpenseBars";
+// import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
+// import IncomeExpenseBars from "../components/IncomeExpenseBars";
 import { getGraphicsText } from "../utils/getGraphicsText";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { useForm, useWatch } from "react-hook-form";
@@ -16,6 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../shared/lib/supabase";
 import { useMemo } from "react";
 import BarsChart from "../components/BarsChart";
+import { getAvailableYears } from "../utils/getAvailableYears";
 
 function DashboardPage() {
   // Getting current date
@@ -31,11 +32,48 @@ function DashboardPage() {
   const isLoading = useAuthStore((state) => state.isLoading)
 
   const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
-  const {
-    data: incomesVsExpenses,
-    // isPending: isIncomesVsExpensesPending,
-    // error: incomesVsExpensesError
-  } = useIncomesVsExpenses()
+
+
+
+
+
+// Data for incomes vs expenses chart
+
+  // const {
+  //   data: incomesVsExpenses,
+  //   // isPending: isIncomesVsExpensesPending,
+  //   // error: incomesVsExpensesError
+  // } = useIncomesVsExpenses()
+
+  // Income vs Expenses data from Supabase
+
+  interface incomesVsExpensesData {
+    amount: number
+    movement_type: string
+    movement_date: string
+  }
+
+  const { data: incomesVsExpenses } = useQuery<incomesVsExpensesData[]>({
+    queryKey: ['incomes-vs-expenses'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('movements')
+        .select('amount, movement_type, movement_date')
+
+      if (error) throw new Error(error.message)
+      return data
+    }
+  })
+
+  const years = getAvailableYears(incomesVsExpenses ?? [])
+
+  console.log(incomesVsExpenses)
+  console.log(years)
+
+
+
+
+
 
   const {
     data: financialData,
@@ -170,7 +208,7 @@ function DashboardPage() {
           <BarsChart />
         </div>
         <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
-          <article className={cn('p-4 flex flex-col justify-between gap-4 rounded-2xl bg-neutral-light/20')}>
+          {/* <article className={cn('p-4 flex flex-col justify-between gap-4 rounded-2xl bg-neutral-light/20')}>
             <div className={cn('flex justify-between items-start')}>
               <div>
                 <h3 className={cn('font-semibold text-lg')}>Ingresos vs Gastos</h3>
@@ -197,7 +235,7 @@ function DashboardPage() {
                 />
               ))}
             </div>
-          </article>
+          </article> */}
           <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
             <h3 className={cn('font-semibold text-lg')}>Gastos por categoría</h3>
             {charDataError ?
