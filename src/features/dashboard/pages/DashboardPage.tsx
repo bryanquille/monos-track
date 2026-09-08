@@ -110,7 +110,38 @@ function DashboardPage() {
 
   if (selectedMonth === 'nomonthselected' && selectedYear !== 'noYearSelected') {
     // TODO: Add functionality for all the months of the year and available months for current year
-    console.log('here comes a new code')
+    if (selectedYear === currentYear) {
+      const currentYearData = incomesVsExpenses
+        ?.filter(item => item.movement_date.slice(0, 4) === selectedYear)
+
+      const availableMonthsData = monthNames
+        .filter((_, idx) => idx < currentMonth)
+        .map((item, index) => {
+          const month = item
+          const dataByMonth = currentYearData?.filter(data => {
+            return Number(data.movement_date.slice(5, 7)) === index + 1
+          })
+          const incomes = dataByMonth?.filter(item => item.movement_type === 'income')
+          const expenses = dataByMonth?.filter(item => item.movement_type === 'expense')
+
+          const incomesAmount = incomes?.reduce((acc, val) => acc + val.amount, 0)
+          const expensesAmount = expenses?.reduce((acc, val) => acc + val.amount, 0)
+
+          return {
+            month,
+            year: currentYear,
+            incomesAmount,
+            expensesAmount
+          }
+        })
+
+      labels = availableMonthsData.map(item => `${item.month} ${item.year}`)
+      incomesValues = availableMonthsData.map(item => item.incomesAmount ?? 0)
+      expensesValues = availableMonthsData.map(item => item.expensesAmount ?? 0)
+
+    } else {
+      // TODO: Add functionality for another selected year with all months
+    }
   } else {
     // Get the last six months data based on the selected month and year
     const startMonthIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
@@ -237,7 +268,7 @@ function DashboardPage() {
           <BarsChart
             labels={labels}
             incomesValues={incomesValues}
-            expensesValues={expensesValues} 
+            expensesValues={expensesValues}
           />
         </div>
         <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
