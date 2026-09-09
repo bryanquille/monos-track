@@ -5,8 +5,6 @@ import DashboardHeader from "../components/DashboardHeader";
 import { useExpensesByCategory } from "../hooks/useExpensesByCategory";
 import ExpensePercentageInfo from "../components/ExpensePercentageInfo";
 import { EXPENSE_CATEGORIES } from "../../movements/schemas/movementsSchema";
-// import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
-// import IncomeExpenseBars from "../components/IncomeExpenseBars";
 import { getGraphicsText } from "../utils/getGraphicsText";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { useForm, useWatch } from "react-hook-form";
@@ -16,6 +14,84 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../shared/lib/supabase";
 import { useMemo } from "react";
 import BarsChart from "../components/BarsChart";
+
+
+
+
+
+
+interface incomesVsExpensesDataTypes {
+  amount: number
+  movement_type: string
+  movement_date: string
+}
+
+const filterDataForChartBars = (
+  incomesVsExpenses: incomesVsExpensesDataTypes[],
+  selectedYear: string,
+  selectedMonth: string,
+  currentMonth: number,
+  monthNames: string[],
+  neededMonths: string
+) => {
+  const selectedYearData = incomesVsExpenses
+    .filter(item => item.movement_date.slice(0, 4) === selectedYear)
+
+  let requiredMonths: { year: number, month: string }[] = []
+
+  if (neededMonths === 'available') {
+    requiredMonths = monthNames
+      .filter((_, idx) => idx < currentMonth)
+      .map(item => { return { year: Number(selectedYear), month: item } })
+  } else if (neededMonths === 'all') {
+    requiredMonths = monthNames
+      .map(item => { return { year: Number(selectedYear), month: item } })
+  } else if (neededMonths === 'lastSix') {
+    const startMonthIndex = monthNames
+      .indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
+    const lastSixMonthsIndex = Array
+      .from({ length: 6 }, (_, i) => startMonthIndex - i)
+      .reverse()
+    requiredMonths = lastSixMonthsIndex.map(item => {
+      return item < 0
+        ? { year: Number(selectedYear) - 1, month: monthNames[item + 12] }
+        : { year: Number(selectedYear), month: monthNames[item] }
+    })
+  }
+
+  const requiredMonthsData = requiredMonths.map(item => {
+    const dataByMonth = selectedYearData.filter(data => {
+      const dataYear = data.movement_date.slice(0, 4)
+      const dataMonth = monthNames[Number(data.movement_date.slice(5, 7)) - 1]
+      return item.year === Number(dataYear) && item.month === dataMonth
+    })
+
+    const incomes = dataByMonth?.filter(item => item.movement_type === 'income')
+    const expenses = dataByMonth?.filter(item => item.movement_type === 'expense')
+
+    const incomesAmount = incomes?.reduce((acc, item) => acc + item.amount, 0)
+    const expensesAmount = expenses?.reduce((acc, item) => acc + item.amount, 0)
+
+    return {
+      month: item.month,
+      year: item.year,
+      incomesAmount,
+      expensesAmount
+    }
+  })
+
+  return {
+    labels: requiredMonthsData.map(item => `${item.month} ${item.year}`),
+    incomesValues: requiredMonthsData.map(item => item.incomesAmount ?? 0),
+    expensesValues: requiredMonthsData.map(item => item.expensesAmount ?? 0),
+  }
+}
+
+
+
+
+
+
 
 function DashboardPage() {
   // Getting current date
@@ -86,13 +162,7 @@ function DashboardPage() {
   // Data for incomes vs expenses chart
   // Income vs Expenses data from Supabase
 
-  interface incomesVsExpensesData {
-    amount: number
-    movement_type: string
-    movement_date: string
-  }
-
-  const { data: incomesVsExpenses } = useQuery<incomesVsExpensesData[]>({
+  const { data: incomesVsExpenses } = useQuery<incomesVsExpensesDataTypes[]>({
     queryKey: ['incomes-vs-expenses'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -108,74 +178,33 @@ function DashboardPage() {
   let incomesValues: number[] = []
   let expensesValues: number[] = []
 
-  if (selectedMonth === 'nomonthselected' && selectedYear !== 'noYearSelected') {
-    // TODO: Add functionality for all the months of the year and available months for current year
+  if (selectedMonth === 'nomonthselected' && selectedYear === 'noYearSelected'
+    || selectedMonth !== 'nomonthselected' && selectedYear === 'noYearSelected'
+  ) {
+    labels = ['Sin información para mostrar']
+    incomesValues = []
+    expensesValues = []
+  } else if (selectedMonth === 'nomonthselected' && selectedYear !== 'noYearSelected') {
+    // Get the all available months data for the current year
     if (selectedYear === currentYear) {
-      const currentYearData = incomesVsExpenses
-        ?.filter(item => item.movement_date.slice(0, 4) === selectedYear)
-
-      const availableMonthsData = monthNames
-        .filter((_, idx) => idx < currentMonth)
-        .map((item, index) => {
-          const month = item
-          const dataByMonth = currentYearData?.filter(data => {
-            return Number(data.movement_date.slice(5, 7)) === index + 1
-          })
-          const incomes = dataByMonth?.filter(item => item.movement_type === 'income')
-          const expenses = dataByMonth?.filter(item => item.movement_type === 'expense')
-
-          const incomesAmount = incomes?.reduce((acc, val) => acc + val.amount, 0)
-          const expensesAmount = expenses?.reduce((acc, val) => acc + val.amount, 0)
-
-          return {
-            month,
-            year: currentYear,
-            incomesAmount,
-            expensesAmount
-          }
-        })
-
-      labels = availableMonthsData.map(item => `${item.month} ${item.year}`)
-      incomesValues = availableMonthsData.map(item => item.incomesAmount ?? 0)
-      expensesValues = availableMonthsData.map(item => item.expensesAmount ?? 0)
+      const dataForChartBars = filterDataForChartBars(incomesVsExpenses ?? [], selectedYear, selectedMonth, currentMonth, monthNames, 'available')
+      labels = dataForChartBars.labels
+      incomesValues = dataForChartBars.incomesValues
+      expensesValues = dataForChartBars.expensesValues
 
     } else {
-      // TODO: Add functionality for another selected year with all months
+      // Get the data of all months for past years
+      const dataForChartBars = filterDataForChartBars(incomesVsExpenses ?? [], selectedYear, selectedMonth, currentMonth, monthNames, 'all')
+      labels = dataForChartBars.labels
+      incomesValues = dataForChartBars.incomesValues
+      expensesValues = dataForChartBars.expensesValues
     }
   } else {
     // Get the last six months data based on the selected month and year
-    const startMonthIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
-    const lastSixMonthsIndex = Array.from({ length: 6 }, (_, i) => startMonthIndex - i)
-    const lastSixMonths = lastSixMonthsIndex.map(item => {
-      return item < 0
-        ? { year: Number(selectedYear) - 1, month: monthNames[item + 12] }
-        : { year: Number(selectedYear), month: monthNames[item] }
-    })
-
-    // Get the data for each of the 6 las months separated by incomes and expenses
-    const lastSixMonthsData = lastSixMonths.map(yearMonth => {
-      const dataArray = incomesVsExpenses?.filter(item => {
-        const itemYear = item.movement_date.slice(0, 4)
-        const itemMonth = monthNames[Number(item.movement_date.slice(5, 7)) - 1]
-        return itemYear === String(yearMonth.year) && itemMonth === yearMonth.month
-      })
-
-      const incomes = dataArray?.filter(item => item.movement_type === 'income')
-      const expenses = dataArray?.filter(item => item.movement_type === 'expense')
-
-      const incomesAmount = incomes?.reduce((acc, item) => acc + item.amount, 0)
-      const expensesAmount = expenses?.reduce((acc, item) => acc + item.amount, 0)
-      return {
-        year: yearMonth.year,
-        month: yearMonth.month,
-        incomesAmount,
-        expensesAmount
-      }
-    })
-
-    labels = lastSixMonthsData.map(item => `${item.month} ${item.year}`).reverse()
-    incomesValues = lastSixMonthsData.map(item => item.incomesAmount ?? 0).reverse()
-    expensesValues = lastSixMonthsData.map(item => item.expensesAmount ?? 0).reverse()
+    const dataForChartBars = filterDataForChartBars(incomesVsExpenses ?? [], selectedYear, selectedMonth, currentMonth, monthNames, 'lastSix')
+    labels = dataForChartBars.labels
+    incomesValues = dataForChartBars.incomesValues
+    expensesValues = dataForChartBars.expensesValues
   }
 
 
