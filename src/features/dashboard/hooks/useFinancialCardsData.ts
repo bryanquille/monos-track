@@ -9,15 +9,15 @@ export interface FinancialDataTypes {
   created_at: string
 }
 
-interface FilteredDataProps {
+interface FinancialCardsDataProps {
   selectedYear: string
   currentYear: string
   selectedMonth: string
   financialData: FinancialDataTypes[]
 }
 
-export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, financialData }: FilteredDataProps) => {
-  // Getting a list of available years in data
+export const useFinancialCardsData = ({ selectedYear, currentYear, selectedMonth, financialData }: FinancialCardsDataProps) => {
+  // Getting a list of available years in data for the select input
   const availableYears = useMemo(() => {
     const prevArray = Array.from(
       new Set(financialData.map(item => item.movement_date.slice(0, 4)))
@@ -25,6 +25,7 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, fina
     return ['noYearSelected', ...prevArray]
   }, [financialData])
 
+  // Getting a list of available months in data for the select input
   const availableMonths = useMemo(() => {
     const currentMonthIndex = new Date().getMonth()
     const filteredMonths = selectedYear === currentYear
@@ -102,6 +103,22 @@ export const useFilteredData = ({ selectedYear, currentYear, selectedMonth, fina
       }
     }
   }, [selectedMonth, selectedYear, financialData])
+
+  if (selectedYear === 'noYearSelected') {
+    return {
+      availableYears,
+      availableMonths,
+      financialDataOutput: {
+        totalIncome: 0,
+        totalExpense: 0,
+        totalBalance: 0,
+      },
+      lastMonthFinancialData: {
+        lastMonthTotalIncome: 0,
+        lastMonthTotalExpense: 0,
+      }
+    }
+  }
 
   return {
     availableYears,

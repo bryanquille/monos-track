@@ -9,7 +9,7 @@ import { getGraphicsText } from "../utils/getGraphicsText";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { useForm, useWatch } from "react-hook-form";
 import { monthNames } from "../../../shared/constants/constants";
-import { useFilteredData, type FinancialDataTypes } from "../hooks/useFilteredData";
+import { useFinancialCardsData, type FinancialDataTypes } from "../hooks/useFinancialCardsData";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../shared/lib/supabase";
 import { useMemo } from "react";
@@ -76,7 +76,7 @@ function DashboardPage() {
     availableMonths,
     financialDataOutput,
     lastMonthFinancialData
-  } = useFilteredData({ selectedYear, currentYear, selectedMonth, financialData: financialData ?? [] })
+  } = useFinancialCardsData({ selectedYear, currentYear, selectedMonth, financialData: financialData ?? [] })
 
   // Data for incomes vs expenses chart bars
   const {

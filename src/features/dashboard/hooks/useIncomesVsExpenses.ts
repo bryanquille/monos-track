@@ -37,7 +37,7 @@ export const useIncomesVsExpenses = ({
   if (selectedMonth === 'nomonthselected' && selectedYear === 'noYearSelected'
     || selectedMonth !== 'nomonthselected' && selectedYear === 'noYearSelected'
   ) {
-    labels = ['Sin información para mostrar']
+    labels = ['Sin datos para mostrar']
     incomesValues = []
     expensesValues = []
   } else if (selectedMonth === 'nomonthselected' && selectedYear !== 'noYearSelected') {
