@@ -1,6 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import type { incomesVsExpensesDataTypes } from "../types/dashboardTypes";
-import { supabase } from "../../../shared/lib/supabase";
+import type { FinancialDataTypes } from "../types/dashboardTypes";
 import { filterDataForChartBars } from "../utils/fiterDataForChartBars";
 
 interface useIncomesVsExpensesPropsTypes {
@@ -9,6 +7,7 @@ interface useIncomesVsExpensesPropsTypes {
   currentYear: string
   currentMonth: number
   monthNames: string[]
+  financialData: FinancialDataTypes[]
 }
 
 export const useIncomesVsExpenses = ({
@@ -16,20 +15,9 @@ export const useIncomesVsExpenses = ({
   selectedYear,
   currentYear,
   currentMonth,
-  monthNames
+  monthNames,
+  financialData: incomesVsExpenses,
 }: useIncomesVsExpensesPropsTypes) => {
-  const { data: incomesVsExpenses } = useQuery<incomesVsExpensesDataTypes[]>({
-    queryKey: ['incomes-vs-expenses'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('movements')
-        .select('amount, movement_type, movement_date')
-
-      if (error) throw new Error(error.message)
-      return data
-    }
-  })
-
   let labels: string[] = []
   let incomesValues: number[] = []
   let expensesValues: number[] = []

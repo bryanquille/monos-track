@@ -1,7 +1,7 @@
-import type { incomesVsExpensesDataTypes } from "../types/dashboardTypes";
+import type { FinancialDataTypes } from "../types/dashboardTypes";
 
 export const filterDataForChartBars = (
-  incomesVsExpenses: incomesVsExpensesDataTypes[],
+  incomesVsExpenses: FinancialDataTypes[],
   selectedYear: string,
   selectedMonth: string,
   currentMonth: number,

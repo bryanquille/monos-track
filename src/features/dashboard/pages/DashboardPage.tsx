@@ -9,12 +9,13 @@ import { getGraphicsText } from "../utils/getGraphicsText";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { useForm, useWatch } from "react-hook-form";
 import { monthNames } from "../../../shared/constants/constants";
-import { useFinancialCardsData, type FinancialDataTypes } from "../hooks/useFinancialCardsData";
+import { useFinancialCardsData } from "../hooks/useFinancialCardsData";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../shared/lib/supabase";
 import { useMemo } from "react";
 import BarsChart from "../components/BarsChart";
 import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
+import type { FinancialDataTypes } from "../types/dashboardTypes";
 
 function DashboardPage() {
   // Getting current date
@@ -29,8 +30,7 @@ function DashboardPage() {
   })
   const isLoading = useAuthStore((state) => state.isLoading)
 
-  const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
-
+  // Get the financial data for processing in dashboard elements
   const {
     data: financialData,
     // error: financialDataError,
@@ -71,6 +71,7 @@ function DashboardPage() {
     name: 'month'
   })
 
+  // Data for financial cards summary information
   const {
     availableYears,
     availableMonths,
@@ -83,18 +84,22 @@ function DashboardPage() {
     labels,
     incomesValues,
     expensesValues
-  } = useIncomesVsExpenses({ selectedMonth, selectedYear, currentYear, currentMonth, monthNames })
+  } = useIncomesVsExpenses({ selectedMonth, selectedYear, currentYear, currentMonth, monthNames, financialData: financialData ?? [] })
+
+  // Data for expenses by category donut chart
+  const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
 
   const graphicsText = getGraphicsText({ registerExpenses: chartData ?? [] })
   if (isPendingCharData) return <FullScreenLoader text="Cargando datos..." />
 
+  // Show loader while query data
   if (isLoading) return <FullScreenLoader text="Cargando aplicación..." />
 
   return (
     <section className={cn('w-[95%] max-w-7xl mx-auto overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
       <DashboardHeader />
       <main>
-        {/* Filtros */}
+        {/* Filters */}
         <div className={cn('w-fit mx-auto px-8 py-4 md:mx-[unset] md:ml-auto')}>
           <h2 className={cn('mb-2 text-center font-semibold')}>Filtrar</h2>
           <form className={cn('flex flex-col items-center gap-4 md:flex-row md:gap-6')}>
@@ -175,34 +180,6 @@ function DashboardPage() {
           />
         </div>
         <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
-          {/* <article className={cn('p-4 flex flex-col justify-between gap-4 rounded-2xl bg-neutral-light/20')}>
-            <div className={cn('flex justify-between items-start')}>
-              <div>
-                <h3 className={cn('font-semibold text-lg')}>Ingresos vs Gastos</h3>
-                <p className={cn('text-sm text-gray-500 dark:text-gray-400')}>Comparativa mensual</p>
-              </div>
-              <div>
-                <div className={cn('flex items-center gap-1.5')}>
-                  <span className={cn('block w-3 h-3 rounded-4xl bg-blue-500')}></span>
-                  <p>Ingresos</p>
-                </div>
-                <div className={cn('flex items-center gap-1.5')}>
-                  <span className={cn('block w-3 h-3 rounded-4xl bg-red-400')}></span>
-                  <p>Gastos</p>
-                </div>
-              </div>
-            </div>
-            <div className={cn('pt-4 px-2 pb-1 flex justify-evenly items-end border border-gray-400 rounded-2xl md:mb-16')}>
-              {incomesVsExpenses?.map((item) => (
-                <IncomeExpenseBars
-                  key={item.label}
-                  label={item.label}
-                  incomeHeight={item.incomeHeight}
-                  expenseHeight={item.expenseHeight}
-                />
-              ))}
-            </div>
-          </article> */}
           <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
             <h3 className={cn('font-semibold text-lg')}>Gastos por categoría</h3>
             {charDataError ?

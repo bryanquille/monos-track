@@ -1,13 +1,7 @@
 import { useMemo } from "react";
 import { monthNames } from "../../../shared/constants/constants";
 import { dataByMonth, dataByYear, totalExpenseFromData, totalIncomeFromData } from "../utils/filterDataFunctions";
-
-export interface FinancialDataTypes {
-  movement_type: string
-  amount: number
-  movement_date: string
-  created_at: string
-}
+import type { FinancialDataTypes } from "../types/dashboardTypes";
 
 interface FinancialCardsDataProps {
   selectedYear: string
