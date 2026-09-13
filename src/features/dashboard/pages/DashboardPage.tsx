@@ -2,10 +2,6 @@ import { useAuthStore } from "../../auth/store/authStore";
 import { cn } from "../../../shared/utils/cn";
 import FinancialCard from "../components/FinancialCard";
 import DashboardHeader from "../components/DashboardHeader";
-import { useExpensesByCategory } from "../hooks/useExpensesByCategory";
-import ExpensePercentageInfo from "../components/ExpensePercentageInfo";
-import { EXPENSE_CATEGORIES } from "../../movements/schemas/movementsSchema";
-import { getGraphicsText } from "../utils/getGraphicsText";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { useForm, useWatch } from "react-hook-form";
 import { monthNames } from "../../../shared/constants/constants";
@@ -40,7 +36,7 @@ function DashboardPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('movements')
-        .select('movement_type, amount, movement_date, created_at')
+        .select('movement_type, amount, movement_date, created_at, category')
 
       if (error) throw new Error(error.message)
       return data as FinancialDataTypes[]
@@ -87,10 +83,31 @@ function DashboardPage() {
   } = useIncomesVsExpenses({ selectedMonth, selectedYear, currentYear, currentMonth, monthNames, financialData: financialData ?? [] })
 
   // Data for expenses by category donut chart
-  const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
+  const chartData = (
+    {
+      financialData,
+      selectedYear
+    }:
+      {
+        financialData: FinancialDataTypes[],
+        selectedYear: string
+      }
+  ) => {
+    const expensesData = financialData.filter(item => item.movement_type === 'expense')
+    if (selectedYear === 'NoYearSelected') {
+      return {
+        labels: [],
+        data: [],
+      }
+    }
+    console.log(expensesData)
+  }
 
-  const graphicsText = getGraphicsText({ registerExpenses: chartData ?? [] })
-  if (isPendingCharData) return <FullScreenLoader text="Cargando datos..." />
+  console.log(chartData({ financialData: financialData ?? [], selectedYear }))
+
+  // const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
+  // const graphicsText = getGraphicsText({ registerExpenses: chartData ?? [] })
+  // if (isPendingCharData) return <FullScreenLoader text="Cargando datos..." />
 
   // Show loader while query data
   if (isLoading) return <FullScreenLoader text="Cargando aplicación..." />
@@ -180,40 +197,9 @@ function DashboardPage() {
           />
         </div>
         <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
-          <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
-            <h3 className={cn('font-semibold text-lg')}>Gastos por categoría</h3>
-            {charDataError ?
-              (<p className={cn('text-center text-red-500')}>Error al obtener los datos de los gastos: {charDataError.message}</p>)
-              : (
-                <div className={cn('relative flex flex-col justify-center items-center gap-4')}>
-                  <div className={cn('relative w-60 h-60 flex justify-center items-center')}>
-                    <div
-                      style={{ "--graphicsColors": graphicsText } as React.CSSProperties}
-                      className={cn(
-                        'absolute top-1/2 left-1/2 w-60 h-60 rounded-full transform -translate-1/2',
-                        `bg-conic-(--graphicsColors)`
-                      )}
-                    ></div>
-                    <div className={cn('absolute top-1/2 left-1/2 w-48 h-48 overflow-hidden rounded-full bg-white transform -translate-1/2 dark:bg-secondary-light')}>
-                      <div className={cn('w-full h-full bg-neutral-light/20')}></div>
-                    </div>
-                  </div>
-                  <div className={cn('w-full')}>
-                    <div className={cn('flex flex-col gap-2')}>
-                      {
-                        chartData?.map(item => (
-                          <ExpensePercentageInfo
-                            key={item.category}
-                            category={EXPENSE_CATEGORIES.filter((expItem) => expItem.value === item.category)[0].label}
-                            percentageValue={item.percentage}
-                            color={EXPENSE_CATEGORIES.filter((expItem) => expItem.value === item.category)[0].color}
-                          />
-                        ))
-                      }
-                    </div>
-                  </div>
-                </div>)}
-          </article>
+          <div className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
+
+          </div>
         </div>
       </main>
     </section>

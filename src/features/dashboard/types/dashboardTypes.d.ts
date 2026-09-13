@@ -1,6 +1,7 @@
 export interface FinancialDataTypes {
-  movement_type: string
   amount: number
+  movement_type: string
   movement_date: string
+  category: string
   created_at: string
 }
