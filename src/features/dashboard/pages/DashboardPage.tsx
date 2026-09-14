@@ -12,6 +12,7 @@ import { useMemo } from "react";
 import BarsChart from "../components/BarsChart";
 import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
 import type { FinancialDataTypes } from "../types/dashboardTypes";
+import { DoughnutChart } from "../components/DoughnutChart";
 
 function DashboardPage() {
   // Getting current date
@@ -86,9 +87,12 @@ function DashboardPage() {
 
 
 
+
+
+
   // Data for expenses by category donut chart
-  let doughnutLabels: string[] = []
-  let doughnutData: number[] = []
+  // let doughnutLabels: string[] = []
+  // let doughnutData: number[] = []
   const chartData = (
     {
       financialData,
@@ -103,8 +107,6 @@ function DashboardPage() {
   ) => {
     const expensesData = financialData.filter(item => item.movement_type === 'expense')
     if (selectedYear === 'noYearSelected') {
-      doughnutLabels = ['Sin datos para mostrar']
-      doughnutData = []
       return {
         labels: ['Sin datos para mostrar'],
         data: [],
@@ -124,8 +126,6 @@ function DashboardPage() {
           .reduce((acc, curr) => acc + curr.amount, 0)
         return totalAmount
       })
-      doughnutLabels = uniqueCategories
-      doughnutData = amounts
       return {
         labels: uniqueCategories,
         data: amounts,
@@ -146,8 +146,6 @@ function DashboardPage() {
           .reduce((acc, curr) => acc + curr.amount, 0)
         return totalAmount
       })
-      doughnutLabels = uniqueCategories
-      doughnutData = amounts
       return {
         labels: uniqueCategories,
         data: amounts,
@@ -158,6 +156,9 @@ function DashboardPage() {
   console.log(chartData({ financialData: financialData ?? [], selectedYear, selectedMonth }))
   // console.log('doughnutLabels', doughnutLabels)
   // console.log('doughnutData', doughnutData)
+  const chartDoughnutData = chartData({ financialData: financialData ?? [], selectedYear, selectedMonth })
+
+
 
 
 
@@ -251,10 +252,12 @@ function DashboardPage() {
             expensesValues={expensesValues}
           />
         </div>
+        {/* Doughnut Chart: Expenses by category */}
         <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
-          <div className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
-
-          </div>
+          <DoughnutChart
+            labels={chartDoughnutData.labels}
+            values={chartDoughnutData.data}
+          />
         </div>
       </main>
     </section>
