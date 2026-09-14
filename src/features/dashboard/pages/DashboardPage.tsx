@@ -82,32 +82,87 @@ function DashboardPage() {
     expensesValues
   } = useIncomesVsExpenses({ selectedMonth, selectedYear, currentYear, currentMonth, monthNames, financialData: financialData ?? [] })
 
+
+
+
+
   // Data for expenses by category donut chart
+  let doughnutLabels: string[] = []
+  let doughnutData: number[] = []
   const chartData = (
     {
       financialData,
-      selectedYear
+      selectedYear,
+      selectedMonth,
     }:
       {
-        financialData: FinancialDataTypes[],
+        financialData: FinancialDataTypes[]
         selectedYear: string
+        selectedMonth: string
       }
   ) => {
     const expensesData = financialData.filter(item => item.movement_type === 'expense')
-    if (selectedYear === 'NoYearSelected') {
+    if (selectedYear === 'noYearSelected') {
+      doughnutLabels = ['Sin datos para mostrar']
+      doughnutData = []
       return {
-        labels: [],
+        labels: ['Sin datos para mostrar'],
         data: [],
       }
+    } else if (selectedYear !== 'noYearSelected' && selectedMonth === 'nomonthselected') {
+      const filteredByYear = expensesData.filter(item => item.movement_date.slice(0, 4) === selectedYear)
+      const uniqueCategories = Array.from(new Set(filteredByYear.map(item => item.category)))
+      const categoryAndAmount = filteredByYear.map(item => {
+        return {
+          category: item.category,
+          amount: item.amount,
+        }
+      })
+      const amounts = uniqueCategories.map(category => {
+        const totalAmount = categoryAndAmount
+          .filter(item => item.category === category)
+          .reduce((acc, curr) => acc + curr.amount, 0)
+        return totalAmount
+      })
+      doughnutLabels = uniqueCategories
+      doughnutData = amounts
+      return {
+        labels: uniqueCategories,
+        data: amounts,
+      }
+    } else {
+      const monthSelectedIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)) + 1
+      const filteredByMonth = expensesData.filter(item => Number(item.movement_date.slice(5, 7)) === monthSelectedIndex)
+      const uniqueCategories = Array.from(new Set(filteredByMonth.map(item => item.category)))
+      const categoryAndAmount = filteredByMonth.map(item => {
+        return {
+          category: item.category,
+          amount: item.amount,
+        }
+      })
+      const amounts = uniqueCategories.map(category => {
+        const totalAmount = categoryAndAmount
+          .filter(item => item.category === category)
+          .reduce((acc, curr) => acc + curr.amount, 0)
+        return totalAmount
+      })
+      doughnutLabels = uniqueCategories
+      doughnutData = amounts
+      return {
+        labels: uniqueCategories,
+        data: amounts,
+      }
     }
-    console.log(expensesData)
   }
 
-  console.log(chartData({ financialData: financialData ?? [], selectedYear }))
+  console.log(chartData({ financialData: financialData ?? [], selectedYear, selectedMonth }))
+  // console.log('doughnutLabels', doughnutLabels)
+  // console.log('doughnutData', doughnutData)
 
-  // const { data: chartData, isPending: isPendingCharData, error: charDataError } = useExpensesByCategory()
-  // const graphicsText = getGraphicsText({ registerExpenses: chartData ?? [] })
-  // if (isPendingCharData) return <FullScreenLoader text="Cargando datos..." />
+
+
+
+
 
   // Show loader while query data
   if (isLoading) return <FullScreenLoader text="Cargando aplicación..." />
