@@ -8,9 +8,10 @@ ChartJS.register(ArcElement, Title, Tooltip, Legend)
 interface DoughnutChartPropsTypes {
   labels: string[]
   values: number[]
+  colors: string[]
 }
 
-export const DoughnutChart = ({ labels, values }: DoughnutChartPropsTypes) => {
+export const DoughnutChart = ({ labels, values, colors }: DoughnutChartPropsTypes) => {
   const { isDark } = useTheme()
 
   const themeColors = {
@@ -26,10 +27,7 @@ export const DoughnutChart = ({ labels, values }: DoughnutChartPropsTypes) => {
       {
         label: 'valor',
         data: values,
-        backgroundColor: [
-          '#4967d6cc',
-          '#49d671cc'
-        ]
+        backgroundColor: colors
       }
     ]
   }

@@ -7,6 +7,24 @@ interface UseExpensesByCategoryPropsTypes {
   selectedMonth: string
 }
 
+const EXPENSE_CATEGORIES = [
+  { value: 'food', label: 'Alimentación', color: '#EF4444' },
+  { value: 'housing', label: 'Vivienda', color: '#0EA5E9' },
+  { value: 'transport', label: 'Transporte', color: '#FF6B6B' },
+  { value: 'utilities', label: 'Servicios', color: '#F97316' },
+  { value: 'health', label: 'Salud y Cuidado', color: '#2563EB' },
+  { value: 'entertainment', label: 'Entretenimiento y Ocio', color: '#EC4899' },
+  { value: 'shopping', label: 'Compras Personales', color: '#10B981' },
+  { value: 'education', label: 'Educación', color: '#14B8A6' },
+  { value: 'debt', label: 'Pago de Deudas', color: '#D946EF' },
+  { value: 'other_expense', label: 'Otros Gastos', color: '#EAB308' },
+]
+
+const getSpanishCategoryLabel = (category: string) => {
+  const foundCategory = EXPENSE_CATEGORIES.find(item => item.value === category)
+  return foundCategory ? foundCategory.label : category
+}
+
 export const useExpensesByCategory = ({
   financialData,
   selectedYear,
@@ -18,6 +36,7 @@ export const useExpensesByCategory = ({
     return {
       labels: ['Sin datos para mostrar'],
       data: [],
+      colors: [],
     }
   } else if (selectedYear !== 'noYearSelected' && selectedMonth === 'nomonthselected') {
     const filteredByYear = expensesData
@@ -36,8 +55,12 @@ export const useExpensesByCategory = ({
       return totalAmount
     })
     return {
-      labels: uniqueCategories,
+      labels: uniqueCategories.map(category => getSpanishCategoryLabel(category)),
       data: amounts,
+      colors: uniqueCategories.map(category => {
+        const foundCategory = EXPENSE_CATEGORIES.find(item => item.value === category)
+        return foundCategory ? foundCategory.color : '#000000'
+      })
     }
   } else {
     const monthSelectedIndex = monthNames
@@ -58,8 +81,12 @@ export const useExpensesByCategory = ({
       return totalAmount
     })
     return {
-      labels: uniqueCategories,
+      labels: uniqueCategories.map(category => getSpanishCategoryLabel(category)),
       data: amounts,
+      colors: uniqueCategories.map(category => {
+        const foundCategory = EXPENSE_CATEGORIES.find(item => item.value === category)
+        return foundCategory ? foundCategory.color : '#000000'
+      })
     }
   }
 }

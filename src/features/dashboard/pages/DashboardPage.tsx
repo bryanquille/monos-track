@@ -179,6 +179,7 @@ function DashboardPage() {
           <DoughnutChart
             values={chartData.data}
             labels={chartData.labels}
+            colors={chartData.colors}
           />
         </div>
       </main>

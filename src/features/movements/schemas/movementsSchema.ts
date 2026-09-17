@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 const INCOME_VALUES = ['salary', 'freelance', 'sales', 'investments', 'gifts', 'refunds', 'other_income'] as const
+// TODO: Check if this const is necessary, if not delete it
 export const INCOME_CATEGORIES = [
   { value: 'salary', label: 'Salario / Nómina' },
   { value: 'freelance', label: 'Honorarios / Freelance' },
@@ -12,6 +13,7 @@ export const INCOME_CATEGORIES = [
 ]
 
 const EXPENSE_VALUES = ['food', 'housing', 'transport', 'utilities', 'health', 'entertainment', 'shopping', 'education', 'debt', 'other_expense'] as const
+// TODO: Check if this const is necessary, if not delete it
 export const EXPENSE_CATEGORIES = [
   { value: 'food', label: 'Alimentación', color: 'red' },
   { value: 'housing', label: 'Vivienda', color: 'skyBlue' },
