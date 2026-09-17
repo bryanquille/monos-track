@@ -1,41 +1,65 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../../../shared/lib/supabase";
+import { monthNames } from "../../../shared/constants/constants";
+import type { FinancialDataTypes } from "../types/dashboardTypes";
 
-interface CategoryData {
-  category: string
-  value: number
-  percentage: number
+interface UseExpensesByCategoryPropsTypes {
+  financialData: FinancialDataTypes[]
+  selectedYear: string
+  selectedMonth: string
 }
 
-export const useExpensesByCategory = () => {
-  return useQuery<CategoryData[]>({
-    queryKey: ['expenses-by-category'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('movements')
-        .select('amount, category')
-        .eq('movement_type', 'expense')
-
-      if (error) throw new Error(error.message)
-      if (!data || data.length === 0) return []
-
-      const totalsMap: Record<string, number> = {}
-      let totalExpensesSum = 0
-
-      data.forEach((item) => {
-        const amount = Number(item.amount) || 0
-        const category = item.category || 'Otros'
-        totalsMap[category] = (totalsMap[category] || 0) + amount
-        totalExpensesSum += amount
-      })
-
-      const chartData = Object.entries(totalsMap).map(([category, value]) => ({
-        category,
-        value,
-        percentage: totalExpensesSum > 0 ? Math.round((value / totalExpensesSum) * 100) : 0
+export const useExpensesByCategory = ({
+  financialData,
+  selectedYear,
+  selectedMonth,
+}: UseExpensesByCategoryPropsTypes) => {
+  const expensesData = financialData
+    .filter(item => item.movement_type === 'expense')
+  if (selectedYear === 'noYearSelected') {
+    return {
+      labels: ['Sin datos para mostrar'],
+      data: [],
+    }
+  } else if (selectedYear !== 'noYearSelected' && selectedMonth === 'nomonthselected') {
+    const filteredByYear = expensesData
+      .filter(item => item.movement_date.slice(0, 4) === selectedYear)
+    const uniqueCategories = Array.from(new Set(filteredByYear
+      .map(item => item.category)))
+    const categoryAndAmount = filteredByYear.map(item => (
+      {
+        category: item.category,
+        amount: item.amount,
       }))
-
-      return chartData.sort((a, b) => b.value - a.value)
-    },
-  })
+    const amounts = uniqueCategories.map(category => {
+      const totalAmount = categoryAndAmount
+        .filter(item => item.category === category)
+        .reduce((acc, curr) => acc + curr.amount, 0)
+      return totalAmount
+    })
+    return {
+      labels: uniqueCategories,
+      data: amounts,
+    }
+  } else {
+    const monthSelectedIndex = monthNames
+      .indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)) + 1
+    const filteredByMonth = expensesData
+      .filter(item => Number(item.movement_date.slice(5, 7)) === monthSelectedIndex)
+    const uniqueCategories = Array.from(new Set(filteredByMonth.map(item => item.category)))
+    const categoryAndAmount = filteredByMonth.map(item => {
+      return {
+        category: item.category,
+        amount: item.amount,
+      }
+    })
+    const amounts = uniqueCategories.map(category => {
+      const totalAmount = categoryAndAmount
+        .filter(item => item.category === category)
+        .reduce((acc, curr) => acc + curr.amount, 0)
+      return totalAmount
+    })
+    return {
+      labels: uniqueCategories,
+      data: amounts,
+    }
+  }
 }
