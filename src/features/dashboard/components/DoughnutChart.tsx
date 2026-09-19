@@ -9,9 +9,10 @@ interface DoughnutChartPropsTypes {
   labels: string[]
   values: number[]
   colors: string[]
+  border: string[]
 }
 
-export const DoughnutChart = ({ labels, values, colors }: DoughnutChartPropsTypes) => {
+export const DoughnutChart = ({ labels, values, colors, border }: DoughnutChartPropsTypes) => {
   const { isDark } = useTheme()
 
   const themeColors = {
@@ -25,9 +26,11 @@ export const DoughnutChart = ({ labels, values, colors }: DoughnutChartPropsType
     labels: labels,
     datasets: [
       {
-        label: 'valor',
+        label: 'Valor',
         data: values,
-        backgroundColor: colors
+        backgroundColor: colors,
+        borderColor: border,
+        borderWidth: 2,
       }
     ]
   }
@@ -50,7 +53,7 @@ export const DoughnutChart = ({ labels, values, colors }: DoughnutChartPropsType
             size: 16
           }
         },
-        position: 'bottom' as const,
+        position: 'left' as const,
       },
     }
   }

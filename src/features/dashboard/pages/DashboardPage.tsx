@@ -180,6 +180,7 @@ function DashboardPage() {
             values={chartData.data}
             labels={chartData.labels}
             colors={chartData.colors}
+            border={chartData.border}
           />
         </div>
       </main>
