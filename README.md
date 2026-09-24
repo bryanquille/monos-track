@@ -1,137 +1,19 @@
 ﻿# Monos Track
 
-Monos Track es una aplicación web para el seguimiento de finanzas personales creada con React, TypeScript, Supabase y TanStack Router. Está diseñada para ofrecer una experiencia moderna de registro de ingresos y gastos con validación, métricas de dashboard y rutas protegidas.
+Monos Track is a personal finance tracking app built with React, TypeScript, Vite, Supabase, TanStack Router, and TanStack Query. The app lets users register income and expense movements, review financial summaries, and manage protected access to their account.
 
-## Características principales
+## Highlights
 
-- Autenticación con Supabase: registro, login y gestión de sesión con correo y contraseña.
-- Rutas protegidas para dashboard, registro de movimientos y ajustes.
-- Dashboard financiero con métricas resumidas y comparativas.
-- Registro de movimientos con tipo, categoría, monto, fecha, método de pago y adjuntos.
-- Lista de movimientos registrados, ordenada por fecha, con acciones para editar, eliminar y consultar cada registro.
-- Carga opcional de comprobantes en PDF, PNG y JPG.
-- Tema claro/oscuro persistente con Zustand.
-- Validación de formularios con React Hook Form y Zod.
-- Uso de Supabase Storage para gestionar archivos de recibos.
-- Interfaz responsive para escritorio y móvil.
-
-## Tecnologías usadas
-
-- React 19
-- TypeScript
-- Vite
-- Tailwind CSS v4
-- TanStack Router
-- TanStack Query
-- Zustand
-- Zod
-- React Hook Form
-- Supabase JS
-- Lucide React
-- Sileo
-- ESLint
- - TanStack React Query Devtools
- - TanStack Router Devtools
- - @tailwindcss/vite (Tailwind Vite plugin)
- - Prettier
-
-## Estructura principal del proyecto
-
-- `src/app/`: Configuración general y `RootComponent`.
-- `src/features/auth/`: Autenticación, formularios y estado de usuario.
-- `src/features/dashboard/`: Página de dashboard y hooks financieros.
-- `src/features/movements/`: Formulario, lista de movimientos registrados, API y validaciones.
-- `src/features/settings/`: Página de ajustes.
-- `src/features/home/`: Página pública de bienvenida.
-- `src/shared/`: Componentes reutilizables, utilidades, stores y Supabase.
-- `src/routes/`: Definición de rutas y protección con TanStack Router.
-
-## Rutas principales
-
-- `/`: Página pública de inicio.
-- `/login`: Login.
-- `/register`: Registro.
-- `/dashboard`: Dashboard protegido.
-- `/dashboard/movements`: Registro de movimientos.
-- `/dashboard/settings`: Ajustes del usuario.
-
-## Entorno y variables
-
-Crea un archivo `.env` en la raíz del proyecto con estas variables:
-
-```env
-VITE_SUPABASE_URL=tu_supabase_url
-VITE_SUPABASE_PUBLISHABLE_KEY=tu_supabase_anon_key
-```
-
-## Instalación y ejecución
-
-1. Clona el repositorio:
-   ```bash
-   git clone <url-del-repositorio>
-   cd monos-track
-   ```
-2. Instala dependencias:
-   ```bash
-   pnpm install
-   ```
-3. Inicia el servidor de desarrollo:
-   ```bash
-   pnpm run dev
-   ```
-4. Abre la aplicación en `http://localhost:5173`.
-
-## Scripts disponibles
-
-- `pnpm run dev`: Inicia el servidor de desarrollo.
-- `pnpm run build`: Construye la aplicación para producción.
-- `pnpm run lint`: Ejecuta ESLint en todo el proyecto.
-- `pnpm run preview`: Previsualiza la build de producción.
-
-## Detalles de implementación
-
-- `src/main.tsx`: Configura `QueryClientProvider` de TanStack Query.
-- `src/app/RootComponent.tsx`: Sincroniza sesión de Supabase y aplica el tema oscuro/claro.
-- `src/shared/lib/supabase.ts`: Cliente Supabase con validación de variables de entorno.
-- `src/shared/stores/themeStore.ts`: Persistencia del tema con Zustand.
-- `src/features/auth/store/authStore.ts`: Maneja usuario, carga de sesión y logout.
-- `src/routes/_app/dashboard/index.tsx`: Protege el acceso al dashboard con `beforeLoad`.
-- `src/features/movements/api/movements.api.ts`: Envía movimientos a Supabase y guarda recibos en el bucket `receipts`.
-- `src/features/movements/components/RegisteredMovementsList.tsx`: Consulta y muestra los movimientos registrados desde Supabase.
- - `src/routeTree.gen.ts`: Archivo generado con la estructura de rutas usada por TanStack Router.
- - Devtools: `@tanstack/react-query-devtools` y `@tanstack/react-router-devtools` están disponibles en desarrollo para inspección de queries y rutas.
-
-## Notas adicionales
-
-- El estado global ligero se maneja con Zustand.
-- Las rutas privadas se validan en TanStack Router antes de cargar el componente.
-- El tema se guarda automáticamente en el navegador.
-- Los formularios emplean `zodResolver` para validación declarativa.
-
-## Licencia
-
-Privado - No distribuir sin autorización.
-
----
-
-# Monos Track (English)
-
-Monos Track is a web application for tracking personal finances built with React, TypeScript, Supabase and TanStack Router. It provides a modern experience for adding income and expenses with validation, dashboard metrics and protected routes.
-
-## Main features
-
-- Supabase authentication: register, login and session management.
-- Protected routes for dashboard, movements and settings.
-- Financial dashboard with summary metrics.
-- Movement registration with type, category, amount, date, payment method and attachments.
-- Registered movements list sorted by date, with edit, delete and view actions for each record.
-- Optional receipt upload in PDF, PNG and JPG.
-- Persistent dark/light theme with Zustand.
+- Supabase authentication for sign up, login, logout, and session persistence.
+- Protected routes for dashboard, movement registration, and settings.
+- Financial dashboard with summary cards, monthly filters, and charts for income vs expenses and category breakdowns.
+- Movement form with type, category, amount, payment method, date, description, and optional receipt upload.
+- Registered history list with real-time data from Supabase.
+- Persistent light/dark theme using Zustand.
 - Form validation with React Hook Form and Zod.
-- Supabase Storage for receipt files.
-- Responsive UI for desktop and mobile.
+- Responsive interface for desktop and mobile screens.
 
-## Technologies
+## Tech stack
 
 - React 19
 - TypeScript
@@ -140,90 +22,94 @@ Monos Track is a web application for tracking personal finances built with React
 - TanStack Router
 - TanStack Query
 - Zustand
-- Zod
 - React Hook Form
+- Zod
 - Supabase JS
+- Chart.js + react-chartjs-2
 - Lucide React
-- Sileo
 - ESLint
- - TanStack React Query Devtools
- - TanStack Router Devtools
- - @tailwindcss/vite (Tailwind Vite plugin)
- - Prettier
+- Prettier
+
+## Current app flow
+
+- `/` — public home page
+- `/login` — login page
+- `/register` — registration page
+- `/dashboard` — protected dashboard
+- `/dashboard/movements` — movement registration and history
+- `/dashboard/settings` — user settings page
 
 ## Project structure
 
-- `src/app/`: App configuration and `RootComponent`.
-- `src/features/auth/`: Authentication, forms and user state.
-- `src/features/dashboard/`: Dashboard page and financial hooks.
-- `src/features/movements/`: Movement form, registered movements list, API and validation.
-- `src/features/settings/`: Settings page.
-- `src/features/home/`: Public landing page.
-- `src/shared/`: Reusable components, utilities, stores and Supabase config.
-- `src/routes/`: Route definitions and TanStack Router protection.
-
-## Key routes
-
-- `/`: Public home page.
-- `/login`: Login page.
-- `/register`: Register page.
-- `/dashboard`: Protected dashboard.
-- `/dashboard/movements`: Movement registration.
-- `/dashboard/settings`: User settings.
+- `src/app/` — app bootstrap and global root component
+- `src/features/auth/` — authentication pages, forms, store, and session logic
+- `src/features/dashboard/` — dashboard UI, metrics hooks, chart logic, and filters
+- `src/features/movements/` — movement form, list, validation, and API integration
+- `src/features/home/` — landing page
+- `src/features/settings/` — settings screen
+- `src/shared/` — reusable UI, stores, utilities, and Supabase client config
+- `src/routes/` — route tree and protected route guards
 
 ## Environment variables
 
-Create a `.env` file with:
+Create a `.env` file in the project root with the following values:
 
 ```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
 ```
 
+The app also depends on the Supabase storage bucket `receipts` for uploaded movement proofs.
+
 ## Installation
 
-1. Clone the repo:
-   ```bash
-   git clone <repository-url>
-   cd monos-track
-   ```
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd monos-track
+```
+
 2. Install dependencies:
-   ```bash
-   pnpm install
-   ```
+
+```bash
+pnpm install
+```
+
 3. Start the development server:
-   ```bash
-   pnpm run dev
-   ```
-4. Open the app at `http://localhost:5173`.
+
+```bash
+pnpm run dev
+```
+
+4. Open the app in the browser at `http://localhost:5173`.
 
 ## Available scripts
 
-- `pnpm run dev`: Starts the development server.
-- `pnpm run build`: Builds the app for production.
-- `pnpm run lint`: Runs ESLint across the project.
-- `pnpm run preview`: Previews the production build.
+- `pnpm run dev` — starts the Vite development server
+- `pnpm run build` — creates a production build
+- `pnpm run lint` — runs ESLint across the project
+- `pnpm run preview` — previews the production build locally
 
-## Key implementation points
+## Key implementation notes
 
-- `src/main.tsx`: TanStack Query client provider and query defaults.
-- `src/app/RootComponent.tsx`: Session sync with Supabase and theme class handling.
-- `src/shared/lib/supabase.ts`: Supabase client with environment validation.
-- `src/shared/stores/themeStore.ts`: Persistent theme store.
-- `src/features/auth/store/authStore.ts`: User session state and logout.
-- `src/routes/_app/dashboard/index.tsx`: Dashboard route protection and redirect.
-- `src/features/movements/api/movements.api.ts`: Movement submission and receipt upload.
-- `src/features/movements/components/RegisteredMovementsList.tsx`: Queries and displays registered movements from Supabase.
- - `src/routeTree.gen.ts`: Generated route tree used by the router and route helpers.
- - Devtools: development-only tooling for inspecting TanStack Query and Router are included as dev dependencies and can be enabled in `src/main.tsx` during development.
+- `src/main.tsx` initializes the React Query client and app entrypoint.
+- `src/app/RootComponent.tsx` syncs the Supabase session and applies the saved theme.
+- `src/shared/lib/supabase.ts` contains the client setup and environment validation.
+- `src/features/auth/store/authStore.ts` manages auth state and session updates.
+- `src/routes/*` uses TanStack Router `beforeLoad` guards to protect private pages.
+- `src/features/movements/api/movements.api.ts` uploads files to the `receipts` bucket and stores movement records in Supabase.
+- `src/features/dashboard/pages/DashboardPage.tsx` loads financial data and renders summary and chart components.
+- `src/routeTree.gen.ts` is a generated route tree used by TanStack Router for app navigation.
 
 ## Notes
 
-- The app uses Zustand for lightweight global state.
-- Private route protection is handled with TanStack Router `beforeLoad` hooks.
-- Theme preference persists in the browser.
-- Forms use `zodResolver` and declarative Zod schemas.
+- The project uses Zustand for lightweight state management.
+- Private pages are gated before load to avoid unauthorized access.
+- Theme preference is persisted in the browser.
+- Forms rely on `react-hook-form` with Zod schemas for validation.
+- Development utilities such as TanStack Query Devtools and Router Devtools are included for debugging.
 
 ## License
 
-Private - Do not distribute without authorization.
+Private project. Do not distribute without authorization.
