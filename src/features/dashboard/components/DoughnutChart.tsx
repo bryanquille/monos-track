@@ -17,9 +17,9 @@ export const DoughnutChart = ({ labels, values, colors, border }: DoughnutChartP
 
   const themeColors = {
     title: isDark ? '#f5f5f5' : '#0f172a',
-    legend: isDark ? '#f5f5f5' : '#0f172a',
-    ticks: isDark ? '#f5f5f5' : '#0f172a',
-    grid: isDark ? '#81878faa' : '#565b6166'
+    // legend: isDark ? '#f5f5f5' : '#0f172a',
+    // ticks: isDark ? '#f5f5f5' : '#0f172a',
+    // grid: isDark ? '#81878faa' : '#565b6166'
   }
 
   const data = {
@@ -47,16 +47,25 @@ export const DoughnutChart = ({ labels, values, colors, border }: DoughnutChartP
         }
       },
       legend: {
-        labels: {
-          color: themeColors.legend,
-          font: {
-            size: 16
-          }
-        },
-        position: 'left' as const,
+        display: false,
       },
     }
   }
+
+  const totalValue = values.reduce((acc, curr) => acc + curr, 0)
+
+  const legendsInformation = labels.map((item, index) => {
+    return {
+      label: item,
+      value: values[index],
+      percentage: totalValue > 0 ? ((values[index] / totalValue) * 100).toFixed(2) : '0.00',
+      color: colors[index],
+      border: border[index],
+    }
+  })
+
+  console.log(legendsInformation)
+
   return (
     <div className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
       <Doughnut
