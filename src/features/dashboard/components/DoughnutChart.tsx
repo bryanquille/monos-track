@@ -64,14 +64,33 @@ export const DoughnutChart = ({ labels, values, colors, border }: DoughnutChartP
     }
   })
 
-  console.log(legendsInformation)
-
   return (
-    <div className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/20')}>
-      <Doughnut
-        data={data}
-        options={options}
-      />
+    <div className={cn('p-4 flex flex-col justify-center items-center gap-4 rounded-2xl bg-neutral-light/20')}>
+      <div className={cn('h-fit mb-4')}>
+        <Doughnut
+          data={data}
+          options={options}
+        />
+      </div>
+      <ul className={cn('flex flex-col gap-5')}>
+        {legendsInformation.map(item => (
+          <li
+            className={cn('pb-0.5 grid grid-cols-4 gap-1 border-b-2 overflow-hidden border-b-neutral-light dark:border-b-neutral-dark')}
+            key={item.label}
+          >
+            <span
+              className={cn('w-10 h-4 border-2')}
+              style={{
+                backgroundColor: item.color,
+                borderColor: item.border,
+              }}
+            ></span>
+            <span className={cn('-ml-6')}>{item.label}</span>
+            <span className={cn('font-Geist-Mono text-center')}>${item.value}</span>
+            <span className={cn('font-Geist-Mono')}>{item.percentage}%</span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
