@@ -75,7 +75,7 @@ export const DoughnutChart = ({ labels, values, colors, border }: DoughnutChartP
       <ul className={cn('flex flex-col gap-5')}>
         {legendsInformation.map(item => (
           <li
-            className={cn('pb-0.5 grid grid-cols-4 gap-1 border-b-2 overflow-hidden border-b-neutral-light dark:border-b-neutral-dark')}
+            className={cn('pb-0.5 grid grid-cols-4 items-center gap-1 border-b-2 overflow-hidden border-b-neutral-light dark:border-b-neutral-dark')}
             key={item.label}
           >
             <span
