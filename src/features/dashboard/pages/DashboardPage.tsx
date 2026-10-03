@@ -14,6 +14,7 @@ import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
 import type { FinancialDataTypes } from "../types/dashboardTypes";
 import { DoughnutChart } from "../components/DoughnutChart";
 import { useExpensesByCategory } from "../hooks/useExpensesByCategory";
+import { GreatestExpenses } from "../components/GreatestExpenses";
 
 function DashboardPage() {
   // Getting current date
@@ -174,14 +175,16 @@ function DashboardPage() {
             expensesValues={expensesValues}
           />
         </div>
-        {/* Doughnut Chart: Expenses by category */}
         <div className={cn('p-4 grid grid-cols-1 gap-3 md:grid-cols-2')}>
+          {/* Doughnut Chart: Expenses by category */}
           <DoughnutChart
             values={chartData.data}
             labels={chartData.labels}
             colors={chartData.colors}
             border={chartData.border}
           />
+          {/* Greatest Expenses by category */}
+          <GreatestExpenses />
         </div>
       </main>
     </section>

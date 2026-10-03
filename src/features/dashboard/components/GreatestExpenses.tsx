@@ -1,3 +1,5 @@
+import { cn } from "../../../shared/utils/cn"
+
 export const GreatestExpenses = () => {
   const EXPENSE_CATEGORIES = [
     { value: 'food', label: 'Alimentación', color: '#EF4444', emoji: '🍔' },
@@ -33,6 +35,24 @@ export const GreatestExpenses = () => {
     { value: 'health', currentAmount: 1200, previousAmount: 0 }, // Sin datos del año anterior
   ]
   return (
-    <div>GreatestExpenses</div>
+    <article className={cn('p-4 flex flex-col justify-center items-center gap-4 rounded-2xl bg-neutral-light/20')}>
+      <h2 className={cn('font-semibold text-2xl')}>Mayores Gastos</h2>
+      <div>
+        {
+          MOCK_MONTHLY_EXPENSES.map(item => {
+            return (
+              <div
+                key={item.value}
+                className={cn('mb-1.5 flex justify-between items-center gap-10')}
+              >
+                <span className={cn('text-3xl')}>{EXPENSE_CATEGORIES.filter(expenseItem => expenseItem.value === item.value)[0].emoji}</span>
+                <span>{EXPENSE_CATEGORIES.filter(expenseItem => expenseItem.value === item.value)[0].label}</span>
+                <span className={cn('text-right font-Geist-Mono')}>${item.currentAmount}</span>     
+              </div>
+            )
+          })
+        }
+      </div>
+    </article>
   )
 }
