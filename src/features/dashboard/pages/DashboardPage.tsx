@@ -88,6 +88,15 @@ function DashboardPage() {
   // Data for expenses by category donut chart
   const chartData = useExpensesByCategory({ financialData: financialData ?? [], selectedYear, selectedMonth })
 
+  // Data for greatest expenses by category
+  const availableYearsInData = Array.from(new Set(financialData?.map(item => item.movement_date.slice(0, 4))))
+  const expensesData = financialData?.filter(item => item.movement_type === 'expense')
+  const dataOrganizedByYear: Record<string, FinancialDataTypes[] | undefined> = availableYearsInData.reduce((acc, item) => {
+    acc[item] = expensesData?.filter(data => data.movement_date.slice(0, 4) === item)
+    return acc
+  }, {} as Record<string, FinancialDataTypes[] | undefined>)
+  console.log(dataOrganizedByYear)
+
   // Show loader while query data
   if (isLoading) return <FullScreenLoader text="Cargando aplicación..." />
 

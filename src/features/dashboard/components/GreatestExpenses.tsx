@@ -25,15 +25,16 @@ export const GreatestExpenses = () => {
     { value: 'shopping', currentAmount: 150, previousAmount: 300 },
   ]
 
-  const MOCK_YEARLY_EXPENSES = [
-    { value: 'housing', currentAmount: 14400, previousAmount: 13800 },
-    { value: 'food', currentAmount: 7800, previousAmount: 7200 },
-    { value: 'debt', currentAmount: 5400, previousAmount: 6000 },
-    { value: 'education', currentAmount: 3200, previousAmount: 0 }, // Sin datos del año anterior
-    { value: 'shopping', currentAmount: 2900, previousAmount: 2100 },
-    { value: 'transport', currentAmount: 2800, previousAmount: 2500 },
-    { value: 'health', currentAmount: 1200, previousAmount: 0 }, // Sin datos del año anterior
-  ]
+  // const MOCK_YEARLY_EXPENSES = [
+  //   { value: 'housing', currentAmount: 14400, previousAmount: 13800 },
+  //   { value: 'food', currentAmount: 7800, previousAmount: 7200 },
+  //   { value: 'debt', currentAmount: 5400, previousAmount: 6000 },
+  //   { value: 'education', currentAmount: 3200, previousAmount: 0 }, // Sin datos del año anterior
+  //   { value: 'shopping', currentAmount: 2900, previousAmount: 2100 },
+  //   { value: 'transport', currentAmount: 2800, previousAmount: 2500 },
+  //   { value: 'health', currentAmount: 1200, previousAmount: 0 }, // Sin datos del año anterior
+  // ]
+
   return (
     <article className={cn('p-4 flex flex-col justify-center items-center gap-4 rounded-2xl bg-neutral-light/20')}>
       <h2 className={cn('font-semibold text-2xl')}>Mayores Gastos</h2>
