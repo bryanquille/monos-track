@@ -88,6 +88,9 @@ function DashboardPage() {
   // Data for expenses by category donut chart
   const chartData = useExpensesByCategory({ financialData: financialData ?? [], selectedYear, selectedMonth })
 
+
+
+
   // Data for greatest expenses by category
   const availableYearsInData = Array.from(new Set(financialData?.map(item => item.movement_date.slice(0, 4))))
   const expensesData = financialData?.filter(item => item.movement_type === 'expense')
@@ -96,6 +99,20 @@ function DashboardPage() {
     return acc
   }, {} as Record<string, FinancialDataTypes[] | undefined>)
   console.log(dataOrganizedByYear)
+
+  const dataOrganizedByYearAndMonth: Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined> = Object.entries(dataOrganizedByYear).reduce((acc, [year, data]) => {
+    const monthsInYear = Array.from(new Set(data?.map(item => item.movement_date.slice(5, 7))))
+    const dataByMonth: Record<string, FinancialDataTypes[] | undefined> = monthsInYear.reduce((monthAcc, month) => {
+      monthAcc[month] = data?.filter(item => item.movement_date.slice(5, 7) === month)
+      return monthAcc
+    }, {} as Record<string, FinancialDataTypes[] | undefined>)
+    acc[year] = dataByMonth
+    return acc
+  }, {} as Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined>)
+  console.log(dataOrganizedByYearAndMonth)
+
+
+
 
   // Show loader while query data
   if (isLoading) return <FullScreenLoader text="Cargando aplicación..." />
