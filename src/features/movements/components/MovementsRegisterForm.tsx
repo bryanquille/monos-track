@@ -70,6 +70,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
         <input
           type="number"
           id="amount"
+          step="0.01"
           placeholder="100.00"
           className={cn('px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
           {...register('amount', { valueAsNumber: true })}
