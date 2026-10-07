@@ -100,17 +100,29 @@ function DashboardPage() {
   }, {} as Record<string, FinancialDataTypes[] | undefined>)
   console.log(dataOrganizedByYear)
 
-  const dataOrganizedByYearAndMonth: Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined> = Object
+  type dataOrganizedByYearAndMonthTypes = Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined>
+  type dataByMonthTypes = Record<string, FinancialDataTypes[] | undefined>
+
+  const dataOrganizedByYearAndMonth: dataOrganizedByYearAndMonthTypes = Object
     .entries(dataOrganizedByYear).reduce((acc, [year, data]) => {
       const monthsInYear = Array.from(new Set(data?.map(item => item.movement_date.slice(5, 7))))
-      const dataByMonth: Record<string, FinancialDataTypes[] | undefined> = monthsInYear.reduce((monthAcc, month) => {
+      const dataByMonth: dataByMonthTypes = monthsInYear.reduce((monthAcc, month) => {
         monthAcc[month] = data?.filter(item => item.movement_date.slice(5, 7) === month)
         return monthAcc
       }, {} as Record<string, FinancialDataTypes[] | undefined>)
       acc[year] = dataByMonth
       return acc
-    }, {} as Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined>)
+    }, {} as dataOrganizedByYearAndMonthTypes)
   console.log(dataOrganizedByYearAndMonth)
+
+  let top5Data = null
+  if (selectedYear === 'NoYearSelected') {
+    top5Data = []
+  } else if (selectedYear !== 'NoYearSelected' && selectedMonth === 'nomonthselected') {
+    // Add code for top 5 of the greates expenses by year
+  } else {
+    // Add code for top 5 of the greates expenses by month within the selected year
+  }
 
 
 
