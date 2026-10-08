@@ -92,12 +92,13 @@ function DashboardPage() {
 
 
   // Data for greatest expenses by category
+  type dataOrganizedByYearTypes = Record<string, FinancialDataTypes[] | undefined>
   const availableYearsInData = Array.from(new Set(financialData?.map(item => item.movement_date.slice(0, 4))))
   const expensesData = financialData?.filter(item => item.movement_type === 'expense')
-  const dataOrganizedByYear: Record<string, FinancialDataTypes[] | undefined> = availableYearsInData.reduce((acc, item) => {
+  const dataOrganizedByYear: dataOrganizedByYearTypes = availableYearsInData.reduce((acc, item) => {
     acc[item] = expensesData?.filter(data => data.movement_date.slice(0, 4) === item)
     return acc
-  }, {} as Record<string, FinancialDataTypes[] | undefined>)
+  }, {} as dataOrganizedByYearTypes)
   console.log(dataOrganizedByYear)
 
   type dataOrganizedByYearAndMonthTypes = Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined>
@@ -115,7 +116,13 @@ function DashboardPage() {
     }, {} as dataOrganizedByYearAndMonthTypes)
   console.log(dataOrganizedByYearAndMonth)
 
-  let top5Data = null
+  type top5DataTypes = {
+    value: string,
+    currentAmount: number,
+    previousAmount: number
+  }[]
+
+  let top5Data: top5DataTypes = []
   if (selectedYear === 'NoYearSelected') {
     top5Data = []
   } else if (selectedYear !== 'NoYearSelected' && selectedMonth === 'nomonthselected') {
@@ -123,6 +130,7 @@ function DashboardPage() {
   } else {
     // Add code for top 5 of the greates expenses by month within the selected year
   }
+  console.log(top5Data)
 
 
 
