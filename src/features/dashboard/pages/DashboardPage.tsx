@@ -122,11 +122,28 @@ function DashboardPage() {
     previousAmount: number
   }[]
 
+  // const calculateExpensesByCategory = (data: dataOrganizedByYearTypes | dataOrganizedByYearAndMonthTypes) => {
+  // }
+
   let top5Data: top5DataTypes = []
   if (selectedYear === 'NoYearSelected') {
     top5Data = []
   } else if (selectedYear !== 'NoYearSelected' && selectedMonth === 'nomonthselected') {
-    // Add code for top 5 of the greates expenses by year
+    const previousSelectedYearData = dataOrganizedByYear[Number(selectedYear) - 1] ?? []
+    const currentSelectedYearData = dataOrganizedByYear[selectedYear]
+
+    const accumPreviousByCategory = previousSelectedYearData?.reduce((acc, curr) => {
+      acc[curr.category] = ( acc[curr.category] || 0 ) + curr.amount
+      return acc
+    }, {} as Record<string, number>)
+    console.log(accumPreviousByCategory)
+
+    const accumCurrentByCategory = currentSelectedYearData?.reduce((acc, curr) => {
+      acc[curr.category] = ( acc[curr.category] || 0 ) + curr.amount
+      return acc
+    }, {} as Record<string, number>)
+    console.log(accumCurrentByCategory)
+
   } else {
     // Add code for top 5 of the greates expenses by month within the selected year
   }
