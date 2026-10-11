@@ -132,18 +132,29 @@ function DashboardPage() {
     const previousSelectedYearData = dataOrganizedByYear[Number(selectedYear) - 1] ?? []
     const currentSelectedYearData = dataOrganizedByYear[selectedYear]
 
-    const accumPreviousByCategory = previousSelectedYearData?.reduce((acc, curr) => {
-      acc[curr.category] = ( acc[curr.category] || 0 ) + curr.amount
+    const accumPreviousByCategory: Record<string, number> = (previousSelectedYearData ?? []).reduce((acc, curr) => {
+      acc[curr.category] = (acc[curr.category] || 0) + curr.amount
       return acc
     }, {} as Record<string, number>)
     console.log(accumPreviousByCategory)
 
-    const accumCurrentByCategory = currentSelectedYearData?.reduce((acc, curr) => {
-      acc[curr.category] = ( acc[curr.category] || 0 ) + curr.amount
+    const accumCurrentByCategory: Record<string, number> = (currentSelectedYearData ?? []).reduce((acc, curr) => {
+      acc[curr.category] = (acc[curr.category] || 0) + curr.amount
       return acc
     }, {} as Record<string, number>)
     console.log(accumCurrentByCategory)
 
+    if (Object.keys(accumCurrentByCategory).length > 0) {
+      top5Data = Object.entries(accumCurrentByCategory).map(([category, currentAmount]) => {
+        const previousAmount = accumPreviousByCategory[category] ?? 0
+        return {
+          value: category,
+          currentAmount,
+          previousAmount
+        }
+      }).sort((a, b) => b.currentAmount - a.currentAmount).slice(0, 5)
+      console.log(top5Data)
+    }
   } else {
     // Add code for top 5 of the greates expenses by month within the selected year
   }
