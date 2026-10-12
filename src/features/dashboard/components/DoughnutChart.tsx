@@ -86,7 +86,7 @@ export const DoughnutChart = ({ labels, values, colors, border }: DoughnutChartP
               }}
             ></span>
             <span className={cn('-ml-6')}>{item.label}</span>
-            <span className={cn('font-Geist-Mono text-center')}>${item.value}</span>
+            <span className={cn('font-Geist-Mono text-center')}>${item.value.toFixed(2)}</span>
             <span className={cn('font-Geist-Mono')}>{item.percentage}%</span>
           </li>
         ))}
