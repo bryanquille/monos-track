@@ -14,7 +14,8 @@ import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
 import type { FinancialDataTypes } from "../types/dashboardTypes";
 import { DoughnutChart } from "../components/DoughnutChart";
 import { useExpensesByCategory } from "../hooks/useExpensesByCategory";
-import { GreatestExpenses } from "../components/GreatestExpenses";
+import { HigherExpenses } from "../components/HigherExpenses";
+import { useHigherExpenses } from "../hooks/useHigherExpenses";
 
 function DashboardPage() {
   // Getting current date
@@ -88,102 +89,8 @@ function DashboardPage() {
   // Data for expenses by category donut chart
   const chartData = useExpensesByCategory({ financialData: financialData ?? [], selectedYear, selectedMonth })
 
-
-
-
   // Data for greatest expenses by category
-  type dataOrganizedByYearTypes = Record<string, FinancialDataTypes[] | undefined>
-  const availableYearsInData = Array.from(new Set(financialData?.map(item => item.movement_date.slice(0, 4))))
-  const expensesData = financialData?.filter(item => item.movement_type === 'expense')
-  const dataOrganizedByYear: dataOrganizedByYearTypes = availableYearsInData.reduce((acc, item) => {
-    acc[item] = expensesData?.filter(data => data.movement_date.slice(0, 4) === item)
-    return acc
-  }, {} as dataOrganizedByYearTypes)
-  // console.log(dataOrganizedByYear)
-
-  type dataOrganizedByYearAndMonthTypes = Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined>
-  type dataByMonthTypes = Record<string, FinancialDataTypes[] | undefined>
-
-  const dataOrganizedByYearAndMonth: dataOrganizedByYearAndMonthTypes = Object
-    .entries(dataOrganizedByYear).reduce((acc, [year, data]) => {
-      const monthsInYear = Array.from(new Set(data?.map(item => item.movement_date.slice(5, 7))))
-      const dataByMonth: dataByMonthTypes = monthsInYear.reduce((monthAcc, month) => {
-        monthAcc[month] = data?.filter(item => item.movement_date.slice(5, 7) === month)
-        return monthAcc
-      }, {} as Record<string, FinancialDataTypes[] | undefined>)
-      acc[year] = dataByMonth
-      return acc
-    }, {} as dataOrganizedByYearAndMonthTypes)
-  // console.log(dataOrganizedByYearAndMonth)
-
-  type top5DataTypes = {
-    value: string,
-    currentAmount: number,
-    previousAmount: number
-  }[]
-
-  // const calculateExpensesByCategory = (data: dataOrganizedByYearTypes | dataOrganizedByYearAndMonthTypes) => {
-  // }
-
-  let top5Data: top5DataTypes = []
-  if (selectedYear === 'NoYearSelected') {
-    top5Data = []
-  } else if (selectedYear !== 'NoYearSelected' && selectedMonth === 'nomonthselected') {
-    const previousSelectedYearData = dataOrganizedByYear[Number(selectedYear) - 1] ?? []
-    const currentSelectedYearData = dataOrganizedByYear[selectedYear]
-
-    const accumPreviousByCategory: Record<string, number> = (previousSelectedYearData ?? []).reduce((acc, curr) => {
-      acc[curr.category] = (acc[curr.category] || 0) + curr.amount
-      return acc
-    }, {} as Record<string, number>)
-
-    const accumCurrentByCategory: Record<string, number> = (currentSelectedYearData ?? []).reduce((acc, curr) => {
-      acc[curr.category] = (acc[curr.category] || 0) + curr.amount
-      return acc
-    }, {} as Record<string, number>)
-
-    if (Object.keys(accumCurrentByCategory).length > 0) {
-      top5Data = Object.entries(accumCurrentByCategory).map(([category, currentAmount]) => {
-        const previousAmount = accumPreviousByCategory[category] ?? 0
-        return {
-          value: category,
-          currentAmount,
-          previousAmount
-        }
-      }).sort((a, b) => b.currentAmount - a.currentAmount).slice(0, 5)
-      console.log(top5Data)
-    }
-  } else {
-    // Add code for top 5 of the greates expenses by month within the selected year
-    const selectedMonthIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
-    const previousSelectedMonthData = dataOrganizedByYearAndMonth[selectedYear]?.[String(selectedMonthIndex).padStart(2, '0')]
-    const currentSelectedMonthData = dataOrganizedByYearAndMonth[selectedYear]?.[String(selectedMonthIndex + 1).padStart(2, '0')]
-
-    const accumPreviousByCategory: Record<string, number> = (previousSelectedMonthData ?? []).reduce((acc, curr) => {
-      acc[curr.category] = (acc[curr.category] || 0) + curr.amount
-      return acc
-    }, {} as Record<string, number>)
-
-    const accumCurrentByCategory: Record<string, number> = (currentSelectedMonthData ?? []).reduce((acc, curr) => {
-      acc[curr.category] = (acc[curr.category] || 0) + curr.amount
-      return acc
-    }, {} as Record<string, number>)
-
-    if (Object.keys(accumCurrentByCategory).length > 0) {
-      top5Data = Object.entries(accumCurrentByCategory).map(([category, currentAmount]) => {
-        const previousAmount = accumPreviousByCategory[category] ?? 0
-        return {
-          value: category,
-          currentAmount,
-          previousAmount
-        }
-      }).sort((a, b) => b.currentAmount - a.currentAmount).slice(0, 5)
-    }
-    console.log(top5Data)
-  }
-
-
-
+  const { top5Data } = useHigherExpenses({ financialData: financialData ?? [], selectedYear, selectedMonth, monthNames })
 
   // Show loader while query data
   if (isLoading) return <FullScreenLoader text="Cargando aplicación..." />
@@ -280,8 +187,10 @@ function DashboardPage() {
             colors={chartData.colors}
             border={chartData.border}
           />
-          {/* Greatest Expenses by category */}
-          <GreatestExpenses />
+          {/* Highest Expenses by category */}
+          <HigherExpenses
+            top5Data={top5Data}
+          />
         </div>
       </main>
     </section>
