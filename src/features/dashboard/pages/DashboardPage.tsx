@@ -99,7 +99,7 @@ function DashboardPage() {
     acc[item] = expensesData?.filter(data => data.movement_date.slice(0, 4) === item)
     return acc
   }, {} as dataOrganizedByYearTypes)
-  console.log(dataOrganizedByYear)
+  // console.log(dataOrganizedByYear)
 
   type dataOrganizedByYearAndMonthTypes = Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined>
   type dataByMonthTypes = Record<string, FinancialDataTypes[] | undefined>
@@ -114,7 +114,7 @@ function DashboardPage() {
       acc[year] = dataByMonth
       return acc
     }, {} as dataOrganizedByYearAndMonthTypes)
-  console.log(dataOrganizedByYearAndMonth)
+  // console.log(dataOrganizedByYearAndMonth)
 
   type top5DataTypes = {
     value: string,
@@ -136,13 +136,11 @@ function DashboardPage() {
       acc[curr.category] = (acc[curr.category] || 0) + curr.amount
       return acc
     }, {} as Record<string, number>)
-    console.log(accumPreviousByCategory)
 
     const accumCurrentByCategory: Record<string, number> = (currentSelectedYearData ?? []).reduce((acc, curr) => {
       acc[curr.category] = (acc[curr.category] || 0) + curr.amount
       return acc
     }, {} as Record<string, number>)
-    console.log(accumCurrentByCategory)
 
     if (Object.keys(accumCurrentByCategory).length > 0) {
       top5Data = Object.entries(accumCurrentByCategory).map(([category, currentAmount]) => {
@@ -157,8 +155,32 @@ function DashboardPage() {
     }
   } else {
     // Add code for top 5 of the greates expenses by month within the selected year
+    const selectedMonthIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
+    const previousSelectedMonthData = dataOrganizedByYearAndMonth[selectedYear]?.[String(selectedMonthIndex).padStart(2, '0')]
+    const currentSelectedMonthData = dataOrganizedByYearAndMonth[selectedYear]?.[String(selectedMonthIndex + 1).padStart(2, '0')]
+
+    const accumPreviousByCategory: Record<string, number> = (previousSelectedMonthData ?? []).reduce((acc, curr) => {
+      acc[curr.category] = (acc[curr.category] || 0) + curr.amount
+      return acc
+    }, {} as Record<string, number>)
+
+    const accumCurrentByCategory: Record<string, number> = (currentSelectedMonthData ?? []).reduce((acc, curr) => {
+      acc[curr.category] = (acc[curr.category] || 0) + curr.amount
+      return acc
+    }, {} as Record<string, number>)
+
+    if (Object.keys(accumCurrentByCategory).length > 0) {
+      top5Data = Object.entries(accumCurrentByCategory).map(([category, currentAmount]) => {
+        const previousAmount = accumPreviousByCategory[category] ?? 0
+        return {
+          value: category,
+          currentAmount,
+          previousAmount
+        }
+      }).sort((a, b) => b.currentAmount - a.currentAmount).slice(0, 5)
+    }
+    console.log(top5Data)
   }
-  console.log(top5Data)
 
 
 
