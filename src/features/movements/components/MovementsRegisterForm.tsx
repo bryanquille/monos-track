@@ -84,7 +84,11 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
         <input
           type="date"
           id="movementDate"
-          className={cn('px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
+          className={cn(
+            'px-5 py-3 border-2 border-secondary-light/70 rounded-md',
+            'dark:border-neutral-light/70 dark:text-neutral-dark',
+            'dark:scheme-dark'
+          )}
           {...register('movementDate')}
         />
         {errors.movementDate &&
