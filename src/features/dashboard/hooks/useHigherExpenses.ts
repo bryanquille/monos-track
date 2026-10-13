@@ -3,11 +3,13 @@ import type { FinancialDataTypes } from "../types/dashboardTypes";
 type dataOrganizedByYearTypes = Record<string, FinancialDataTypes[] | undefined>
 type dataOrganizedByYearAndMonthTypes = Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined>
 type dataByMonthTypes = Record<string, FinancialDataTypes[] | undefined>
+
 export interface top5DataTypes {
   value: string,
   currentAmount: number,
   previousAmount: number
 }
+
 interface useHigherExpensesProps {
   financialData: FinancialDataTypes[] | undefined,
   selectedYear: string,
@@ -15,7 +17,12 @@ interface useHigherExpensesProps {
   monthNames: string[]
 }
 
-export const useHigherExpenses = ({ financialData, selectedYear, selectedMonth, monthNames }: useHigherExpensesProps) => {
+export const useHigherExpenses = ({
+  financialData,
+  selectedYear,
+  selectedMonth,
+  monthNames
+}: useHigherExpensesProps) => {
 
   // Organize data by year
   const availableYearsInData = Array.from(new Set(financialData?.map(item => item.movement_date.slice(0, 4))))
@@ -61,28 +68,28 @@ export const useHigherExpenses = ({ financialData, selectedYear, selectedMonth, 
     return []
   }
 
-  let top5Data: top5DataTypes[] = []
-  if (selectedYear === 'NoYearSelected') {
-    top5Data = []
-  } else if (selectedYear !== 'NoYearSelected' && selectedMonth === 'nomonthselected') {
-    // Calculate top 5 of the higher expenses by year
-    const previousSelectedYearData = dataOrganizedByYear[Number(selectedYear) - 1] ?? []
-    const currentSelectedYearData = dataOrganizedByYear[selectedYear] ?? []
+  const top5Data: top5DataTypes[] = (() => {
+    if (selectedYear === 'NoYearSelected') return []
+    if (selectedMonth === 'nomonthselected') {
+      // Calculate top 5 of the higher expenses by year
+      const previousSelectedYearData = dataOrganizedByYear[Number(selectedYear) - 1] ?? []
+      const currentSelectedYearData = dataOrganizedByYear[selectedYear] ?? []
 
-    const accumPreviousByCategory = calculateExpensesByCategory(previousSelectedYearData)
-    const accumCurrentByCategory = calculateExpensesByCategory(currentSelectedYearData)
+      const accumPreviousByCategory = calculateExpensesByCategory(previousSelectedYearData)
+      const accumCurrentByCategory = calculateExpensesByCategory(currentSelectedYearData)
 
-    top5Data = getTopFive(accumCurrentByCategory, accumPreviousByCategory)
-  } else {
-    // Calculate top 5 of the higher expenses by month within the selected year
-    const selectedMonthIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
-    const previousSelectedMonthData = dataOrganizedByYearAndMonth[selectedYear]?.[String(selectedMonthIndex).padStart(2, '0')] ?? []
-    const currentSelectedMonthData = dataOrganizedByYearAndMonth[selectedYear]?.[String(selectedMonthIndex + 1).padStart(2, '0')] ?? []
+      return getTopFive(accumCurrentByCategory, accumPreviousByCategory)
+    } else {
+      // Calculate top 5 of the higher expenses by month within the selected year
+      const selectedMonthIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
+      const previousSelectedMonthData = dataOrganizedByYearAndMonth[selectedYear]?.[String(selectedMonthIndex).padStart(2, '0')] ?? []
+      const currentSelectedMonthData = dataOrganizedByYearAndMonth[selectedYear]?.[String(selectedMonthIndex + 1).padStart(2, '0')] ?? []
 
-    const accumPreviousByCategory = calculateExpensesByCategory(previousSelectedMonthData)
-    const accumCurrentByCategory = calculateExpensesByCategory(currentSelectedMonthData)
+      const accumPreviousByCategory = calculateExpensesByCategory(previousSelectedMonthData)
+      const accumCurrentByCategory = calculateExpensesByCategory(currentSelectedMonthData)
 
-    top5Data = getTopFive(accumCurrentByCategory, accumPreviousByCategory)
-  }
+      return getTopFive(accumCurrentByCategory, accumPreviousByCategory)
+    }
+  })()
   return { top5Data }
 }
