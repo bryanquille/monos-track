@@ -1,5 +1,5 @@
-import type { FinancialDataTypes } from "../types/dashboardTypes";
-import { filterDataForChartBars } from "../utils/fiterDataForChartBars";
+import type { FinancialDataTypes } from "../types/dashboardTypes"
+import { filterDataForChartBars } from "../utils/fiterDataForChartBars"
 
 interface useIncomesVsExpensesPropsTypes {
   selectedMonth: string
@@ -16,64 +16,62 @@ export const useIncomesVsExpenses = ({
   currentYear,
   currentMonth,
   monthNames,
-  financialData: incomesVsExpenses,
+  financialData = [],
 }: useIncomesVsExpensesPropsTypes) => {
-  let labels: string[] = []
-  let incomesValues: number[] = []
-  let expensesValues: number[] = []
 
-  if (selectedMonth === 'nomonthselected' && selectedYear === 'noYearSelected'
-    || selectedMonth !== 'nomonthselected' && selectedYear === 'noYearSelected'
-  ) {
-    labels = ['Sin datos para mostrar']
-    incomesValues = []
-    expensesValues = []
-  } else if (selectedMonth === 'nomonthselected' && selectedYear !== 'noYearSelected') {
-    // Get the all available months data for the current year
-    if (selectedYear === currentYear) {
-      const dataForChartBars = filterDataForChartBars(
-        incomesVsExpenses ?? [],
-        selectedYear,
-        selectedMonth,
-        currentMonth,
-        monthNames,
-        'available'
-      )
-      labels = dataForChartBars.labels
-      incomesValues = dataForChartBars.incomesValues
-      expensesValues = dataForChartBars.expensesValues
-
-    } else {
-      // Get the data of all months for past years
-      const dataForChartBars = filterDataForChartBars(
-        incomesVsExpenses ?? [],
-        selectedYear,
-        selectedMonth,
-        currentMonth,
-        monthNames,
-        'all'
-      )
-      labels = dataForChartBars.labels
-      incomesValues = dataForChartBars.incomesValues
-      expensesValues = dataForChartBars.expensesValues
+  // Calculate the data immutably
+  const { labels, incomesValues, expensesValues } = (() => {
+    // If no year is selected, return the default empty state
+    if (selectedYear === 'noYearSelected') {
+      return {
+        labels: ['Sin datos para mostrar'],
+        incomesValues: [],
+        expensesValues: [],
+      }
     }
-  } else {
-    // Get the last six months data based on the selected month and year
+
+    // If the selected year is the current year, 
+    // we show only the available months. 
+    // Otherwise, we show all months for past years
+    if (selectedMonth === 'nomonthselected') {
+      const mode = selectedYear === currentYear ? 'available' : 'all';
+
+      const dataForChartBars = filterDataForChartBars(
+        financialData,
+        selectedYear,
+        selectedMonth,
+        currentMonth,
+        monthNames,
+        mode
+      )
+
+      return {
+        labels: dataForChartBars.labels,
+        incomesValues: dataForChartBars.incomesValues,
+        expensesValues: dataForChartBars.expensesValues,
+      }
+    }
+
+    // Default case: There is a selected year and month (we get the last six months)
     const dataForChartBars = filterDataForChartBars(
-      incomesVsExpenses ?? [],
+      financialData,
       selectedYear,
       selectedMonth,
       currentMonth,
       monthNames,
       'lastSix'
     )
-    labels = dataForChartBars.labels
-    incomesValues = dataForChartBars.incomesValues
-    expensesValues = dataForChartBars.expensesValues
-  }
+
+    return {
+      labels: dataForChartBars.labels,
+      incomesValues: dataForChartBars.incomesValues,
+      expensesValues: dataForChartBars.expensesValues,
+    }
+  })()
+
   return {
     labels,
     incomesValues,
-    expensesValues
+    expensesValues,
   }
 }
