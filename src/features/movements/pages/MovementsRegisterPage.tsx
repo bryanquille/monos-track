@@ -1,12 +1,50 @@
-import { RefreshCcw, ShieldCheck } from "lucide-react";
-import { cn } from "../../../shared/utils/cn";
-import { useState } from "react";
-import MovementsRegisterForm from "../components/MovementsRegisterForm";
-import UserName from "../../../shared/components/UserName";
-import RegisteredMovementsList from "../components/RegisteredMovementsList";
+import { RefreshCcw, ShieldCheck } from "lucide-react"
+import { cn } from "../../../shared/utils/cn"
+import { useState } from "react"
+import MovementsRegisterForm from "../components/MovementsRegisterForm"
+import UserName from "../../../shared/components/UserName"
+import { MovementList } from "../components/RegisteredMovementsList";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "../../../shared/lib/supabase";
+// import RegisteredMovementsList from "../components/RegisteredMovementsList"
+
+
+interface FinancialDataListTypes {
+  amount: number
+  category: string
+  created_at: string
+  description: string
+  id: string
+  movement_date: string
+  movement_type: string
+  payment_method: string
+  receipt_path: string
+  user_id: string
+}
 
 function MovementsRegisterPage() {
   const [isIncome, setIsIncome] = useState(true)
+
+
+  const {
+    data: movements,
+  } = useQuery<FinancialDataListTypes[]>({
+    queryKey: ['financial-data'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('movements')
+        .select('*')
+        .order('movement_date', { ascending: false })
+
+      if (error) throw new Error(error.message)
+      return data as FinancialDataListTypes[] ?? []
+    },
+    refetchOnMount: true
+  })
+
+
+
+
 
   return (
     <>
@@ -65,7 +103,11 @@ function MovementsRegisterPage() {
           <h2 className={cn('text-4xl')}>Lista de registros</h2>
         </header>
         <main className={cn('p-4 md:p-8')}>
-          <RegisteredMovementsList />
+          {/* <RegisteredMovementsList /> */}
+          <MovementList
+            movements={movements}
+            
+          />
         </main>
         <footer>Filtros</footer>
       </section>
