@@ -3,13 +3,12 @@ import { cn } from "../../../shared/utils/cn"
 import { useState } from "react"
 import MovementsRegisterForm from "../components/MovementsRegisterForm"
 import UserName from "../../../shared/components/UserName"
-import { MovementList } from "../components/RegisteredMovementsList";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../../../shared/lib/supabase";
-// import RegisteredMovementsList from "../components/RegisteredMovementsList"
+import { MovementList } from "../components/MovementsList"
+import { useQuery } from "@tanstack/react-query"
+import { supabase } from "../../../shared/lib/supabase"
 
 
-interface FinancialDataListTypes {
+export interface FinancialDataListTypes {
   amount: number
   category: string
   created_at: string
