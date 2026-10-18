@@ -105,10 +105,10 @@ function MovementsRegisterPage() {
           {/* <RegisteredMovementsList /> */}
           <MovementList
             movements={movements}
-            
+
           />
         </main>
-        <footer>Filtros</footer>
+        {/* <footer >Filtros</footer> */}
       </section>
     </>
   )
