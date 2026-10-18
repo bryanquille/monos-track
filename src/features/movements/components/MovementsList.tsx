@@ -2,6 +2,7 @@ import { cn } from "../../../shared/utils/cn"
 import { Eye, Edit, Trash2 } from "lucide-react"
 import type { FinancialDataListTypes } from "../pages/MovementsRegisterPage"
 import { EXPENSE_CATEGORIES, GET_MONEY_METHOD_CATEGORIES, INCOME_CATEGORIES } from "../../../shared/constants/constants"
+import { useState } from "react"
 
 interface MovementListProps {
   movements: FinancialDataListTypes[] | undefined
@@ -16,6 +17,8 @@ export const MovementList = ({
   onEdit,
   onDelete,
 }: MovementListProps) => {
+  const [visibleCount, setVisibleCount] = useState<number>(10)
+
   if (!movements || movements.length === 0) {
     return (
       <div className="w-full p-8 text-center text-secondary-light/80 dark:text-neutral-dark/80">
@@ -24,13 +27,20 @@ export const MovementList = ({
     )
   }
 
+  const visibleMovements = movements.slice(0, visibleCount)
+  const hasMoreItems = visibleCount < movements.length
+
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + 10)
+  }
+
   return (
     <div className="w-full space-y-4">
       <h3 className="text-lg font-semibold px-2">Historial de Movimientos</h3>
 
       {/* MOBILE VIEW: VERTICALLY STACKED CARDS */}
       <div className="block md:hidden space-y-3">
-        {movements.map((item) => (
+        {visibleMovements.map((item) => (
           <div
             key={item.id}
             className={cn(
@@ -107,7 +117,7 @@ export const MovementList = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-secondary-light/30 dark:divide-neutral-dark/30 text-sm">
-            {movements.map((item) => (
+            {visibleMovements.map((item) => (
               <tr
                 key={item.id}
                 className="hover:bg-neutral-light/50 dark:hover:bg-primary-dark/50 transition-colors"
@@ -171,6 +181,23 @@ export const MovementList = ({
           </tbody>
         </table>
       </div>
+
+      {/* Button to load more elements */}
+      {hasMoreItems && (
+        <div className="flex justify-center pt-4">
+          <button
+            onClick={handleLoadMore}
+            className={cn(
+              "px-6 py-2.5 rounded-lg font-medium text-sm transition-colors cursor-pointer",
+              "bg-primary text-white",
+              "border border-blue-600",
+              "hover:opacity-60"
+            )}
+          >
+            Cargar más movimientos ({Math.min(visibleCount, movements.length)} de {movements.length})
+          </button>
+        </div>
+      )}
     </div>
-  );
-};
+  )
+}
