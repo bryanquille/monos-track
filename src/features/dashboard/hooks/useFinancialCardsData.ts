@@ -13,11 +13,11 @@ interface FinancialCardsDataProps {
 export const useFinancialCardsData = ({ selectedYear, currentYear, selectedMonth, financialData }: FinancialCardsDataProps) => {
   // Getting a list of available years in data for the select input
   const availableYears = useMemo(() => {
-    const prevArray = Array.from(
-      new Set(financialData.map(item => item.movement_date.slice(0, 4)))
+    const uniqueYears = Array.from(
+      new Set([...financialData.map(item => item.movement_date.slice(0, 4)), currentYear])
     )
-    return ['noYearSelected', ...prevArray]
-  }, [financialData])
+    return ['noYearSelected', ...uniqueYears]
+  }, [financialData, currentYear])
 
   // Getting a list of available months in data for the select input
   const availableMonths = useMemo(() => {

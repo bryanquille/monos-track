@@ -89,7 +89,7 @@ function DashboardPage() {
   // Data for expenses by category donut chart
   const chartData = useExpensesByCategory({ financialData: financialData ?? [], selectedYear, selectedMonth })
 
-  // Data for greatest expenses by category
+  // Data for higher expenses by category
   const { top5Data } = useHigherExpenses({ financialData: financialData ?? [], selectedYear, selectedMonth, monthNames })
 
   // Show loader while query data

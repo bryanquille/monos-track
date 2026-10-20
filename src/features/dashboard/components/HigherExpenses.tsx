@@ -34,7 +34,7 @@ export const HigherExpenses = ({ top5Data, selectedMonth, selectedYear }: Higher
                   'shadow-primary-dark/25 dark:shadow-neutral-dark/25'
                 )}
               >
-                <div className={cn('flex justify-between items-center gap-4 md:gap-6')}>
+                <div className={cn('flex justify-between items-center gap-4 md:gap-6 lg:gap-8')}>
                   <div className={cn('flex justify-center items-center gap-1')}>
                     <span className={cn('text-4xl')}>
                       {EXPENSE_CATEGORIES.filter(emojiItem => emojiItem.value === item.value)[0].emoji}
