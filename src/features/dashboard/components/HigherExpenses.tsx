@@ -1,61 +1,99 @@
+import { ThumbsUp, TriangleAlert } from "lucide-react";
 import { cn } from "../../../shared/utils/cn"
 import type { top5DataTypes } from "../hooks/useHigherExpenses";
+import { EXPENSE_CATEGORIES } from "../../../shared/constants/constants";
 
 interface HigherExpensesPropsTypes {
   top5Data: top5DataTypes[]
+  selectedMonth: string
+  selectedYear: string
 }
 
-export const HigherExpenses = ({ top5Data }: HigherExpensesPropsTypes) => { // Replace 'any' with the correct type
-  const EXPENSE_CATEGORIES_EMOJIS = [
-    { value: 'food', label: 'Alimentación', color: '#EF4444', emoji: '🍔' },
-    { value: 'housing', label: 'Vivienda', color: '#0EA5E9', emoji: '🏠' },
-    { value: 'transport', label: 'Transporte', color: '#FF6B6B', emoji: '🚗' },
-    { value: 'utilities', label: 'Servicios', color: '#F97316', emoji: '💡' },
-    { value: 'health', label: 'Salud y Cuidado', color: '#2563EB', emoji: '🩺' },
-    { value: 'entertainment', label: 'Entretenimiento y Ocio', color: '#EC4899', emoji: '🎬' },
-    { value: 'shopping', label: 'Compras Personales', color: '#10B981', emoji: '🛍️' },
-    { value: 'education', label: 'Educación', color: '#14B8A6', emoji: '📚' },
-    { value: 'debt', label: 'Pago de Deudas', color: '#D946EF', emoji: '💳' },
-    { value: 'other_expense', label: 'Otros Gastos', color: '#EAB308', emoji: '📦' },
-  ]
+export const HigherExpenses = ({ top5Data, selectedMonth, selectedYear }: HigherExpensesPropsTypes) => {
+  if (selectedYear === 'NoYearSelected') {
+    return (
+      <article className={cn('p-4 flex flex-col justify-center items-center gap-4 rounded-2xl bg-neutral-light/20')}>
+        <h2 className={cn('pb-0.5 font-semibold text-xl')}>Mayores Gastos</h2>
+        <p className={cn('text-lg')}>Sin información para mostrar.</p>
+      </article>
+    )
+  }
 
   return (
     <article className={cn('p-4 flex flex-col justify-center items-center gap-4 rounded-2xl bg-neutral-light/20')}>
-      <h2 className={cn('pb-0.5 font-semibold text-2xl')}>Mayores Gastos</h2>
-      <div className={cn('flex flex-col gap-2')}>
+      <h2 className={cn('pb-0.5 font-semibold text-xl')}>Mayores Gastos</h2>
+      <div className={cn('flex flex-col gap-3')}>
         {
           top5Data.map(item => {
             return (
               <div
                 key={item.value}
-                className={cn('p-4 border-2 border-secondary-light rounded-2xl')}
+                className={cn(
+                  'p-4 flex flex-col gap-2.5 border rounded-2xl shadow-lg',
+                  'border-primary-dark/10 dark:border-neutral-dark/10',
+                  'shadow-primary-dark/25 dark:shadow-neutral-dark/25'
+                )}
               >
-                <div className={cn('mb-1.5 flex justify-between items-center gap-10')}>
-                  <span className={cn('text-4xl')}>
-                    {EXPENSE_CATEGORIES_EMOJIS.filter(emojiItem => emojiItem.value === item.value)[0].emoji}
-                  </span>
-                  <span className={cn('text-xl')}>
-                    {EXPENSE_CATEGORIES_EMOJIS.filter(emojiItem => emojiItem.value === item.value)[0].label}
-                  </span>
-                  <span className={cn('text-right text-xl font-Geist-Mono')}>
+                <div className={cn('flex justify-between items-center gap-4 md:gap-6')}>
+                  <div className={cn('flex justify-center items-center gap-1')}>
+                    <span className={cn('text-4xl')}>
+                      {EXPENSE_CATEGORIES.filter(emojiItem => emojiItem.value === item.value)[0].emoji}
+                    </span>
+                    <p className={cn('font-medium')}>
+                      {EXPENSE_CATEGORIES.filter(emojiItem => emojiItem.value === item.value)[0].label}
+                    </p>
+                  </div>
+                  <p className={cn('text-lg font-semibold font-Geist-Mono')}>
                     ${item.currentAmount.toFixed(2)}
-                  </span>
+                  </p>
                 </div>
                 <div
-                  className={cn(
-                    'flex flex-col gap-1 text-right',
-                    `${(100 - ((item.previousAmount * 100) / (item.currentAmount))) >= 0
-                      ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'
-                    }`
-                  )}
+                  className={cn('flex justify-end gap-3 text-sm')}
                 >
                   <span>
-                    El anterior mes gastaste ${item.previousAmount.toFixed(2)}.
+                    {(100 - ((item.previousAmount * 100) / (item.currentAmount))) > 0
+                      ? <TriangleAlert size={30} className={cn('text-yellow-600 dark:text-yellow-400')} />
+                      : <ThumbsUp size={30} className={cn('text-green-600 dark:text-green-400')} />
+                    }
                   </span>
-                  <span>
-                    {/* {(100 - ((item.previousAmount * 100)/(item.currentAmount))) > 0 ? ':ok' : ''} */}
-                    Un {(100 - ((item.previousAmount * 100) / (item.currentAmount))).toFixed(2)}% {(100 - ((item.previousAmount * 100) / (item.currentAmount))) > 0 ? 'menos' : 'más'} que el mes actual.
-                  </span>
+                  <div
+                    className={cn(
+                      'text-right',
+                      `${(100 - ((item.previousAmount * 100) / (item.currentAmount))) >= 0
+                        ? 'text-red-600 dark:text-red-400'
+                        : 'text-green-600 dark:text-green-400'
+                      }`
+                    )}
+                  >
+                    <p>
+                      Gasto&nbsp;
+                      <span>
+                        {
+                          selectedMonth === 'nomonthselected'
+                            ? 'año'
+                            : 'mes'
+                        }
+                      </span>&nbsp;
+                      anterior:&nbsp;
+                      <span className={cn('font-Geist-Mono')}>
+                        ${item.previousAmount.toFixed(2)}
+                      </span>
+                    </p>
+                    {item.previousAmount === 0
+                      ? <p>Nuevo gasto</p>
+                      : (
+                        <p>
+                          El gasto&nbsp;
+                          <span>
+                            {((item.currentAmount - item.previousAmount) / item.previousAmount) > 0 ? 'aumento' : 'disminuyo'}:
+                          </span>&nbsp;
+                          <span className={cn('font-Geist-Mono')}>
+                            {Math.abs((((item.currentAmount - item.previousAmount) / item.previousAmount) * 100)).toFixed(2)}%
+                          </span>&nbsp;
+                        </p>
+                      )
+                    }
+                  </div>
                 </div>
               </div>
             )

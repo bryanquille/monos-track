@@ -190,6 +190,8 @@ function DashboardPage() {
           {/* Highest Expenses by category */}
           <HigherExpenses
             top5Data={top5Data}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
           />
         </div>
       </main>

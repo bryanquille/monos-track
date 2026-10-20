@@ -6,7 +6,7 @@ export const EXPENSE_CATEGORIES = [
     label: 'Alimentación',
     color: '#EF4444',
     border: '#B91C1C',
-    emoji: '🍔'
+    emoji: '🍴'
   },
   {
     value: 'housing',
