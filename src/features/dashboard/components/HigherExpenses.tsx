@@ -21,24 +21,42 @@ export const HigherExpenses = ({ top5Data }: HigherExpensesPropsTypes) => { // R
 
   return (
     <article className={cn('p-4 flex flex-col justify-center items-center gap-4 rounded-2xl bg-neutral-light/20')}>
-      <h2 className={cn('pb-0.5 border-b-4 border-b-secondary-light font-semibold text-2xl dark:border-b-neutral-dark')}>Mayores Gastos</h2>
-      <div>
+      <h2 className={cn('pb-0.5 font-semibold text-2xl')}>Mayores Gastos</h2>
+      <div className={cn('flex flex-col gap-2')}>
         {
           top5Data.map(item => {
             return (
               <div
                 key={item.value}
-                className={cn('mb-1.5 flex justify-between items-center gap-10')}
+                className={cn('p-4 border-2 border-secondary-light rounded-2xl')}
               >
-                <span className={cn('text-4xl')}>
-                  {EXPENSE_CATEGORIES_EMOJIS.filter(emojiItem => emojiItem.value === item.value)[0].emoji}
-                </span>
-                <span className={cn('text-xl')}>
-                  {EXPENSE_CATEGORIES_EMOJIS.filter(emojiItem => emojiItem.value === item.value)[0].label}
-                </span>
-                <span className={cn('text-right text-xl font-Geist-Mono')}>
-                  ${item.currentAmount.toFixed(2)}
-                </span>
+                <div className={cn('mb-1.5 flex justify-between items-center gap-10')}>
+                  <span className={cn('text-4xl')}>
+                    {EXPENSE_CATEGORIES_EMOJIS.filter(emojiItem => emojiItem.value === item.value)[0].emoji}
+                  </span>
+                  <span className={cn('text-xl')}>
+                    {EXPENSE_CATEGORIES_EMOJIS.filter(emojiItem => emojiItem.value === item.value)[0].label}
+                  </span>
+                  <span className={cn('text-right text-xl font-Geist-Mono')}>
+                    ${item.currentAmount.toFixed(2)}
+                  </span>
+                </div>
+                <div
+                  className={cn(
+                    'flex flex-col gap-1 text-right',
+                    `${(100 - ((item.previousAmount * 100) / (item.currentAmount))) >= 0
+                      ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'
+                    }`
+                  )}
+                >
+                  <span>
+                    El anterior mes gastaste ${item.previousAmount.toFixed(2)}.
+                  </span>
+                  <span>
+                    {/* {(100 - ((item.previousAmount * 100)/(item.currentAmount))) > 0 ? ':ok' : ''} */}
+                    Un {(100 - ((item.previousAmount * 100) / (item.currentAmount))).toFixed(2)}% {(100 - ((item.previousAmount * 100) / (item.currentAmount))) > 0 ? 'menos' : 'más'} que el mes actual.
+                  </span>
+                </div>
               </div>
             )
           })
