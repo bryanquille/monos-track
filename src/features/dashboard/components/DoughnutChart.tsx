@@ -2,6 +2,7 @@ import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import { cn } from '../../../shared/utils/cn';
 import { useTheme } from '../../../shared/stores/themeStore';
+import { AlertCircleIcon } from 'lucide-react';
 
 ChartJS.register(ArcElement, Title, Tooltip, Legend)
 
@@ -10,16 +11,14 @@ interface DoughnutChartPropsTypes {
   values: number[]
   colors: string[]
   border: string[]
+  selectedYear: string
 }
 
-export const DoughnutChart = ({ labels, values, colors, border }: DoughnutChartPropsTypes) => {
+export const DoughnutChart = ({ labels, values, colors, border, selectedYear }: DoughnutChartPropsTypes) => {
   const { isDark } = useTheme()
 
   const themeColors = {
     title: isDark ? '#f5f5f5' : '#0f172a',
-    // legend: isDark ? '#f5f5f5' : '#0f172a',
-    // ticks: isDark ? '#f5f5f5' : '#0f172a',
-    // grid: isDark ? '#81878faa' : '#565b6166'
   }
 
   const data = {
@@ -64,30 +63,51 @@ export const DoughnutChart = ({ labels, values, colors, border }: DoughnutChartP
     }
   })
 
+  if (selectedYear === 'noYearSelected') {
+    return (
+      <div className={cn('p-4 flex flex-col justify-center items-center gap-4 rounded-2xl bg-neutral-light/20')}>
+        <h2 className={cn('text-xl font-semibold')}>Gastos por categoría</h2>
+        <AlertCircleIcon size={40} />
+        <p className={cn('text-lg text-center')}>Selecciona un año para ver los gastos por categoría</p>
+      </div>
+    )
+  }
+
   return (
     <div className={cn('p-4 flex flex-col justify-center items-center gap-4 rounded-2xl bg-neutral-light/20')}>
-      <div className={cn('h-fit mb-4')}>
+      <div className={cn('h-fit mb-6')}>
         <Doughnut
           data={data}
           options={options}
         />
       </div>
-      <ul className={cn('flex flex-col gap-5')}>
+      <ul className={cn('w-full flex flex-col gap-6')}>
         {legendsInformation.map(item => (
           <li
-            className={cn('pb-0.5 grid grid-cols-4 items-center gap-1 border-b-2 overflow-hidden border-b-neutral-light dark:border-b-neutral-dark')}
+            className={cn(
+              'w-full p-2 pb-0.5 flex flex-col justify-between gap-1 rounded-md',
+              'lg:grid lg:grid-cols-2 lg:gap-4 lg:px-4',
+              'shadow-sm shadow-neutral-light dark:shadow-neutral-dark/40'
+            )}
             key={item.label}
           >
-            <span
-              className={cn('w-10 h-4 border-2')}
-              style={{
-                backgroundColor: item.color,
-                borderColor: item.border,
-              }}
-            ></span>
-            <span className={cn('-ml-6')}>{item.label}</span>
-            <span className={cn('font-Geist-Mono text-center')}>${item.value.toFixed(2)}</span>
-            <span className={cn('font-Geist-Mono')}>{item.percentage}%</span>
+            <div className={cn('flex items-center gap-2')}>
+              <div
+                className={cn('w-10 h-4 border-2')}
+                style={{
+                  backgroundColor: item.color,
+                  borderColor: item.border,
+                }}
+              ></div>
+              <p className={cn('')}>{item.label}</p>
+            </div>
+            <div className={cn(
+              'flex justify-between items-center gap-4',
+              'lg:justify-evenly'
+            )}>
+              <span className={cn('font-Geist-Mono text-center')}>${item.value.toFixed(2)}</span>
+              <span className={cn('font-Geist-Mono')}>{item.percentage}%</span>
+            </div>
           </li>
         ))}
       </ul>

@@ -1,4 +1,4 @@
-import { ThumbsUp, TriangleAlert } from "lucide-react";
+import { AlertCircleIcon, ThumbsUp, TriangleAlert } from "lucide-react";
 import { cn } from "../../../shared/utils/cn"
 import type { top5DataTypes } from "../hooks/useHigherExpenses";
 import { EXPENSE_CATEGORIES } from "../../../shared/constants/constants";
@@ -10,28 +10,28 @@ interface HigherExpensesPropsTypes {
 }
 
 export const HigherExpenses = ({ top5Data, selectedMonth, selectedYear }: HigherExpensesPropsTypes) => {
-  if (selectedYear === 'NoYearSelected') {
+  if (selectedYear === 'noYearSelected') {
     return (
-      <article className={cn('p-4 flex flex-col justify-center items-center gap-4 rounded-2xl bg-neutral-light/20')}>
-        <h2 className={cn('pb-0.5 font-semibold text-xl')}>Mayores Gastos</h2>
-        <p className={cn('text-lg')}>Sin información para mostrar.</p>
+      <article className={cn('p-4 flex flex-col items-center gap-4 rounded-2xl bg-neutral-light/20')}>
+        <h2 className={cn('pb-0.5 font-semibold text-xl')}>Top 5 - Mayores Gastos</h2>
+        <AlertCircleIcon size={40} />
+        <p className={cn('text-lg text-center')}>Selecciona un año para ver los mayores gastos.</p>
       </article>
     )
   }
 
   return (
-    <article className={cn('p-4 flex flex-col justify-center items-center gap-4 rounded-2xl bg-neutral-light/20')}>
-      <h2 className={cn('pb-0.5 font-semibold text-xl')}>Mayores Gastos</h2>
-      <div className={cn('flex flex-col gap-3')}>
+    <article className={cn('p-4 flex flex-col items-center gap-4 rounded-2xl bg-neutral-light/20')}>
+      <h2 className={cn('pb-0.5 font-semibold text-xl')}>Top 5 - Mayores Gastos</h2>
+      <div className={cn('flex flex-col gap-4 md:gap-6')}>
         {
           top5Data.map(item => {
             return (
               <div
                 key={item.value}
                 className={cn(
-                  'p-4 flex flex-col gap-2.5 border rounded-2xl shadow-lg',
-                  'border-primary-dark/10 dark:border-neutral-dark/10',
-                  'shadow-primary-dark/25 dark:shadow-neutral-dark/25'
+                  'p-4 flex flex-col gap-2.5 rounded-lg',
+                  ' shadow-md shadow-neutral-light dark:shadow-neutral-dark/40'
                 )}
               >
                 <div className={cn('flex justify-between items-center gap-4 md:gap-6 lg:gap-8')}>
@@ -43,8 +43,8 @@ export const HigherExpenses = ({ top5Data, selectedMonth, selectedYear }: Higher
                       {EXPENSE_CATEGORIES.filter(emojiItem => emojiItem.value === item.value)[0].label}
                     </p>
                   </div>
-                  <p className={cn('text-lg font-semibold font-Geist-Mono')}>
-                    ${item.currentAmount.toFixed(2)}
+                  <p className={cn('text-lg font-semibold')}>
+                    $<span className={cn('font-Geist-Mono')}>{item.currentAmount.toFixed(2)}</span>
                   </p>
                 </div>
                 <div

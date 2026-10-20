@@ -186,6 +186,7 @@ function DashboardPage() {
             labels={chartData.labels}
             colors={chartData.colors}
             border={chartData.border}
+            selectedYear={selectedYear}
           />
           {/* Highest Expenses by category */}
           <HigherExpenses
