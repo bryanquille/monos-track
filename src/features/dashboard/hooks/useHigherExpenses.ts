@@ -1,4 +1,5 @@
 import type { FinancialDataTypes } from "../types/dashboardTypes";
+import { monthNames as MONTH_NAMES } from "../../../shared/constants/constants"
 
 type dataOrganizedByYearTypes = Record<string, FinancialDataTypes[] | undefined>
 type dataOrganizedByYearAndMonthTypes = Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined>
@@ -14,14 +15,12 @@ interface useHigherExpensesProps {
   financialData: FinancialDataTypes[] | undefined,
   selectedYear: string,
   selectedMonth: string,
-  monthNames: string[]
 }
 
 export const useHigherExpenses = ({
   financialData,
   selectedYear,
   selectedMonth,
-  monthNames
 }: useHigherExpensesProps) => {
 
   // Organize data by year
@@ -81,7 +80,7 @@ export const useHigherExpenses = ({
       return getTopFive(accumCurrentByCategory, accumPreviousByCategory)
     } else {
       // Calculate top 5 of the higher expenses by month within the selected year
-      const selectedMonthIndex = monthNames.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
+      const selectedMonthIndex = MONTH_NAMES.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
       const previousSelectedMonthData = dataOrganizedByYearAndMonth[selectedYear]?.[String(selectedMonthIndex).padStart(2, '0')] ?? []
       const currentSelectedMonthData = dataOrganizedByYearAndMonth[selectedYear]?.[String(selectedMonthIndex + 1).padStart(2, '0')] ?? []
 

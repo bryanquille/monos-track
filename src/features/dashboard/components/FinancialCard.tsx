@@ -2,38 +2,38 @@ import { cn } from "../../../shared/utils/cn";
 import { BanknoteArrowDown, BanknoteArrowUp, CircleEqual, Info, TrendingDown, TrendingUp } from "lucide-react";
 import { useTimeAgo } from "../hooks/useTimeAgo";
 
-interface FinancialCardProps {
+interface FinancialCardPropsTypes {
   title: string
   cashValue: number | null
   lastUpdatedDate: number
-  lastMonthTotalIncome: number | null
-  lastMonthTotalExpense: number | null
+  lastPeriodTotalIncome: number | null
+  lastPeriodTotalExpense: number | null
 }
 
 function FinancialCard({
   title,
   cashValue,
   lastUpdatedDate,
-  lastMonthTotalIncome,
-  lastMonthTotalExpense,
-}: FinancialCardProps) {
+  lastPeriodTotalIncome,
+  lastPeriodTotalExpense,
+}: FinancialCardPropsTypes) {
 
   let message = ''
   let percentageOfDifference = 0
 
-  if (lastMonthTotalIncome === 0 || lastMonthTotalIncome === 0) {
+  if (lastPeriodTotalIncome === 0 || lastPeriodTotalIncome === 0) {
     message = '0% desde el mes pasado'
   }
 
-  if (title === 'totalIncome' && cashValue && lastMonthTotalIncome) {
-    percentageOfDifference = ((cashValue - lastMonthTotalIncome) * 100) / lastMonthTotalIncome
+  if (title === 'totalIncome' && cashValue && lastPeriodTotalIncome) {
+    percentageOfDifference = ((cashValue - lastPeriodTotalIncome) * 100) / lastPeriodTotalIncome
     message = percentageOfDifference === 0
       ? '0% desde el mes pasado'
       : `${Math.abs(percentageOfDifference).toFixed(2)}% desde el mes pasado`
   }
 
-  if (title === 'totalExpense' && cashValue && lastMonthTotalExpense) {
-    percentageOfDifference = ((cashValue - lastMonthTotalExpense) * 100) / lastMonthTotalExpense
+  if (title === 'totalExpense' && cashValue && lastPeriodTotalExpense) {
+    percentageOfDifference = ((cashValue - lastPeriodTotalExpense) * 100) / lastPeriodTotalExpense
     message = percentageOfDifference === 0
       ? '0% desde el mes pasado'
       : `${Math.abs(percentageOfDifference).toFixed(2)}% desde el mes pasado`

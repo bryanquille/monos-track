@@ -11,22 +11,37 @@ interface FinancialCardsDataProps {
 }
 
 export const useFinancialCardsData = ({ selectedYear, currentYear, selectedMonth, financialData }: FinancialCardsDataProps) => {
-  // Getting a list of available years in data for the select input
-  const availableYears = useMemo(() => {
-    const uniqueYears = Array.from(
-      new Set([...financialData.map(item => item.movement_date.slice(0, 4)), currentYear])
-    )
-    return ['noYearSelected', ...uniqueYears]
-  }, [financialData, currentYear])
+  // // Getting a list of available years in data for the select input
+  // const availableYears = useMemo(() => {
+  //   const uniqueYears = Array.from(
+  //     new Set([...financialData.map(item => item.movement_date.slice(0, 4)), currentYear])
+  //   )
+  //   return ['noYearSelected', ...uniqueYears]
+  // }, [financialData, currentYear])
 
-  // Getting a list of available months in data for the select input
-  const availableMonths = useMemo(() => {
-    const currentMonthIndex = new Date().getMonth()
-    const filteredMonths = selectedYear === currentYear
-      ? monthNames.filter((_, index) => index <= currentMonthIndex)
-      : monthNames
-    return ['noMonthSelected', ...filteredMonths]
-  }, [currentYear, selectedYear])
+  // // Getting a list of available months in data for the select input
+  // const availableMonths = useMemo(() => {
+  //   const currentMonthIndex = new Date().getMonth()
+  //   const filteredMonths = selectedYear === currentYear
+  //     ? monthNames.filter((_, index) => index <= currentMonthIndex)
+  //     : monthNames
+  //   return ['noMonthSelected', ...filteredMonths]
+  // }, [currentYear, selectedYear])
+
+  // Getting last updated data
+  const getLastDate = (financialData: FinancialDataTypes[] | undefined) => {
+    if (!financialData || financialData.length === 0) return 0;
+
+    const sortDataByDate = [...financialData].sort((a, b) => (
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    ))
+
+    return new Date(sortDataByDate[0].created_at).getTime()
+  }
+
+  const lastUpdatedDate = useMemo(() => {
+    return getLastDate(financialData ?? [])
+  }, [financialData])
 
   // Get the array of data filtered by year
   const filteredByYearData = useMemo(() => {
@@ -100,8 +115,8 @@ export const useFinancialCardsData = ({ selectedYear, currentYear, selectedMonth
 
   if (selectedYear === 'noYearSelected') {
     return {
-      availableYears,
-      availableMonths,
+      // availableYears,
+      // availableMonths,
       financialDataOutput: {
         totalIncome: 0,
         totalExpense: 0,
@@ -115,9 +130,10 @@ export const useFinancialCardsData = ({ selectedYear, currentYear, selectedMonth
   }
 
   return {
-    availableYears,
-    availableMonths,
+    // availableYears,
+    // availableMonths,
     financialDataOutput,
     lastMonthFinancialData,
+    lastUpdatedDate
   }
 }

@@ -1,12 +1,12 @@
 import type { FinancialDataTypes } from "../types/dashboardTypes"
 import { filterDataForChartBars } from "../utils/fiterDataForChartBars"
+import { monthNames as MONTH_NAMES } from "../../../shared/constants/constants"
 
 interface useIncomesVsExpensesPropsTypes {
   selectedMonth: string
   selectedYear: string
   currentYear: string
   currentMonth: number
-  monthNames: string[]
   financialData: FinancialDataTypes[]
 }
 
@@ -15,7 +15,6 @@ export const useIncomesVsExpenses = ({
   selectedYear,
   currentYear,
   currentMonth,
-  monthNames,
   financialData = [],
 }: useIncomesVsExpensesPropsTypes) => {
 
@@ -41,7 +40,7 @@ export const useIncomesVsExpenses = ({
         selectedYear,
         selectedMonth,
         currentMonth,
-        monthNames,
+        MONTH_NAMES,
         mode
       )
 
@@ -58,7 +57,7 @@ export const useIncomesVsExpenses = ({
       selectedYear,
       selectedMonth,
       currentMonth,
-      monthNames,
+      MONTH_NAMES,
       'lastSix'
     )
 

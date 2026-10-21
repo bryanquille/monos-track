@@ -26,9 +26,9 @@ body {
   @apply w-full h-full min-h-screen overflow-x-hidden relative flex flex-col justify-between items-center gap-4;
 }
 
-p {
+/* p {
   @apply font-Plus-Jakarta-Sans;
-}
+} */
 
 .sr-only {
   position: absolute;
