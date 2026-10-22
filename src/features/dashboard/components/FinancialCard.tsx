@@ -1,6 +1,6 @@
-import { cn } from "../../../shared/utils/cn";
-import { BanknoteArrowDown, BanknoteArrowUp, CircleEqual, Info, TrendingDown, TrendingUp } from "lucide-react";
-import { useTimeAgo } from "../hooks/useTimeAgo";
+import { cn } from "../../../shared/utils/cn"
+import { BanknoteArrowDown, BanknoteArrowUp, CircleEqual, Info, TrendingDown, TrendingUp } from "lucide-react"
+import { useTimeAgo } from "../hooks/useTimeAgo"
 
 interface FinancialCardPropsTypes {
   title: string
