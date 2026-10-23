@@ -17,11 +17,23 @@ export const useFinancialCardsData = ({ selectedYear, selectedMonth, financialDa
 
   // Conditional logic to handle cases for filters
   if (selectedYear === 'noYearSelected') {
-    return {
-      currentPeriodData: undefined,
-      lastPeriodData: undefined,
-      lastUpdatedDate: undefined
-    }
+    return [
+      {
+        cardType: 'incomes',
+        currentTotalIncomes: undefined,
+        lastTotalIncomes: undefined
+      },
+      {
+        cardType: 'expenses',
+        currentTotalExpenses: undefined,
+        lastTotalExpenses: undefined
+      },
+      {
+        cardType: 'balance',
+        currentTotalBalance: undefined,
+        lastUpdatedDate
+      }
+    ]
   } else if (selectedMonth === 'nomonthselected') {
     // Get the array of data filtered by year
     const currentYearData = getDataByYear(financialData, selectedYear)
@@ -29,28 +41,33 @@ export const useFinancialCardsData = ({ selectedYear, selectedMonth, financialDa
     const lastYearData = getDataByYear(financialData, String(Number(selectedYear) - 1))
 
     // Get current year data by incomes and expenses
-    const currentYearTotalIncome = getTotalIncomeFromData(currentYearData)
-    const currentYearTotalExpense = getTotalExpenseFromData(currentYearData)
+    const currentYearTotalIncomes = getTotalIncomeFromData(currentYearData)
+    const currentYearTotalExpenses = getTotalExpenseFromData(currentYearData)
 
     // Get last year data by incomes and expenses
-    const lastYearTotalIncome = getTotalIncomeFromData(lastYearData)
-    const lastYearTotalExpense = getTotalExpenseFromData(lastYearData)
+    const lastYearTotalIncomes = getTotalIncomeFromData(lastYearData)
+    const lastYearTotalExpenses = getTotalExpenseFromData(lastYearData)
 
     // Get current total balance
-    const currentYearTotalBalance = currentYearTotalIncome - currentYearTotalExpense
+    const currentYearTotalBalance = currentYearTotalIncomes - currentYearTotalExpenses
 
-    return {
-      currentPeriodData: {
-        currentTotalIncome: currentYearTotalIncome,
-        currentTotalExpense: currentYearTotalExpense,
-        currentTotalBalance: currentYearTotalBalance
+    return [
+      {
+        cardType: 'incomes',
+        currentTotalIncomes: currentYearTotalIncomes,
+        lastTotalIncomes: lastYearTotalIncomes
       },
-      lastPeriodData: {
-        lastTotalIncome: lastYearTotalIncome,
-        lastYearTotalExpense: lastYearTotalExpense
+      {
+        cardType: 'expenses',
+        currentTotalExpenses: currentYearTotalExpenses,
+        lastTotalExpenses: lastYearTotalExpenses
       },
-      lastUpdatedDate
-    }
+      {
+        cardType: 'balance',
+        currentTotalBalance: currentYearTotalBalance,
+        lastUpdatedDate
+      }
+    ]
   } else {
     // Calculate the data for the selected month in the selected year
     // Get the array of data filtered by year
@@ -67,27 +84,32 @@ export const useFinancialCardsData = ({ selectedYear, selectedMonth, financialDa
     const lastMonthData = getDataByMonth(currentYearData, lastMonthArgument)
 
     // Get current month data by incomes and expenses
-    const currentMonthTotalIncome = getTotalIncomeFromData(currentMonthData)
-    const currentMonthTotalExpense = getTotalExpenseFromData(currentMonthData)
+    const currentMonthTotalIncomes = getTotalIncomeFromData(currentMonthData)
+    const currentMonthTotalExpenses = getTotalExpenseFromData(currentMonthData)
 
     // Get last month data by incomes and expenses
-    const lastMonthTotalIncome = getTotalIncomeFromData(lastMonthData)
-    const lastMonthTotalExpense = getTotalExpenseFromData(lastMonthData)
+    const lastMonthTotalIncomes = getTotalIncomeFromData(lastMonthData)
+    const lastMonthTotalExpenses = getTotalExpenseFromData(lastMonthData)
 
     // Get current total balance
-    const currentMonthTotalBalance = currentMonthTotalIncome - currentMonthTotalExpense
+    const currentMonthTotalBalance = currentMonthTotalIncomes - currentMonthTotalExpenses
 
-    return {
-      currentPeriodData: {
-        currentTotalIncome: currentMonthTotalIncome,
-        currentTotalExpense: currentMonthTotalExpense,
-        currentTotalBalance: currentMonthTotalBalance
+    return [
+      {
+        cardType: 'incomes',
+        currentTotalIncomes: currentMonthTotalIncomes,
+        lastTotalIncomes: lastMonthTotalIncomes
       },
-      lastPeriodData: {
-        lastTotalIncome: lastMonthTotalIncome,
-        lastYearTotalExpense: lastMonthTotalExpense
+      {
+        cardType: 'expenses',
+        currentTotalExpenses: currentMonthTotalExpenses,
+        lastTotalExpenses: lastMonthTotalExpenses
       },
-      lastUpdatedDate
-    }
+      {
+        cardType: 'balance',
+        currentTotalBalance: currentMonthTotalBalance,
+        lastUpdatedDate
+      }
+    ]
   }
 }

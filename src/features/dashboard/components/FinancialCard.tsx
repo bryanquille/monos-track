@@ -3,78 +3,130 @@ import { BanknoteArrowDown, BanknoteArrowUp, CircleEqual, Info, TrendingDown, Tr
 import { useTimeAgo } from "../hooks/useTimeAgo"
 
 interface FinancialCardPropsTypes {
-  title: string
-  cashValue: number | null
-  lastUpdatedDate: number
-  lastPeriodTotalIncome: number | null
-  lastPeriodTotalExpense: number | null
+  cardType: string
+  selectedYear: string
+  selectedMonth: string
+  currentTotalIncomes?: number
+  lastTotalIncomes?: number
+  currentTotalExpenses?: number
+  lastTotalExpenses?: number
+  currentTotalBalance?: number
+  lastUpdatedDate?: number
 }
 
 function FinancialCard({
-  title,
-  cashValue,
-  lastUpdatedDate,
-  lastPeriodTotalIncome,
-  lastPeriodTotalExpense,
+  cardType,
+  selectedYear,
+  selectedMonth,
+  currentTotalIncomes,
+  lastTotalIncomes,
+  currentTotalExpenses,
+  lastTotalExpenses,
+  currentTotalBalance,
+  lastUpdatedDate
 }: FinancialCardPropsTypes) {
 
-  let message = ''
-  let percentageOfDifference = 0
+  // Define if it is a year or a month selected in the filters
+  const monthOrYear = (() => {
+    if (selectedYear === 'noYearSelected') return null
+    else if (selectedYear !== 'noYearSelected' && selectedMonth === 'nomonthselected') return 'año'
+    else return 'mes'
+  })()
 
-  if (lastPeriodTotalIncome === 0 || lastPeriodTotalIncome === 0) {
-    message = '0% desde el mes pasado'
-  }
+  // Get the last updated time in text
+  const updatedDateMessage = useTimeAgo(lastUpdatedDate ?? 0)
 
-  if (title === 'totalIncome' && cashValue && lastPeriodTotalIncome) {
-    percentageOfDifference = ((cashValue - lastPeriodTotalIncome) * 100) / lastPeriodTotalIncome
-    message = percentageOfDifference === 0
-      ? '0% desde el mes pasado'
-      : `${Math.abs(percentageOfDifference).toFixed(2)}% desde el mes pasado`
-  }
+  const startValueAndMessage = (() => {
+    if (lastTotalIncomes === 0 || lastTotalExpenses === 0) {
+      return { startValue: 0, message: `% desde el ${monthOrYear} pasado` }
+    }
 
-  if (title === 'totalExpense' && cashValue && lastPeriodTotalExpense) {
-    percentageOfDifference = ((cashValue - lastPeriodTotalExpense) * 100) / lastPeriodTotalExpense
-    message = percentageOfDifference === 0
-      ? '0% desde el mes pasado'
-      : `${Math.abs(percentageOfDifference).toFixed(2)}% desde el mes pasado`
-  }
+    if (cardType === 'incomes' && currentTotalIncomes !== undefined && lastTotalIncomes !== undefined) {
+      const percentageOfDifference = ((currentTotalIncomes - lastTotalIncomes) * 100) / lastTotalIncomes
+      return { startValue: percentageOfDifference, message: `% desde el ${monthOrYear} pasado` }
+    }
 
-  const newMessage = useTimeAgo(lastUpdatedDate)
-  if (title === 'totalBalance' && cashValue) {
-    message = `Actulizado ${newMessage}`
-  }
+    if (cardType === 'expenses' && currentTotalExpenses !== undefined && lastTotalExpenses !== undefined) {
+      const percentageOfDifference = ((currentTotalExpenses - lastTotalExpenses) * 100) / lastTotalExpenses
+      return { startValue: percentageOfDifference, message: `% desde el ${monthOrYear} pasado` }
+    }
+
+    if (cardType === 'balance') {
+      return { startValue: null, message: updatedDateMessage }
+    }
+  })()
 
   return (
     <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/60 dark:bg-neutral-light/20')}>
       <div className={cn('flex flex-row-reverse justify-end items-center gap-2')}>
         <h3 className={cn('font-Plus-Jakarta-Sans font-medium text-[18px] opacity-65')}>
-          {title === 'totalIncome'
+          {cardType === 'incomes'
             ? 'Ingresos'
-            : title === 'totalExpense'
+            : cardType === 'expenses'
               ? 'Gastos'
-              : title === 'totalBalance'
-              && 'Balance'
+              : 'Balance'
           }
         </h3>
         <div className={cn(
           'p-1 rounded-md grid place-items-center',
-          title === 'totalIncome' && 'bg-cyan-100',
-          title === 'totalExpense' && 'bg-red-100',
-          title === 'totalBalance' && 'bg-sky-100'
+          cardType === 'incomes' && 'bg-cyan-100',
+          cardType === 'expenses' && 'bg-red-100',
+          cardType === 'balance' && 'bg-sky-100'
         )}>
-          {title === 'totalIncome'
+          {cardType === 'incomes'
             ? <BanknoteArrowUp className={cn('text-primary')} />
-            : title === 'totalExpense'
+            : cardType === 'expenses'
               ? <BanknoteArrowDown className={cn('text-red-500')} />
-              : title === 'totalBalance'
-              && <Info className={cn('text-sky-500')} />
+              : <Info className={cn('text-sky-500')} />
           }
         </div>
       </div>
       <p className={cn('font-Geist-Mono font-semibold text-2xl')}>
-        ${cashValue ? cashValue.toFixed(2) : '--,--'}
+        ${cardType === 'incomes'
+          ? currentTotalIncomes !== undefined ? currentTotalIncomes?.toFixed(2) : '--,--'
+          : cardType === 'expenses'
+            ? currentTotalExpenses !== undefined ? currentTotalExpenses?.toFixed(2) : '--,--'
+            : currentTotalBalance !== undefined ? currentTotalBalance?.toFixed(2) : '--,--'
+        }
       </p>
-      {cashValue
+      <p className={cn('text-sm')}>
+        {selectedYear === 'noYearSelected'
+          ? <span className={cn('flex flex-row gap-2 text-sm text-indigo-500')}>
+            <Info size={18} /> Selecciona un año para ver la información
+          </span>
+          : (cardType === 'balance' || startValueAndMessage?.startValue === null) && startValueAndMessage
+            ? <span className={cn('flex flex-row gap-2 text-sm text-indigo-500')}>
+              <Info size={18} /> Última actualización {startValueAndMessage.message}
+            </span>
+            : cardType === 'incomes'
+              ? startValueAndMessage && startValueAndMessage?.startValue > 0
+                ? <span className={cn('flex flex-row gap-2 text-green-500')}>
+                  <TrendingUp size={18} /> +{Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
+                </span>
+                : startValueAndMessage && startValueAndMessage?.startValue < 0
+                  ? <span className={cn('flex flex-row gap-2 text-red-500')}>
+                    <TrendingDown size={18} /> -{Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
+                  </span>
+                  : startValueAndMessage && startValueAndMessage?.startValue === 0
+                  && <span className={cn('flex flex-row gap-2 text-indigo-500')}>
+                    <CircleEqual size={18} /> {Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
+                  </span>
+              : cardType === 'expenses'
+                && startValueAndMessage && startValueAndMessage?.startValue > 0
+                ? <span className={cn('flex flex-row gap-2 text-red-500')}>
+                  <TrendingUp size={18} /> +{Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
+                </span>
+                : startValueAndMessage && startValueAndMessage?.startValue < 0
+                  ? <span className={cn('flex flex-row gap-2 text-green-500')}>
+                    <TrendingDown size={18} /> -{Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
+                  </span>
+                  : startValueAndMessage && startValueAndMessage?.startValue === 0
+                  && <span className={cn('flex flex-row gap-2 text-indigo-500')}>
+                    <CircleEqual size={18} /> {Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
+                  </span>
+        }
+      </p>
+      {/* {cashValue
         ? <p className={cn('text-sm')}>
           {title === 'totalIncome'
             ? percentageOfDifference > 0
@@ -111,7 +163,7 @@ function FinancialCard({
         : <p className={cn('flex flex-row gap-2 text-sm text-indigo-500')}>
           <Info size={18} /> Sin datos para mostrar
         </p>
-      }
+      } */}
     </article>
   )
 }

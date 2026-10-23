@@ -59,20 +59,6 @@ function DashboardPage() {
     }
   })
 
-  // const getLastDate = (financialData: FinancialDataTypes[] | undefined) => {
-  //   if (!financialData || financialData.length === 0) return 0;
-
-  //   const sortDataByDate = [...financialData].sort((a, b) => (
-  //     new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  //   ))
-
-  //   return new Date(sortDataByDate[0].created_at).getTime()
-  // }
-
-  // const lastUpdatedDate = useMemo(() => {
-  //   return getLastDate(financialData ?? [])
-  // }, [financialData])
-
   // Getting a list of available years in data for the select input
   const availableYears = useMemo(() => {
     const uniqueYears = Array.from(
@@ -91,13 +77,7 @@ function DashboardPage() {
   }, [currentYear, selectedYear])
 
   // Data for financial cards summary information
-  const {
-    currentPeriodData,
-    lastPeriodData,
-    lastUpdatedDate
-  } = useFinancialCardsData({ selectedYear, currentYear, selectedMonth, financialData: financialData ?? [] })
-  // console.log(financialDataOutput)
-  // console.log(lastMonthFinancialData)
+  const financialCardsData = useFinancialCardsData({ selectedYear, selectedMonth, financialData: financialData ?? [] })
 
   // Data for incomes vs expenses chart bars
   const {
@@ -128,18 +108,20 @@ function DashboardPage() {
         />
         {/* Financial cards */}
         <div className={cn('p-4 grid grid-cols-1 gap-3 items-center md:grid-cols-2 lg:grid-cols-3')}>
-          {Object.entries(currentPeriodData).map((item, index) => {
-            return (
-              <FinancialCard
-                key={index}
-                title={item[0]}
-                cashValue={item[1]}
-                lastUpdatedDate={lastUpdatedDate ?? 0}
-                lastPeriodTotalExpense={lastMonthFinancialData.lastMonthTotalExpense}
-                lastPeriodTotalIncome={lastMonthFinancialData.lastMonthTotalIncome}
-              />
-            )
-          })}
+          {financialCardsData.map(item => (
+            <FinancialCard
+              key={item.cardType}
+              cardType={item.cardType}
+              selectedYear={selectedYear}
+              selectedMonth={selectedMonth}
+              currentTotalIncomes={item.currentTotalIncomes}
+              currentTotalExpenses={item.currentTotalExpenses}
+              currentTotalBalance={item.currentTotalBalance}
+              lastTotalIncomes={item.lastTotalIncomes}
+              lastTotalExpenses={item.lastTotalExpenses}
+              lastUpdatedDate={item.lastUpdatedDate}
+            />
+          ))}
         </div>
         {/* Charts */}
         {/* Bar Chart: Incomes vs Expenses */}
