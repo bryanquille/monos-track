@@ -92,8 +92,8 @@ function DashboardPage() {
 
   // Data for financial cards summary information
   const {
-    financialDataOutput,
-    lastMonthFinancialData,
+    currentPeriodData,
+    lastPeriodData,
     lastUpdatedDate
   } = useFinancialCardsData({ selectedYear, currentYear, selectedMonth, financialData: financialData ?? [] })
   // console.log(financialDataOutput)
@@ -128,7 +128,7 @@ function DashboardPage() {
         />
         {/* Financial cards */}
         <div className={cn('p-4 grid grid-cols-1 gap-3 items-center md:grid-cols-2 lg:grid-cols-3')}>
-          {Object.entries(financialDataOutput).map((item, index) => {
+          {Object.entries(currentPeriodData).map((item, index) => {
             return (
               <FinancialCard
                 key={index}
