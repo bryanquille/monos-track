@@ -1,6 +1,6 @@
 import type { FinancialDataTypes } from "../types/dashboardTypes";
 
-interface dataTypes {
+export interface dataTypes {
   movement_type: string;
   amount: number;
   movement_date: string;

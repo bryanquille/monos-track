@@ -1,115 +1,123 @@
 import { useMemo } from "react"
 import { monthNames as MONTH_NAMES } from "../../../shared/constants/constants"
-import { getDataByMonth, getDataByYear, getLastUpdatesDate, getTotalExpenseFromData, getTotalIncomeFromData } from "../utils/filterDataFunctions"
+import {
+  getDataByMonth,
+  getDataByYear,
+  getLastUpdatesDate,
+  getTotalExpenseFromData,
+  getTotalIncomeFromData,
+  type dataTypes
+} from "../utils/filterDataFunctions"
 import type { FinancialDataTypes } from "../types/dashboardTypes"
 
-interface FinancialCardsDataProps {
+interface FinancialCardsDataPropsTypes {
   selectedYear: string
   selectedMonth: string
   financialData: FinancialDataTypes[]
 }
 
-export const useFinancialCardsData = ({ selectedYear, selectedMonth, financialData }: FinancialCardsDataProps) => {
-  // Getting last updated data
+// Define a strict type for the structure of each financial card
+export type CardType = 'incomes' | 'expenses' | 'balance'
+
+export interface FinancialCardSummary {
+  cardType: CardType
+  currentTotalIncomes?: number
+  lastTotalIncomes?: number
+  currentTotalExpenses?: number
+  lastTotalExpenses?: number
+  currentTotalBalance?: number
+  lastUpdatedDate?: number
+}
+
+export const useFinancialCardsData = ({
+  selectedYear,
+  selectedMonth,
+  financialData = []
+}: FinancialCardsDataPropsTypes): FinancialCardSummary[] => {
+
+  // Get the last updated date in movements
   const lastUpdatedDate = useMemo(() => {
-    return getLastUpdatesDate(financialData ?? [])
+    return getLastUpdatesDate(financialData)
   }, [financialData])
 
-  // Conditional logic to handle cases for filters
-  if (selectedYear === 'noYearSelected') {
-    return [
-      {
-        cardType: 'incomes',
-        currentTotalIncomes: undefined,
-        lastTotalIncomes: undefined
-      },
-      {
-        cardType: 'expenses',
-        currentTotalExpenses: undefined,
-        lastTotalExpenses: undefined
-      },
-      {
-        cardType: 'balance',
-        currentTotalBalance: undefined,
-        lastUpdatedDate
-      }
-    ]
-  } else if (selectedMonth === 'nomonthselected') {
-    // Get the array of data filtered by year
+  const cardsData = useMemo<FinancialCardSummary[]>(() => {
+
+    // CASE A: There is no year selected
+    if (selectedYear === 'noYearSelected') {
+      return [
+        { cardType: 'incomes', currentTotalIncomes: undefined, lastTotalIncomes: undefined },
+        { cardType: 'expenses', currentTotalExpenses: undefined, lastTotalExpenses: undefined },
+        { cardType: 'balance', currentTotalBalance: undefined, lastUpdatedDate }
+      ]
+    }
+
+    // CASE B: There is a year selected but no a month
+    if (selectedMonth === 'nomonthselected') {
+      const currentYearData = getDataByYear(financialData, selectedYear)
+      const lastYearData = getDataByYear(financialData, String(Number(selectedYear) - 1))
+
+      const currentYearTotalIncomes = getTotalIncomeFromData(currentYearData)
+      const currentYearTotalExpenses = getTotalExpenseFromData(currentYearData)
+
+      const lastYearTotalIncomes = getTotalIncomeFromData(lastYearData)
+      const lastYearTotalExpenses = getTotalExpenseFromData(lastYearData)
+
+      const currentYearTotalBalance = currentYearTotalIncomes - currentYearTotalExpenses
+
+      return [
+        { cardType: 'incomes', currentTotalIncomes: currentYearTotalIncomes, lastTotalIncomes: lastYearTotalIncomes },
+        { cardType: 'expenses', currentTotalExpenses: currentYearTotalExpenses, lastTotalExpenses: lastYearTotalExpenses },
+        { cardType: 'balance', currentTotalBalance: currentYearTotalBalance, lastUpdatedDate }
+      ]
+    }
+
+    // CASE C: There is a year and a month selected
     const currentYearData = getDataByYear(financialData, selectedYear)
-    // Get the array fot data filtered by last year
-    const lastYearData = getDataByYear(financialData, String(Number(selectedYear) - 1))
+    const normalizedMonth = selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)
+    const monthIndex = MONTH_NAMES.indexOf(normalizedMonth)
 
-    // Get current year data by incomes and expenses
-    const currentYearTotalIncomes = getTotalIncomeFromData(currentYearData)
-    const currentYearTotalExpenses = getTotalExpenseFromData(currentYearData)
+    // Validación defensiva por si el mes no es válido
+    if (monthIndex === -1) {
+      return [
+        { cardType: 'incomes', currentTotalIncomes: 0, lastTotalIncomes: 0 },
+        { cardType: 'expenses', currentTotalExpenses: 0, lastTotalExpenses: 0 },
+        { cardType: 'balance', currentTotalBalance: 0, lastUpdatedDate }
+      ]
+    }
 
-    // Get last year data by incomes and expenses
-    const lastYearTotalIncomes = getTotalIncomeFromData(lastYearData)
-    const lastYearTotalExpenses = getTotalExpenseFromData(lastYearData)
+    const currentMonthIndex = monthIndex + 1 // 1 al 12
+    let lastMonthData: dataTypes[] = []
 
-    // Get current total balance
-    const currentYearTotalBalance = currentYearTotalIncomes - currentYearTotalExpenses
+    // Lógica segura para Enero y meses regulares
+    if (selectedMonth.toLowerCase() === 'enero') {
+      const previousYear = String(Number(selectedYear) - 1)
+      const previousYearData = getDataByYear(financialData, previousYear)
+      lastMonthData = getDataByMonth(previousYearData, '12')
+    } else {
+      const lastMonthIndex = currentMonthIndex - 1
+      const lastMonthArgument = String(lastMonthIndex).padStart(2, '0')
+      lastMonthData = getDataByMonth(currentYearData, lastMonthArgument)
+    }
 
-    return [
-      {
-        cardType: 'incomes',
-        currentTotalIncomes: currentYearTotalIncomes,
-        lastTotalIncomes: lastYearTotalIncomes
-      },
-      {
-        cardType: 'expenses',
-        currentTotalExpenses: currentYearTotalExpenses,
-        lastTotalExpenses: lastYearTotalExpenses
-      },
-      {
-        cardType: 'balance',
-        currentTotalBalance: currentYearTotalBalance,
-        lastUpdatedDate
-      }
-    ]
-  } else {
-    // Calculate the data for the selected month in the selected year
-    // Get the array of data filtered by year
-    const currentYearData = getDataByYear(financialData, selectedYear)
-
-    // Get the array of data filtered by current month in the current year
-    const numberOfSelectedMonth = MONTH_NAMES.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)) + 1
-    const currentMonthArgument = String(numberOfSelectedMonth).length === 1 ? `0${String(numberOfSelectedMonth)}` : String(numberOfSelectedMonth)
+    const currentMonthArgument = String(currentMonthIndex).padStart(2, '0')
     const currentMonthData = getDataByMonth(currentYearData, currentMonthArgument)
 
-    // Get the array of data filtered by last month in the last year
-    const numberOfLastMonth = MONTH_NAMES.indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1))
-    const lastMonthArgument = String(numberOfLastMonth).length === 1 ? `0${String(numberOfLastMonth)}` : String(numberOfLastMonth)
-    const lastMonthData = getDataByMonth(currentYearData, lastMonthArgument)
-
-    // Get current month data by incomes and expenses
+    // Cálculos finales de montos
     const currentMonthTotalIncomes = getTotalIncomeFromData(currentMonthData)
     const currentMonthTotalExpenses = getTotalExpenseFromData(currentMonthData)
 
-    // Get last month data by incomes and expenses
     const lastMonthTotalIncomes = getTotalIncomeFromData(lastMonthData)
     const lastMonthTotalExpenses = getTotalExpenseFromData(lastMonthData)
 
-    // Get current total balance
     const currentMonthTotalBalance = currentMonthTotalIncomes - currentMonthTotalExpenses
 
     return [
-      {
-        cardType: 'incomes',
-        currentTotalIncomes: currentMonthTotalIncomes,
-        lastTotalIncomes: lastMonthTotalIncomes
-      },
-      {
-        cardType: 'expenses',
-        currentTotalExpenses: currentMonthTotalExpenses,
-        lastTotalExpenses: lastMonthTotalExpenses
-      },
-      {
-        cardType: 'balance',
-        currentTotalBalance: currentMonthTotalBalance,
-        lastUpdatedDate
-      }
+      { cardType: 'incomes', currentTotalIncomes: currentMonthTotalIncomes, lastTotalIncomes: lastMonthTotalIncomes },
+      { cardType: 'expenses', currentTotalExpenses: currentMonthTotalExpenses, lastTotalExpenses: lastMonthTotalExpenses },
+      { cardType: 'balance', currentTotalBalance: currentMonthTotalBalance, lastUpdatedDate }
     ]
-  }
+
+  }, [selectedYear, selectedMonth, financialData, lastUpdatedDate])
+
+  return cardsData
 }
