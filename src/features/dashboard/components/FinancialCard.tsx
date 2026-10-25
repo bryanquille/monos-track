@@ -1,9 +1,10 @@
 import { cn } from "../../../shared/utils/cn"
 import { BanknoteArrowDown, BanknoteArrowUp, CircleEqual, Info, TrendingDown, TrendingUp } from "lucide-react"
 import { useTimeAgo } from "../hooks/useTimeAgo"
+import type { CardType } from "../hooks/useFinancialCardsData"
 
 interface FinancialCardPropsTypes {
-  cardType: string
+  cardType: CardType
   selectedYear: string
   selectedMonth: string
   currentTotalIncomes?: number
@@ -26,144 +27,141 @@ function FinancialCard({
   lastUpdatedDate
 }: FinancialCardPropsTypes) {
 
-  // Define if it is a year or a month selected in the filters
-  const monthOrYear = (() => {
-    if (selectedYear === 'noYearSelected') return null
-    else if (selectedYear !== 'noYearSelected' && selectedMonth === 'nomonthselected') return 'año'
-    else return 'mes'
-  })()
+  const periodLabel = selectedYear === 'noYearSelected'
+    ? null
+    : selectedMonth === 'nomonthselected'
+      ? 'año'
+      : 'mes'
 
-  // Get the last updated time in text
   const updatedDateMessage = useTimeAgo(lastUpdatedDate ?? 0)
 
-  const startValueAndMessage = (() => {
-    if (lastTotalIncomes === 0 || lastTotalExpenses === 0) {
-      return { startValue: 0, message: `% desde el ${monthOrYear} pasado` }
+  const getCardConfiguration = () => {
+    if (cardType === 'incomes') {
+      const current = currentTotalIncomes ?? 0
+      const last = lastTotalIncomes ?? 0
+      const diff = last > 0 ? ((current - last) * 100) / last : 0
+      return {
+        title: 'Ingresos',
+        amount: currentTotalIncomes,
+        diffPercentage: diff,
+        iconBg: 'bg-cyan-100',
+        Icon: BanknoteArrowUp,
+        iconColor: 'text-primary',
+      }
     }
 
-    if (cardType === 'incomes' && currentTotalIncomes !== undefined && lastTotalIncomes !== undefined) {
-      const percentageOfDifference = ((currentTotalIncomes - lastTotalIncomes) * 100) / lastTotalIncomes
-      return { startValue: percentageOfDifference, message: `% desde el ${monthOrYear} pasado` }
+    if (cardType === 'expenses') {
+      const current = currentTotalExpenses ?? 0
+      const last = lastTotalExpenses ?? 0
+      const diff = last > 0 ? ((current - last) * 100) / last : 0
+      return {
+        title: 'Gastos',
+        amount: currentTotalExpenses,
+        diffPercentage: diff,
+        iconBg: 'bg-red-100',
+        Icon: BanknoteArrowDown,
+        iconColor: 'text-red-500',
+      }
     }
 
-    if (cardType === 'expenses' && currentTotalExpenses !== undefined && lastTotalExpenses !== undefined) {
-      const percentageOfDifference = ((currentTotalExpenses - lastTotalExpenses) * 100) / lastTotalExpenses
-      return { startValue: percentageOfDifference, message: `% desde el ${monthOrYear} pasado` }
+    return {
+      title: 'Balance',
+      amount: currentTotalBalance,
+      diffPercentage: null,
+      iconBg: 'bg-sky-100',
+      Icon: Info,
+      iconColor: 'text-sky-500',
+    }
+  }
+
+  const { title, amount, diffPercentage, iconBg, Icon, iconColor } = getCardConfiguration()
+
+  const renderCardFooter = () => {
+    if (selectedYear === 'noYearSelected') {
+      return (
+        <span className="flex items-center gap-2 text-indigo-500">
+          <Info size={18} /> Selecciona un año para ver la información
+        </span>
+      )
     }
 
-    if (cardType === 'balance') {
-      return { startValue: null, message: updatedDateMessage }
+    if (cardType === 'balance' || diffPercentage === null) {
+      return (
+        <span className="flex items-center gap-2 text-indigo-500">
+          <Info size={18} /> Última actualización {updatedDateMessage}
+        </span>
+      )
     }
-  })()
+
+    const absPercentage = Math.abs(diffPercentage).toFixed(2)
+    const suffix = `% desde el ${periodLabel} pasado`
+
+    // If the card is for incomes
+    if (cardType === 'incomes') {
+      if (diffPercentage > 0) {
+        // Incomes increase
+        return (
+          <span className="flex items-center gap-2 text-green-500 font-medium">
+            <TrendingUp size={18} /> +{absPercentage}{suffix}
+          </span>
+        )
+      }
+      if (diffPercentage < 0) {
+        // Incomes decrease
+        return (
+          <span className="flex items-center gap-2 text-red-500 font-medium">
+            <TrendingDown size={18} /> -{absPercentage}{suffix}
+          </span>
+        )
+      }
+    }
+
+    // If the card is for expenses
+    if (cardType === 'expenses') {
+      if (diffPercentage > 0) {
+        // Expenses increase
+        return (
+          <span className="flex items-center gap-2 text-red-500 font-medium">
+            <TrendingUp size={18} /> +{absPercentage}{suffix}
+          </span>
+        )
+      }
+      if (diffPercentage < 0) {
+        // Expenses decrease
+        return (
+          <span className="flex items-center gap-2 text-green-500 font-medium">
+            <TrendingDown size={18} /> -{absPercentage}{suffix}
+          </span>
+        )
+      }
+    }
+
+    // If there is no difference (0%)
+    return (
+      <span className="flex items-center gap-2 text-indigo-500 font-medium">
+        <CircleEqual size={18} /> 0.00{suffix}
+      </span>
+    )
+  }
 
   return (
     <article className={cn('p-4 flex flex-col justify-center gap-4 rounded-2xl bg-neutral-light/60 dark:bg-neutral-light/20')}>
       <div className={cn('flex flex-row-reverse justify-end items-center gap-2')}>
         <h3 className={cn('font-Plus-Jakarta-Sans font-medium text-[18px] opacity-65')}>
-          {cardType === 'incomes'
-            ? 'Ingresos'
-            : cardType === 'expenses'
-              ? 'Gastos'
-              : 'Balance'
-          }
+          {title}
         </h3>
-        <div className={cn(
-          'p-1 rounded-md grid place-items-center',
-          cardType === 'incomes' && 'bg-cyan-100',
-          cardType === 'expenses' && 'bg-red-100',
-          cardType === 'balance' && 'bg-sky-100'
-        )}>
-          {cardType === 'incomes'
-            ? <BanknoteArrowUp className={cn('text-primary')} />
-            : cardType === 'expenses'
-              ? <BanknoteArrowDown className={cn('text-red-500')} />
-              : <Info className={cn('text-sky-500')} />
-          }
+        <div className={cn('p-1 rounded-md grid place-items-center', iconBg)}>
+          <Icon className={cn(iconColor)} />
         </div>
       </div>
+
       <p className={cn('font-Geist-Mono font-semibold text-2xl')}>
-        ${cardType === 'incomes'
-          ? currentTotalIncomes !== undefined ? currentTotalIncomes?.toFixed(2) : '--,--'
-          : cardType === 'expenses'
-            ? currentTotalExpenses !== undefined ? currentTotalExpenses?.toFixed(2) : '--,--'
-            : currentTotalBalance !== undefined ? currentTotalBalance?.toFixed(2) : '--,--'
-        }
+        ${amount !== undefined ? amount.toFixed(2) : '--,--'}
       </p>
-      <p className={cn('text-sm')}>
-        {selectedYear === 'noYearSelected'
-          ? <span className={cn('flex flex-row gap-2 text-sm text-indigo-500')}>
-            <Info size={18} /> Selecciona un año para ver la información
-          </span>
-          : (cardType === 'balance' || startValueAndMessage?.startValue === null) && startValueAndMessage
-            ? <span className={cn('flex flex-row gap-2 text-sm text-indigo-500')}>
-              <Info size={18} /> Última actualización {startValueAndMessage.message}
-            </span>
-            : cardType === 'incomes'
-              ? startValueAndMessage && startValueAndMessage?.startValue > 0
-                ? <span className={cn('flex flex-row gap-2 text-green-500')}>
-                  <TrendingUp size={18} /> +{Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
-                </span>
-                : startValueAndMessage && startValueAndMessage?.startValue < 0
-                  ? <span className={cn('flex flex-row gap-2 text-red-500')}>
-                    <TrendingDown size={18} /> -{Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
-                  </span>
-                  : startValueAndMessage && startValueAndMessage?.startValue === 0
-                  && <span className={cn('flex flex-row gap-2 text-indigo-500')}>
-                    <CircleEqual size={18} /> {Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
-                  </span>
-              : cardType === 'expenses'
-                && startValueAndMessage && startValueAndMessage?.startValue > 0
-                ? <span className={cn('flex flex-row gap-2 text-red-500')}>
-                  <TrendingUp size={18} /> +{Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
-                </span>
-                : startValueAndMessage && startValueAndMessage?.startValue < 0
-                  ? <span className={cn('flex flex-row gap-2 text-green-500')}>
-                    <TrendingDown size={18} /> -{Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
-                  </span>
-                  : startValueAndMessage && startValueAndMessage?.startValue === 0
-                  && <span className={cn('flex flex-row gap-2 text-indigo-500')}>
-                    <CircleEqual size={18} /> {Math.abs(startValueAndMessage.startValue).toFixed(2) + startValueAndMessage.message}
-                  </span>
-        }
-      </p>
-      {/* {cashValue
-        ? <p className={cn('text-sm')}>
-          {title === 'totalIncome'
-            ? percentageOfDifference > 0
-              ? <span className={cn('flex flex-row gap-2 text-green-500')}>
-                <TrendingUp size={18} /> +{message}
-              </span>
-              : percentageOfDifference < 0
-                ? <span className={cn('flex flex-row gap-2 text-red-500')}>
-                  <TrendingDown size={18} /> -{message}
-                </span>
-                : percentageOfDifference === 0
-                && <span className={cn('flex flex-row gap-2 text-indigo-500')}>
-                  <CircleEqual size={18} /> {message}
-                </span>
-            : title === 'totalExpense'
-              ? percentageOfDifference > 0
-                ? <span className={cn('flex flex-row gap-2 text-red-500')}>
-                  <TrendingUp size={18} /> +{message}
-                </span>
-                : percentageOfDifference < 0
-                  ? <span className={cn('flex flex-row gap-2 text-green-500')}>
-                    <TrendingDown size={18} /> -{message}
-                  </span>
-                  : percentageOfDifference === 0
-                  && <span className={cn('flex flex-row gap-2 text-indigo-500')}>
-                    <CircleEqual size={18} /> {message}
-                  </span>
-              : title === 'totalBalance'
-              && <span className={cn('flex flex-row gap-2 text-indigo-500')}>
-                <Info size={18} /> {message}
-              </span>
-          }
-        </p>
-        : <p className={cn('flex flex-row gap-2 text-sm text-indigo-500')}>
-          <Info size={18} /> Sin datos para mostrar
-        </p>
-      } */}
+
+      <div className={cn('text-sm')}>
+        {renderCardFooter()}
+      </div>
     </article>
   )
 }
