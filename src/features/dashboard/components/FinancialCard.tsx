@@ -1,82 +1,28 @@
 import { cn } from "../../../shared/utils/cn"
 import { BanknoteArrowDown, BanknoteArrowUp, CircleEqual, Info, TrendingDown, TrendingUp } from "lucide-react"
 import { useTimeAgo } from "../hooks/useTimeAgo"
-import type { CardType } from "../hooks/useFinancialCardsData"
+import type { FinancialCardData } from "../hooks/useFinancialCardsData"
 
-interface FinancialCardPropsTypes {
-  cardType: CardType
+interface FinancialCardProps extends FinancialCardData {
   selectedYear: string
-  selectedMonth: string
-  currentTotalIncomes?: number
-  lastTotalIncomes?: number
-  currentTotalExpenses?: number
-  lastTotalExpenses?: number
-  currentTotalBalance?: number
-  lastUpdatedDate?: number
 }
 
 function FinancialCard({
   cardType,
-  selectedYear,
-  selectedMonth,
-  currentTotalIncomes,
-  lastTotalIncomes,
-  currentTotalExpenses,
-  lastTotalExpenses,
-  currentTotalBalance,
-  lastUpdatedDate
-}: FinancialCardPropsTypes) {
-
-  const periodLabel = selectedYear === 'noYearSelected'
-    ? null
-    : selectedMonth === 'nomonthselected'
-      ? 'año'
-      : 'mes'
+  title,
+  amount,
+  iconBg,
+  iconColor,
+  diffText,
+  trend,
+  lastUpdatedDate,
+  selectedYear
+}: FinancialCardProps) {
 
   const updatedDateMessage = useTimeAgo(lastUpdatedDate ?? 0)
+  const Icon = cardType === 'incomes' ? BanknoteArrowUp : cardType === 'expenses' ? BanknoteArrowDown : Info
 
-  const getCardConfiguration = () => {
-    if (cardType === 'incomes') {
-      const current = currentTotalIncomes ?? 0
-      const last = lastTotalIncomes ?? 0
-      const diff = last > 0 ? ((current - last) * 100) / last : 0
-      return {
-        title: 'Ingresos',
-        amount: currentTotalIncomes,
-        diffPercentage: diff,
-        iconBg: 'bg-cyan-100',
-        Icon: BanknoteArrowUp,
-        iconColor: 'text-primary',
-      }
-    }
-
-    if (cardType === 'expenses') {
-      const current = currentTotalExpenses ?? 0
-      const last = lastTotalExpenses ?? 0
-      const diff = last > 0 ? ((current - last) * 100) / last : 0
-      return {
-        title: 'Gastos',
-        amount: currentTotalExpenses,
-        diffPercentage: diff,
-        iconBg: 'bg-red-100',
-        Icon: BanknoteArrowDown,
-        iconColor: 'text-red-500',
-      }
-    }
-
-    return {
-      title: 'Balance',
-      amount: currentTotalBalance,
-      diffPercentage: null,
-      iconBg: 'bg-sky-100',
-      Icon: Info,
-      iconColor: 'text-sky-500',
-    }
-  }
-
-  const { title, amount, diffPercentage, iconBg, Icon, iconColor } = getCardConfiguration()
-
-  const renderCardFooter = () => {
+  const renderFooter = () => {
     if (selectedYear === 'noYearSelected') {
       return (
         <span className="flex items-center gap-2 text-indigo-500">
@@ -85,7 +31,7 @@ function FinancialCard({
       )
     }
 
-    if (cardType === 'balance' || diffPercentage === null) {
+    if (cardType === 'balance') {
       return (
         <span className="flex items-center gap-2 text-indigo-500">
           <Info size={18} /> Última actualización {updatedDateMessage}
@@ -93,53 +39,45 @@ function FinancialCard({
       )
     }
 
-    const absPercentage = Math.abs(diffPercentage).toFixed(2)
-    const suffix = `% desde el ${periodLabel} pasado`
-
-    // If the card is for incomes
     if (cardType === 'incomes') {
-      if (diffPercentage > 0) {
-        // Incomes increase
+      if (trend === 'positive') {
         return (
           <span className="flex items-center gap-2 text-green-500 font-medium">
-            <TrendingUp size={18} /> +{absPercentage}{suffix}
+            <TrendingUp size={18} /> {diffText}
           </span>
         )
       }
-      if (diffPercentage < 0) {
-        // Incomes decrease
+
+      if (trend === 'negative') {
         return (
           <span className="flex items-center gap-2 text-red-500 font-medium">
-            <TrendingDown size={18} /> -{absPercentage}{suffix}
+            <TrendingDown size={18} /> {diffText}
           </span>
         )
       }
     }
 
-    // If the card is for expenses
     if (cardType === 'expenses') {
-      if (diffPercentage > 0) {
-        // Expenses increase
+      if (trend === 'negative') {
         return (
           <span className="flex items-center gap-2 text-red-500 font-medium">
-            <TrendingUp size={18} /> +{absPercentage}{suffix}
+            <TrendingUp size={18} /> {diffText}
           </span>
         )
       }
-      if (diffPercentage < 0) {
-        // Expenses decrease
+
+      if (trend === 'positive') {
         return (
           <span className="flex items-center gap-2 text-green-500 font-medium">
-            <TrendingDown size={18} /> -{absPercentage}{suffix}
+            <TrendingDown size={18} /> {diffText}
           </span>
         )
       }
     }
 
-    // If there is no difference (0%)
     return (
       <span className="flex items-center gap-2 text-indigo-500 font-medium">
-        <CircleEqual size={18} /> 0.00{suffix}
+        <CircleEqual size={18} /> {diffText}
       </span>
     )
   }
@@ -160,7 +98,7 @@ function FinancialCard({
       </p>
 
       <div className={cn('text-sm')}>
-        {renderCardFooter()}
+        {renderFooter()}
       </div>
     </article>
   )

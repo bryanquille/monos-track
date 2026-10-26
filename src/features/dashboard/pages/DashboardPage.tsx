@@ -112,14 +112,14 @@ function DashboardPage() {
             <FinancialCard
               key={item.cardType}
               cardType={item.cardType}
-              selectedYear={selectedYear}
-              selectedMonth={selectedMonth}
-              currentTotalIncomes={item.currentTotalIncomes}
-              currentTotalExpenses={item.currentTotalExpenses}
-              currentTotalBalance={item.currentTotalBalance}
-              lastTotalIncomes={item.lastTotalIncomes}
-              lastTotalExpenses={item.lastTotalExpenses}
+              title={item.title}
+              amount={item.amount}
+              iconBg={item.iconBg}
+              iconColor={item.iconColor}
+              diffText={item.diffText}
+              trend={item.trend}
               lastUpdatedDate={item.lastUpdatedDate}
+              selectedYear={selectedYear}
             />
           ))}
         </div>

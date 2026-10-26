@@ -9,17 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/dashboard/index'
-import { Route as AppDashboardSettingsRouteImport } from './routes/_app/dashboard/settings'
 import { Route as AppDashboardMovementsRouteImport } from './routes/_app/dashboard/movements'
+import { Route as AppDashboardSettingsRouteImport } from './routes/_app/dashboard/settings'
 
-const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -27,8 +26,9 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -41,14 +41,14 @@ const AppDashboardIndexRoute = AppDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppDashboardSettingsRoute = AppDashboardSettingsRouteImport.update({
-  id: '/dashboard/settings',
-  path: '/dashboard/settings',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppDashboardMovementsRoute = AppDashboardMovementsRouteImport.update({
   id: '/dashboard/movements',
   path: '/dashboard/movements',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardSettingsRoute = AppDashboardSettingsRouteImport.update({
+  id: '/dashboard/settings',
+  path: '/dashboard/settings',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -114,11 +114,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -128,11 +128,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/': {
@@ -149,18 +149,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/dashboard/settings': {
-      id: '/_app/dashboard/settings'
-      path: '/dashboard/settings'
-      fullPath: '/dashboard/settings'
-      preLoaderRoute: typeof AppDashboardSettingsRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/dashboard/movements': {
       id: '/_app/dashboard/movements'
       path: '/dashboard/movements'
       fullPath: '/dashboard/movements'
       preLoaderRoute: typeof AppDashboardMovementsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/dashboard/settings': {
+      id: '/_app/dashboard/settings'
+      path: '/dashboard/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof AppDashboardSettingsRouteImport
       parentRoute: typeof AppRoute
     }
   }

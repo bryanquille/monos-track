@@ -1,31 +1,24 @@
 import { useMemo } from "react"
 import { monthNames as MONTH_NAMES } from "../../../shared/constants/constants"
-import {
-  getDataByMonth,
-  getDataByYear,
-  getLastUpdatesDate,
-  getTotalExpenseFromData,
-  getTotalIncomeFromData,
-  type dataTypes
-} from "../utils/filterDataFunctions"
+import { getDataByMonth, getDataByYear, getLastUpdatesDate, getTotalExpenseFromData, getTotalIncomeFromData, type dataTypes } from "../utils/filterDataFunctions"
 import type { FinancialDataTypes } from "../types/dashboardTypes"
 
-interface FinancialCardsDataPropsTypes {
+interface FinancialCardsDataProps {
   selectedYear: string
   selectedMonth: string
   financialData: FinancialDataTypes[]
 }
 
-// Define a strict type for the structure of each financial card
 export type CardType = 'incomes' | 'expenses' | 'balance'
 
-export interface FinancialCardSummary {
+export interface FinancialCardData {
   cardType: CardType
-  currentTotalIncomes?: number
-  lastTotalIncomes?: number
-  currentTotalExpenses?: number
-  lastTotalExpenses?: number
-  currentTotalBalance?: number
+  title: string
+  amount?: number
+  iconBg: string
+  iconColor: string
+  diffText?: string
+  trend?: 'positive' | 'negative' | 'neutral'
   lastUpdatedDate?: number
 }
 
@@ -33,91 +26,114 @@ export const useFinancialCardsData = ({
   selectedYear,
   selectedMonth,
   financialData = []
-}: FinancialCardsDataPropsTypes): FinancialCardSummary[] => {
+}: FinancialCardsDataProps): FinancialCardData[] => {
 
-  // Get the last updated date in movements
   const lastUpdatedDate = useMemo(() => {
     return getLastUpdatesDate(financialData)
   }, [financialData])
 
-  const cardsData = useMemo<FinancialCardSummary[]>(() => {
+  const periodLabel = selectedYear === 'noYearSelected'
+    ? null
+    : selectedMonth === 'nomonthselected'
+      ? 'año'
+      : 'mes'
 
-    // CASE A: There is no year selected
+  return useMemo<FinancialCardData[]>(() => {
     if (selectedYear === 'noYearSelected') {
       return [
-        { cardType: 'incomes', currentTotalIncomes: undefined, lastTotalIncomes: undefined },
-        { cardType: 'expenses', currentTotalExpenses: undefined, lastTotalExpenses: undefined },
-        { cardType: 'balance', currentTotalBalance: undefined, lastUpdatedDate }
+        { cardType: 'incomes', title: 'Ingresos', iconBg: 'bg-cyan-100', iconColor: 'text-primary' },
+        { cardType: 'expenses', title: 'Gastos', iconBg: 'bg-red-100', iconColor: 'text-red-500' },
+        { cardType: 'balance', title: 'Balance', iconBg: 'bg-sky-100', iconColor: 'text-sky-500', lastUpdatedDate }
       ]
     }
 
-    // CASE B: There is a year selected but no a month
-    if (selectedMonth === 'nomonthselected') {
-      const currentYearData = getDataByYear(financialData, selectedYear)
-      const lastYearData = getDataByYear(financialData, String(Number(selectedYear) - 1))
-
-      const currentYearTotalIncomes = getTotalIncomeFromData(currentYearData)
-      const currentYearTotalExpenses = getTotalExpenseFromData(currentYearData)
-
-      const lastYearTotalIncomes = getTotalIncomeFromData(lastYearData)
-      const lastYearTotalExpenses = getTotalExpenseFromData(lastYearData)
-
-      const currentYearTotalBalance = currentYearTotalIncomes - currentYearTotalExpenses
-
-      return [
-        { cardType: 'incomes', currentTotalIncomes: currentYearTotalIncomes, lastTotalIncomes: lastYearTotalIncomes },
-        { cardType: 'expenses', currentTotalExpenses: currentYearTotalExpenses, lastTotalExpenses: lastYearTotalExpenses },
-        { cardType: 'balance', currentTotalBalance: currentYearTotalBalance, lastUpdatedDate }
-      ]
-    }
-
-    // CASE C: There is a year and a month selected
+    // Vista Anual o Mensual (Calculamos datos actuales y anteriores)
+    const isYearView = selectedMonth === 'nomonthselected'
     const currentYearData = getDataByYear(financialData, selectedYear)
-    const normalizedMonth = selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)
-    const monthIndex = MONTH_NAMES.indexOf(normalizedMonth)
 
-    // Validación defensiva por si el mes no es válido
-    if (monthIndex === -1) {
-      return [
-        { cardType: 'incomes', currentTotalIncomes: 0, lastTotalIncomes: 0 },
-        { cardType: 'expenses', currentTotalExpenses: 0, lastTotalExpenses: 0 },
-        { cardType: 'balance', currentTotalBalance: 0, lastUpdatedDate }
-      ]
-    }
+    let currentData = currentYearData
+    let previousData: dataTypes[] = []
 
-    const currentMonthIndex = monthIndex + 1 // 1 al 12
-    let lastMonthData: dataTypes[] = []
-
-    // Lógica segura para Enero y meses regulares
-    if (selectedMonth.toLowerCase() === 'enero') {
-      const previousYear = String(Number(selectedYear) - 1)
-      const previousYearData = getDataByYear(financialData, previousYear)
-      lastMonthData = getDataByMonth(previousYearData, '12')
+    if (isYearView) {
+      previousData = getDataByYear(financialData, String(Number(selectedYear) - 1))
     } else {
-      const lastMonthIndex = currentMonthIndex - 1
-      const lastMonthArgument = String(lastMonthIndex).padStart(2, '0')
-      lastMonthData = getDataByMonth(currentYearData, lastMonthArgument)
+      const normalizedMonth = selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)
+      const monthIndex = MONTH_NAMES.indexOf(normalizedMonth)
+      const currentMonthIndex = monthIndex + 1
+
+      const currentMonthArg = String(currentMonthIndex).padStart(2, '0')
+      currentData = getDataByMonth(currentYearData, currentMonthArg)
+
+      if (selectedMonth.toLowerCase() === 'enero') {
+        const prevYearData = getDataByYear(financialData, String(Number(selectedYear) - 1))
+        previousData = getDataByMonth(prevYearData, '12')
+      } else {
+        const prevMonthArg = String(currentMonthIndex - 1).padStart(2, '0')
+        previousData = getDataByMonth(currentYearData, prevMonthArg)
+      }
     }
 
-    const currentMonthArgument = String(currentMonthIndex).padStart(2, '0')
-    const currentMonthData = getDataByMonth(currentYearData, currentMonthArgument)
+    // Totales
+    const currentIncomes = getTotalIncomeFromData(currentData)
+    const currentExpenses = getTotalExpenseFromData(currentData)
+    const currentBalance = currentIncomes - currentExpenses
 
-    // Cálculos finales de montos
-    const currentMonthTotalIncomes = getTotalIncomeFromData(currentMonthData)
-    const currentMonthTotalExpenses = getTotalExpenseFromData(currentMonthData)
+    const lastIncomes = getTotalIncomeFromData(previousData)
+    const lastExpenses = getTotalExpenseFromData(previousData)
 
-    const lastMonthTotalIncomes = getTotalIncomeFromData(lastMonthData)
-    const lastMonthTotalExpenses = getTotalExpenseFromData(lastMonthData)
+    // Cálculo de porcentajes de diferencia encapsulado aquí
+    const incomeDiff = lastIncomes > 0 ? ((currentIncomes - lastIncomes) * 100) / lastIncomes : 0
+    const expenseDiff = lastExpenses > 0 ? ((currentExpenses - lastExpenses) * 100) / lastExpenses : 0
 
-    const currentMonthTotalBalance = currentMonthTotalIncomes - currentMonthTotalExpenses
+    const suffix = periodLabel ? `% desde el ${periodLabel} pasado` : ''
+
+    // Helper para formatear tendencia de ingresos
+    const getIncomeTrend = (diff: number) => {
+      const abs = Math.abs(diff).toFixed(2)
+      if (diff > 0) return { text: `+${abs}${suffix}`, trend: 'positive' as const }
+      if (diff < 0) return { text: `-${abs}${suffix}`, trend: 'negative' as const }
+      return { text: `0.00${suffix}`, trend: 'neutral' as const }
+    }
+
+    // Helper para formatear tendencia de gastos (invertida: subir es negative/rojo, bajar es positive/verde)
+    const getExpenseTrend = (diff: number) => {
+      const abs = Math.abs(diff).toFixed(2)
+      if (diff > 0) return { text: `+${abs}${suffix}`, trend: 'negative' as const }
+      if (diff < 0) return { text: `-${abs}${suffix}`, trend: 'positive' as const }
+      return { text: `0.00${suffix}`, trend: 'neutral' as const }
+    }
+
+    const incomeTrend = getIncomeTrend(incomeDiff)
+    const expenseTrend = getExpenseTrend(expenseDiff)
 
     return [
-      { cardType: 'incomes', currentTotalIncomes: currentMonthTotalIncomes, lastTotalIncomes: lastMonthTotalIncomes },
-      { cardType: 'expenses', currentTotalExpenses: currentMonthTotalExpenses, lastTotalExpenses: lastMonthTotalExpenses },
-      { cardType: 'balance', currentTotalBalance: currentMonthTotalBalance, lastUpdatedDate }
+      {
+        cardType: 'incomes',
+        title: 'Ingresos',
+        amount: currentIncomes,
+        iconBg: 'bg-cyan-100',
+        iconColor: 'text-primary',
+        diffText: incomeTrend.text,
+        trend: incomeTrend.trend
+      },
+      {
+        cardType: 'expenses',
+        title: 'Gastos',
+        amount: currentExpenses,
+        iconBg: 'bg-red-100',
+        iconColor: 'text-red-500',
+        diffText: expenseTrend.text,
+        trend: expenseTrend.trend
+      },
+      {
+        cardType: 'balance',
+        title: 'Balance',
+        amount: currentBalance,
+        iconBg: 'bg-sky-100',
+        iconColor: 'text-sky-500',
+        lastUpdatedDate
+      }
     ]
 
-  }, [selectedYear, selectedMonth, financialData, lastUpdatedDate])
-
-  return cardsData
+  }, [selectedYear, selectedMonth, financialData, lastUpdatedDate, periodLabel])
 }
