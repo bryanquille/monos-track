@@ -4,7 +4,7 @@ import FinancialCard from "../components/FinancialCard";
 import DashboardHeader from "../components/DashboardHeader";
 import FullScreenLoader from "../../../shared/components/FullScreenLoader";
 import { useForm, useWatch } from "react-hook-form";
-import { monthNames as MONTH_NAMES } from "../../../shared/constants/constants";
+import { MONTH_NAMES } from "../../../shared/constants/constants";
 import { useFinancialCardsData } from "../hooks/useFinancialCardsData";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../../../shared/lib/supabase";

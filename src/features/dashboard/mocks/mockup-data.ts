@@ -1,4 +1,4 @@
-import { monthNames } from "../../../shared/constants/constants.ts";
+import { MONTH_NAMES } from "../../../shared/constants/constants.ts";
 import { getDataByYear } from "../utils/filterDataFunctions.ts";
 
 interface mockFinancialDataTypes {
@@ -108,7 +108,7 @@ const currentYear = String(new Date().getFullYear())  // Get current year
 const dataByYears = getDataByYear(mockFinancialData, currentYear)
 
 // Create a list of months
-const monthNamesList = monthNames.map(month => month.toLowerCase())
+const monthNamesList = MONTH_NAMES.map(month => month.toLowerCase())
 
 
 // Create an object with the months as a key with an empty array as value

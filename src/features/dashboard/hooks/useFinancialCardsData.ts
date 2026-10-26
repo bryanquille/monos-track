@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { monthNames as MONTH_NAMES } from "../../../shared/constants/constants"
+import { MONTH_NAMES } from "../../../shared/constants/constants"
 import { getDataByMonth, getDataByYear, getLastUpdatesDate, getTotalExpenseFromData, getTotalIncomeFromData, type dataTypes } from "../utils/filterDataFunctions"
 import type { FinancialDataTypes } from "../types/dashboardTypes"
 

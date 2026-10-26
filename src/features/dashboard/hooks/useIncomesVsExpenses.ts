@@ -1,6 +1,6 @@
 import type { FinancialDataTypes } from "../types/dashboardTypes"
 import { filterDataForChartBars } from "../utils/fiterDataForChartBars"
-import { monthNames as MONTH_NAMES } from "../../../shared/constants/constants"
+import { MONTH_NAMES } from "../../../shared/constants/constants"
 
 interface useIncomesVsExpensesPropsTypes {
   selectedMonth: string

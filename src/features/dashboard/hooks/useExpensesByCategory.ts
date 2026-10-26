@@ -1,4 +1,4 @@
-import { monthNames } from "../../../shared/constants/constants";
+import { MONTH_NAMES } from "../../../shared/constants/constants";
 import type { FinancialDataTypes } from "../types/dashboardTypes";
 
 interface UseExpensesByCategoryPropsTypes {
@@ -68,7 +68,7 @@ export const useExpensesByCategory = ({
       })
     }
   } else {
-    const monthSelectedIndex = monthNames
+    const monthSelectedIndex = MONTH_NAMES
       .indexOf(selectedMonth.slice(0, 1).toUpperCase() + selectedMonth.slice(1)) + 1
     const filteredByMonth = expensesData
       .filter(item => Number(item.movement_date.slice(5, 7)) === monthSelectedIndex)

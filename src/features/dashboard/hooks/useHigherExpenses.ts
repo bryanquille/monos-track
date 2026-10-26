@@ -1,5 +1,5 @@
 import type { FinancialDataTypes } from "../types/dashboardTypes";
-import { monthNames as MONTH_NAMES } from "../../../shared/constants/constants"
+import { MONTH_NAMES } from "../../../shared/constants/constants"
 
 type dataOrganizedByYearTypes = Record<string, FinancialDataTypes[] | undefined>
 type dataOrganizedByYearAndMonthTypes = Record<string, Record<string, FinancialDataTypes[] | undefined> | undefined>
