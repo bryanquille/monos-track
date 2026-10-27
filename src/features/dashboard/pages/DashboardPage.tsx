@@ -1,47 +1,22 @@
-import { useAuthStore } from "../../auth/store/authStore";
-import { cn } from "../../../shared/utils/cn";
-import FinancialCard from "../components/FinancialCard";
-import DashboardHeader from "../components/DashboardHeader";
-import FullScreenLoader from "../../../shared/components/FullScreenLoader";
-import { useForm, useWatch } from "react-hook-form";
-import { MONTH_NAMES } from "../../../shared/constants/constants";
-import { useFinancialCardsData } from "../hooks/useFinancialCardsData";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../../../shared/lib/supabase";
-import { useMemo } from "react";
-import BarsChart from "../components/BarsChart";
-import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses";
-import type { FinancialDataTypes } from "../types/dashboardTypes";
-import { DoughnutChart } from "../components/DoughnutChart";
-import { useExpensesByCategory } from "../hooks/useExpensesByCategory";
-import { HigherExpenses } from "../components/HigherExpenses";
-import { useHigherExpenses } from "../hooks/useHigherExpenses";
-import DashboardFilters, { type FilterFormValues } from "../components/DashboardFilters";
+import { useAuthStore } from "../../auth/store/authStore"
+import { cn } from "../../../shared/utils/cn"
+import FinancialCard from "../components/FinancialCard"
+import DashboardHeader from "../components/DashboardHeader"
+import FullScreenLoader from "../../../shared/components/FullScreenLoader"
+import { useFinancialCardsData } from "../hooks/useFinancialCardsData"
+import { useQuery } from "@tanstack/react-query"
+import { supabase } from "../../../shared/lib/supabase"
+import BarsChart from "../components/BarsChart"
+import { useIncomesVsExpenses } from "../hooks/useIncomesVsExpenses"
+import type { FinancialDataTypes } from "../types/dashboardTypes"
+import { DoughnutChart } from "../components/DoughnutChart"
+import { useExpensesByCategory } from "../hooks/useExpensesByCategory"
+import { HigherExpenses } from "../components/HigherExpenses"
+import { useHigherExpenses } from "../hooks/useHigherExpenses"
+import DashboardFilters from "../components/DashboardFilters"
+import { useDashboardFilters } from "../hooks/useDashboardFilters"
 
 function DashboardPage() {
-  // Getting current date
-  const currentMonth = new Date().getMonth() + 1 // Get current month index
-  const currentYear = String(new Date().getFullYear())  // Get current year
-
-  // React Hook Form for managing the select inputs for year and month
-  const { register, control } = useForm<FilterFormValues>({
-    defaultValues: {
-      'year': currentYear,
-      'month': MONTH_NAMES[currentMonth - 1].toLowerCase()
-    }
-  })
-
-  // Getting the selected year and month from the filters form
-  const selectedYear = useWatch({
-    control,
-    name: 'year'
-  })
-
-  const selectedMonth = useWatch({
-    control,
-    name: 'month'
-  })
-
   // Get the financial data for processing in dashboard elements
   const {
     data: financialData,
@@ -59,32 +34,36 @@ function DashboardPage() {
     }
   })
 
-  // Getting a list of available years in data for the select input
-  const availableYears = useMemo(() => {
-    const uniqueYears = Array.from(
-      new Set([...(financialData ?? []).map(item => item.movement_date.slice(0, 4)), currentYear])
-    )
-    return ['noYearSelected', ...uniqueYears]
-  }, [financialData, currentYear])
+  // Data for managing filters
+  const {
+    currentYear,
+    currentMonth,
+    register,
+    selectedYear,
+    selectedMonth,
+    availableYears,
+    availableMonths
+  } = useDashboardFilters({ financialData: financialData ?? [] })
 
-  // Getting a list of available months in data for the select input
-  const availableMonths = useMemo(() => {
-    const currentMonthIndex = new Date().getMonth()
-    const filteredMonths = selectedYear === currentYear
-      ? MONTH_NAMES.filter((_, index) => index <= currentMonthIndex)
-      : MONTH_NAMES
-    return ['noMonthSelected', ...filteredMonths]
-  }, [currentYear, selectedYear])
-
-  // Data for financial cards summary information
-  const financialCardsData = useFinancialCardsData({ selectedYear, selectedMonth, financialData: financialData ?? [] })
+  // Data for financial cards - summary information
+  const financialCardsData = useFinancialCardsData({
+    selectedYear,
+    selectedMonth,
+    financialData: financialData ?? []
+  })
 
   // Data for incomes vs expenses chart bars
   const {
     labels,
     incomesValues,
     expensesValues
-  } = useIncomesVsExpenses({ selectedMonth, selectedYear, currentYear, currentMonth, financialData: financialData ?? [] })
+  } = useIncomesVsExpenses({
+    selectedMonth,
+    selectedYear,
+    currentYear,
+    currentMonth,
+    financialData: financialData ?? []
+  })
 
   // Data for expenses by category donut chart
   const chartData = useExpensesByCategory({ financialData: financialData ?? [], selectedYear, selectedMonth })
