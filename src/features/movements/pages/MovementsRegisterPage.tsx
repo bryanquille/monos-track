@@ -7,7 +7,6 @@ import { MovementList } from "../components/MovementsList"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "../../../shared/lib/supabase"
 
-
 export interface FinancialDataListTypes {
   amount: number
   category: string
@@ -23,7 +22,7 @@ export interface FinancialDataListTypes {
 
 function MovementsRegisterPage() {
   const [isIncome, setIsIncome] = useState(true)
-
+  const [isModalOpen, setIsModalOpen] = useState(true)
 
   const {
     data: movements,
@@ -41,9 +40,22 @@ function MovementsRegisterPage() {
     refetchOnMount: true
   })
 
-
-
-
+  const onViewDetails = (item: FinancialDataListTypes, isOpen: boolean) => {
+    return (
+      <section
+        className={cn(
+          'absolute',
+          isOpen ? 'block' : 'hidden'
+        )}
+      >
+        <header>
+          <h2>{item.movement_type}</h2>
+        </header>
+        <main></main>
+        <footer></footer>
+      </section>
+    )
+  }
 
   return (
     <>
