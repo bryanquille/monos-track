@@ -1,4 +1,4 @@
-import { RefreshCcw, ShieldCheck } from "lucide-react"
+import { BanknoteArrowDown, BanknoteArrowUp, RefreshCcw, ShieldCheck, X } from "lucide-react"
 import { cn } from "../../../shared/utils/cn"
 import { useState } from "react"
 import MovementsRegisterForm from "../components/MovementsRegisterForm"
@@ -6,6 +6,7 @@ import UserName from "../../../shared/components/UserName"
 import { MovementList } from "../components/MovementsList"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "../../../shared/lib/supabase"
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "../../../shared/constants/constants";
 
 export interface FinancialDataListTypes {
   amount: number
@@ -22,8 +23,10 @@ export interface FinancialDataListTypes {
 
 function MovementsRegisterPage() {
   const [isIncome, setIsIncome] = useState(true)
-  const [isModalOpen, setIsModalOpen] = useState(true)
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
+  const [selectedMovement, setSelectedMovement] = useState<FinancialDataListTypes | null>(null)
 
+  // Get data for movements
   const {
     data: movements,
   } = useQuery<FinancialDataListTypes[]>({
@@ -36,25 +39,12 @@ function MovementsRegisterPage() {
 
       if (error) throw new Error(error.message)
       return data as FinancialDataListTypes[] ?? []
-    },
-    refetchOnMount: true
+    }
   })
 
-  const onViewDetails = (item: FinancialDataListTypes, isOpen: boolean) => {
-    return (
-      <section
-        className={cn(
-          'absolute',
-          isOpen ? 'block' : 'hidden'
-        )}
-      >
-        <header>
-          <h2>{item.movement_type}</h2>
-        </header>
-        <main></main>
-        <footer></footer>
-      </section>
-    )
+  const handleViewDetails = (movement: FinancialDataListTypes) => {
+    setSelectedMovement(movement)
+    setIsDetailsModalOpen(true)
   }
 
   return (
@@ -117,10 +107,52 @@ function MovementsRegisterPage() {
           {/* <RegisteredMovementsList /> */}
           <MovementList
             movements={movements}
-
+            onViewDetails={handleViewDetails}
           />
         </main>
-        {/* <footer >Filtros</footer> */}
+      </section>
+      {/* Render the movement details */}
+      <section
+        className={cn(
+          'fixed top-1/2 left-1/2 -translate-1/2',
+          'w-5/6 max-w-96 p-4 rounded-2xl bg-white',
+          isDetailsModalOpen ? 'block' : 'hidden'
+        )}
+      >
+        <header className={cn('pb-1 mb-4 flex justify-between gap-4 border-b border-neutral-light')}>
+          <div className={cn('flex flex-row-reverse gap-4')}>
+            <div>
+              <div>
+                <h2>{selectedMovement?.movement_type === 'income'
+                  ? 'Ingreso' : 'Gasto'
+                }</h2>
+                <p>{selectedMovement?.movement_type === 'income'
+                  ? INCOME_CATEGORIES.filter(item => item.value === selectedMovement.category)[0].label
+                  : EXPENSE_CATEGORIES.filter(item => item.value === selectedMovement?.category)[0].label
+                }</p>
+              </div>
+            </div>
+            {selectedMovement?.movement_type === 'income'
+              ? <div className={cn('p-2 rounded-full grid place-items-center bg-cyan-100',)}>
+                <BanknoteArrowUp size={40} className={cn('text-primary')} />
+              </div>
+              : <div className={cn('p-1 rounded-full grid place-items-center bg-red-100',)}>
+                <BanknoteArrowDown size={40} className={cn('text-red-500')} />
+              </div>
+            }
+          </div>
+          <button
+            type="button"
+            className={cn('cursor-pointer')}
+            onClick={() => setIsDetailsModalOpen(false)}
+          >
+            <X size={18} />
+          </button>
+        </header>
+        <main>
+          <p>{selectedMovement?.description}</p>
+        </main>
+        <footer></footer>
       </section>
     </>
   )

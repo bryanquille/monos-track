@@ -6,7 +6,7 @@ import { useState } from "react"
 
 interface MovementListProps {
   movements: FinancialDataListTypes[] | undefined
-  onViewDetails?: (movement: FinancialDataListTypes) => void
+  onViewDetails: (movement: FinancialDataListTypes) => void
   onEdit?: (movement: FinancialDataListTypes) => void
   onDelete?: (id: string) => void
 }
