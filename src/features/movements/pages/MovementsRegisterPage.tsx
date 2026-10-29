@@ -112,48 +112,50 @@ function MovementsRegisterPage() {
         </main>
       </section>
       {/* Render the movement details */}
-      <section
-        className={cn(
-          'fixed top-1/2 left-1/2 -translate-1/2',
-          'w-5/6 max-w-96 p-4 rounded-2xl bg-white',
-          isDetailsModalOpen ? 'block' : 'hidden'
-        )}
-      >
-        <header className={cn('pb-1 mb-4 flex justify-between gap-4 border-b border-neutral-light')}>
-          <div className={cn('flex flex-row-reverse gap-4')}>
-            <div>
+      {selectedMovement &&
+        <section
+          className={cn(
+            'fixed top-1/2 left-1/2 -translate-1/2',
+            'w-5/6 max-w-96 p-4 rounded-2xl bg-white',
+            isDetailsModalOpen ? 'block' : 'hidden'
+          )}
+        >
+          <header className={cn('pb-1 mb-4 flex justify-between gap-4 border-b border-neutral-light')}>
+            <div className={cn('flex flex-row-reverse gap-4')}>
               <div>
-                <h2>{selectedMovement?.movement_type === 'income'
-                  ? 'Ingreso' : 'Gasto'
-                }</h2>
-                <p>{selectedMovement?.movement_type === 'income'
-                  ? INCOME_CATEGORIES.filter(item => item.value === selectedMovement.category)[0].label
-                  : EXPENSE_CATEGORIES.filter(item => item.value === selectedMovement?.category)[0].label
-                }</p>
+                <div>
+                  <h2>{selectedMovement?.movement_type === 'income'
+                    ? 'Ingreso' : 'Gasto'
+                  }</h2>
+                  <p>{selectedMovement?.movement_type === 'income'
+                    ? INCOME_CATEGORIES.filter(item => item.value === selectedMovement?.category)[0].label
+                    : EXPENSE_CATEGORIES.filter(item => item.value === selectedMovement?.category)[0].label
+                  }</p>
+                </div>
               </div>
+              {selectedMovement?.movement_type === 'income'
+                ? <div className={cn('p-2 rounded-full grid place-items-center bg-cyan-100',)}>
+                  <BanknoteArrowUp size={40} className={cn('text-primary')} />
+                </div>
+                : <div className={cn('p-1 rounded-full grid place-items-center bg-red-100',)}>
+                  <BanknoteArrowDown size={40} className={cn('text-red-500')} />
+                </div>
+              }
             </div>
-            {selectedMovement?.movement_type === 'income'
-              ? <div className={cn('p-2 rounded-full grid place-items-center bg-cyan-100',)}>
-                <BanknoteArrowUp size={40} className={cn('text-primary')} />
-              </div>
-              : <div className={cn('p-1 rounded-full grid place-items-center bg-red-100',)}>
-                <BanknoteArrowDown size={40} className={cn('text-red-500')} />
-              </div>
-            }
-          </div>
-          <button
-            type="button"
-            className={cn('cursor-pointer')}
-            onClick={() => setIsDetailsModalOpen(false)}
-          >
-            <X size={18} />
-          </button>
-        </header>
-        <main>
-          <p>{selectedMovement?.description}</p>
-        </main>
-        <footer></footer>
-      </section>
+            <button
+              type="button"
+              className={cn('cursor-pointer')}
+              onClick={() => setIsDetailsModalOpen(false)}
+            >
+              <X size={18} />
+            </button>
+          </header>
+          <main>
+            <p>{selectedMovement?.description}</p>
+          </main>
+          <footer></footer>
+        </section>
+      }
     </>
   )
 }
