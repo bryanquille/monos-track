@@ -1,4 +1,4 @@
-import { BanknoteArrowDown, BanknoteArrowUp, RefreshCcw, ShieldCheck, X } from "lucide-react"
+import { BanknoteArrowDown, BanknoteArrowUp, Calendar, Clock, CreditCard, MessageSquareText, RefreshCcw, ShieldCheck, X } from "lucide-react"
 import { cn } from "../../../shared/utils/cn"
 import { useState } from "react"
 import MovementsRegisterForm from "../components/MovementsRegisterForm"
@@ -6,7 +6,7 @@ import UserName from "../../../shared/components/UserName"
 import { MovementList } from "../components/MovementsList"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "../../../shared/lib/supabase"
-import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "../../../shared/constants/constants";
+import { EXPENSE_CATEGORIES, GET_MONEY_METHOD_CATEGORIES, INCOME_CATEGORIES } from "../../../shared/constants/constants";
 
 export interface FinancialDataListTypes {
   amount: number
@@ -115,45 +115,114 @@ function MovementsRegisterPage() {
       {selectedMovement &&
         <section
           className={cn(
-            'fixed top-1/2 left-1/2 -translate-1/2',
-            'w-5/6 max-w-96 p-4 rounded-2xl bg-white',
-            isDetailsModalOpen ? 'block' : 'hidden'
+            'fixed top-1/2 left-1/2 -translate-1/2 z-50',
+            'w-full h-full max-w-96 p-4 bg-white',
+            isDetailsModalOpen ? 'block' : 'hidden',
+            'md:rounded-2xl'
           )}
         >
-          <header className={cn('pb-1 mb-4 flex justify-between gap-4 border-b border-neutral-light')}>
-            <div className={cn('flex flex-row-reverse gap-4')}>
-              <div>
+          <header className={cn('pb-1 mb-4 flex flex-col gap-4 border-b border-neutral-light')}>
+            <div className={cn('relative')}>
+              <h2 className={cn('font-semibold text-center text-xl')}>
+                Detalle del movimiento
+              </h2>
+              <button
+                type="button"
+                className={cn('cursor-pointer absolute top-0 right-0 p-1 bg-tertiary-light/25 rounded-full')}
+                onClick={() => setIsDetailsModalOpen(false)}
+              >
+                <X size={18} className={cn('text-tertiary-light')} />
+              </button>
+            </div>
+            <div className={cn('flex justify-between')}>
+              <div className="flex items-start gap-2.5">
+                {selectedMovement?.movement_type === 'income'
+                  ? <div className={cn('p-2 rounded-full shrink-0 grid place-items-center bg-green-100',)}>
+                    <BanknoteArrowUp size={36} className={cn('text-green-600')} />
+                  </div>
+                  : <div className={cn('p-2 rounded-full grid place-items-center bg-red-100',)}>
+                    <BanknoteArrowDown size={36} className={cn('text-red-500')} />
+                  </div>
+                }
                 <div>
-                  <h2>{selectedMovement?.movement_type === 'income'
-                    ? 'Ingreso' : 'Gasto'
-                  }</h2>
-                  <p>{selectedMovement?.movement_type === 'income'
-                    ? INCOME_CATEGORIES.filter(item => item.value === selectedMovement?.category)[0].label
-                    : EXPENSE_CATEGORIES.filter(item => item.value === selectedMovement?.category)[0].label
-                  }</p>
+                  <p
+                    className={cn(
+                      'w-fit px-3 py-1.5 rounded-xl font-semibold',
+                      selectedMovement.movement_type === 'income'
+                        ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500'
+                    )}
+                  >
+                    {selectedMovement?.movement_type === 'income'
+                      ? 'Ingreso' : 'Gasto'
+                    }</p>
+                  <p
+                    className={cn('font-semibold text-nowrap')}
+                  >
+                    {selectedMovement?.movement_type === 'income'
+                      ? INCOME_CATEGORIES.filter(item => item.value === selectedMovement?.category)[0].label
+                      : EXPENSE_CATEGORIES.filter(item => item.value === selectedMovement?.category)[0].label
+                    }
+                  </p>
                 </div>
               </div>
-              {selectedMovement?.movement_type === 'income'
-                ? <div className={cn('p-2 rounded-full grid place-items-center bg-cyan-100',)}>
-                  <BanknoteArrowUp size={40} className={cn('text-primary')} />
-                </div>
-                : <div className={cn('p-1 rounded-full grid place-items-center bg-red-100',)}>
-                  <BanknoteArrowDown size={40} className={cn('text-red-500')} />
-                </div>
-              }
+              <p className={cn('font-Geist-Mono font-bold text-3xl')}>
+                ${selectedMovement.amount.toFixed(2)}
+              </p>
             </div>
-            <button
-              type="button"
-              className={cn('cursor-pointer')}
-              onClick={() => setIsDetailsModalOpen(false)}
-            >
-              <X size={18} />
-            </button>
           </header>
-          <main>
-            <p>{selectedMovement?.description}</p>
+          <main className={cn('flex flex-col gap-4')}>
+            <div className={cn('flex justify-between items-start gap-4')}>
+              <div className={cn('flex items-start gap-2')}>
+                <div className={cn('p-2 rounded-lg bg-secondary-dark/30')}>
+                  <Calendar className={cn('text-primary')} />
+                </div>
+                <div>
+                  <h4 className={cn('uppercase font-semibold text-xs text-secondary-light/60')}>
+                    Fecha del movimiento:
+                  </h4>
+                  <p className={cn('font-medium')}>
+                    {selectedMovement.movement_date}
+                  </p>
+                </div>
+              </div>
+              <div className={cn('flex items-start gap-2')}>
+                <div className={cn('p-2 rounded-lg bg-secondary-dark/30')}>
+                  <CreditCard className={cn('text-primary')} />
+                </div>
+                <div>
+                  <h4 className={cn('uppercase font-semibold text-xs text-secondary-light/60')}>
+                    Método de pago:
+                  </h4>
+                  <p className={cn('font-medium')}>
+                    {GET_MONEY_METHOD_CATEGORIES.filter(method => method.value === selectedMovement.payment_method)[0].label}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className={cn('flex items-start gap-2')}>
+              <div className={cn('p-2 rounded-lg bg-secondary-dark/30')}>
+                <MessageSquareText className={cn('text-primary')} />
+              </div>
+              <div>
+                <h4 className={cn('uppercase font-semibold text-xs text-secondary-light/60')}>
+                  Descripción:
+                </h4>
+                <p className={cn('font-medium')}>
+                  {selectedMovement?.description}
+                </p>
+              </div>
+            </div>
+            <img
+              src={selectedMovement.receipt_path}
+              alt={`Imagen del comprobante de ${selectedMovement.movement_type === 'income' ? 'ingresos' : 'gastos'}`}
+            />
           </main>
-          <footer></footer>
+          <footer className={cn('p-4 mt-4 border-t border-neutral-light dark:border-neutral-dark/50')}>
+            <div className={cn('flex items-center gap-2 mt-4')}>
+              <Clock />
+              <p>Registrado el {new Date(selectedMovement.created_at).toLocaleDateString()}</p>
+            </div>
+          </footer>
         </section>
       }
     </>
