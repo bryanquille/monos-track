@@ -1,6 +1,6 @@
 import { BanknoteArrowDown, BanknoteArrowUp, Calendar, Clock, CreditCard, MessageSquareText, RefreshCcw, ShieldCheck, X } from "lucide-react"
 import { cn } from "../../../shared/utils/cn"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import MovementsRegisterForm from "../components/MovementsRegisterForm"
 import UserName from "../../../shared/components/UserName"
 import { MovementList } from "../components/MovementsList"
@@ -26,6 +26,9 @@ function MovementsRegisterPage() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
   const [selectedMovement, setSelectedMovement] = useState<FinancialDataListTypes | null>(null)
 
+  const [receiptUrl, setReceiptUrl] = useState<string | null>(null)
+  const [isLoadingImage, setIsLoadingImage] = useState<boolean>(false)
+
   // Get data for movements
   const {
     data: movements,
@@ -41,6 +44,47 @@ function MovementsRegisterPage() {
       return data as FinancialDataListTypes[] ?? []
     }
   })
+
+  // Fetch receipt image url 
+  useEffect(() => {
+    let isMounted = true
+
+    const fetchSignedUrl = async () => {
+      if (!selectedMovement?.receipt_path) {
+        if (isMounted) setReceiptUrl(null)
+        return
+      }
+
+      setIsLoadingImage(true)
+
+      try {
+        const { data, error } = await supabase.storage
+          .from('receipts')
+          .createSignedUrl(selectedMovement.receipt_path, 120)
+
+        if (error) throw error
+
+        if (isMounted) {
+          setReceiptUrl(data?.signedUrl ?? null)
+        }
+      } catch (error) {
+        console.log('Error al generar la URL firmada:', error)
+        if (isMounted) setReceiptUrl(null)
+      } finally {
+        if (isMounted) setIsLoadingImage(false)
+      }
+    }
+
+    if (isDetailsModalOpen) {
+      fetchSignedUrl()
+    }
+
+    return () => {
+      isMounted = false
+    }
+  }, [selectedMovement, isDetailsModalOpen])
+
+  // if (!isDetailsModalOpen || !selectedMovement) return null
 
   const handleViewDetails = (movement: FinancialDataListTypes) => {
     setSelectedMovement(movement)
@@ -116,12 +160,12 @@ function MovementsRegisterPage() {
         <section
           className={cn(
             'fixed top-1/2 left-1/2 -translate-1/2 z-50',
-            'w-full h-full max-w-96 p-4 bg-white',
+            'w-full h-full max-w-96 p-4 bg-white overflow-y-scroll',
             isDetailsModalOpen ? 'block' : 'hidden',
             'md:rounded-2xl'
           )}
         >
-          <header className={cn('pb-1 mb-4 flex flex-col gap-4 border-b border-neutral-light')}>
+          <header className={cn('pb-4 mb-8 flex flex-col gap-6 border-b border-neutral-light')}>
             <div className={cn('relative')}>
               <h2 className={cn('font-semibold text-center text-xl')}>
                 Detalle del movimiento
@@ -147,14 +191,15 @@ function MovementsRegisterPage() {
                 <div>
                   <p
                     className={cn(
-                      'w-fit px-3 py-1.5 rounded-xl font-semibold',
+                      'w-fit mb-1 px-3 py-1.5 rounded-xl font-semibold',
                       selectedMovement.movement_type === 'income'
                         ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-500'
                     )}
                   >
                     {selectedMovement?.movement_type === 'income'
                       ? 'Ingreso' : 'Gasto'
-                    }</p>
+                    }
+                  </p>
                   <p
                     className={cn('font-semibold text-nowrap')}
                   >
@@ -212,10 +257,26 @@ function MovementsRegisterPage() {
                 </p>
               </div>
             </div>
-            <img
-              src={selectedMovement.receipt_path}
-              alt={`Imagen del comprobante de ${selectedMovement.movement_type === 'income' ? 'ingresos' : 'gastos'}`}
-            />
+            {selectedMovement.receipt_path
+              ? (
+                <div className={cn('w-full rounded-xl overflow-hidden border border-neutral-light/30 bg-neutral-light/10 flex items-center justify-center')}>
+                  {isLoadingImage ? (
+                    <p className={cn('text-sm text-gray-500 animate-pulse')}>Cargando archivo...</p>
+                  ) : receiptUrl ? (
+                    <img
+                      src={receiptUrl}
+                      alt="Recibo bancario seguro"
+                      className={cn('w-full h-full object-contain')}
+                    />
+                  ) : (
+                    <p className={cn('text-sm text-red-500')}>No se pudo cargar el recibo.</p>
+                  )}
+                </div>
+              )
+              : (
+                <p className={cn('text-sm text-gray-500 italic')}>No hay recibo adjunto para este movimiento.</p>
+              )
+            }
           </main>
           <footer className={cn('p-4 mt-4 border-t border-neutral-light dark:border-neutral-dark/50')}>
             <div className={cn('flex items-center gap-2 mt-4')}>
