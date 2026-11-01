@@ -1,6 +1,6 @@
 import { BanknoteArrowDown, BanknoteArrowUp, Calendar, Clock, CreditCard, MessageSquareText, X } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
-import { EXPENSE_CATEGORIES, GET_MONEY_METHOD_CATEGORIES, INCOME_CATEGORIES } from "../../../shared/constants/constants";
+import { EXPENSE_CATEGORIES, GET_MONEY_METHOD_CATEGORIES, INCOME_CATEGORIES, MONTH_NAMES } from "../../../shared/constants/constants";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../shared/lib/supabase";
 import type { FinancialDataListTypes } from "../pages/MovementsRegisterPage";
@@ -60,7 +60,8 @@ function MovementDetailsModal({ movement, isOpen, setIsDetailsModalOpen }: Movem
     <section
       className={cn(
         'fixed top-1/2 left-1/2 -translate-1/2 z-50',
-        'w-full h-full max-w-96 p-4 bg-white overflow-y-scroll',
+        'w-full h-full max-w-140 p-4 bg-white overflow-y-scroll md:h-[unset]',
+        'dark:bg-primary-dark dark:text-neutral-dark',
         isOpen ? 'block' : 'hidden',
         'md:rounded-2xl'
       )}
@@ -72,10 +73,20 @@ function MovementDetailsModal({ movement, isOpen, setIsDetailsModalOpen }: Movem
           </h2>
           <button
             type="button"
-            className={cn('cursor-pointer absolute top-0 right-0 p-1 bg-tertiary-light/25 rounded-full')}
+            className={cn(
+              'cursor-pointer absolute top-0 right-0 p-1 bg-tertiary-light/25 rounded-full',
+              'dark:bg-tertiary-light'
+            )}
             onClick={() => setIsDetailsModalOpen(false)}
           >
-            <X size={18} className={cn('text-tertiary-light')} />
+            <X
+              size={18}
+              strokeWidth={4}
+              className={cn(
+                'text-tertiary-light',
+                'dark:text-neutral-dark'
+              )}
+            />
           </button>
         </div>
         <div className={cn('flex justify-between')}>
@@ -115,53 +126,72 @@ function MovementDetailsModal({ movement, isOpen, setIsDetailsModalOpen }: Movem
           </p>
         </div>
       </header>
-      <main className={cn('flex flex-col gap-4')}>
-        <div className={cn('flex justify-between items-start gap-4')}>
-          <div className={cn('flex items-start gap-2')}>
-            <div className={cn('p-2 rounded-lg bg-secondary-dark/30')}>
-              <Calendar className={cn('text-primary')} />
+      <main className={cn(
+        'flex flex-col gap-4',
+        'md:flex-row md:justify-between'
+      )}>
+        <div>
+          <div className={cn('flex justify-between items-start gap-4 md:flex-col md:mb-4')}>
+            <div className={cn('flex items-start gap-2')}>
+              <div className={cn('p-2 rounded-lg bg-secondary-dark/30')}>
+                <Calendar className={cn('text-primary')} />
+              </div>
+              <div>
+                <h4 className={cn(
+                  'uppercase font-semibold text-xs text-secondary-light/60',
+                  'dark:text-neutral-dark/60'
+                )}>
+                  Fecha del movimiento:
+                </h4>
+                <p className={cn('font-medium')}>
+                  {movement.movement_date}
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className={cn('uppercase font-semibold text-xs text-secondary-light/60')}>
-                Fecha del movimiento:
-              </h4>
-              <p className={cn('font-medium')}>
-                {movement.movement_date}
-              </p>
+            <div className={cn('flex items-start gap-2')}>
+              <div className={cn('p-2 rounded-lg bg-secondary-dark/30')}>
+                <CreditCard className={cn('text-primary')} />
+              </div>
+              <div>
+                <h4 className={cn(
+                  'uppercase font-semibold text-xs text-secondary-light/60',
+                  'dark:text-neutral-dark/60'
+                )}>
+                  Método de pago:
+                </h4>
+                <p className={cn('font-medium')}>
+                  {GET_MONEY_METHOD_CATEGORIES.filter(method => method.value === movement.payment_method)[0].label}
+                </p>
+              </div>
             </div>
           </div>
           <div className={cn('flex items-start gap-2')}>
             <div className={cn('p-2 rounded-lg bg-secondary-dark/30')}>
-              <CreditCard className={cn('text-primary')} />
+              <MessageSquareText className={cn('text-primary')} />
             </div>
             <div>
-              <h4 className={cn('uppercase font-semibold text-xs text-secondary-light/60')}>
-                Método de pago:
+              <h4 className={cn(
+                'uppercase font-semibold text-xs text-secondary-light/60',
+                'dark:text-neutral-dark/60'
+              )}>
+                Descripción:
               </h4>
               <p className={cn('font-medium')}>
-                {GET_MONEY_METHOD_CATEGORIES.filter(method => method.value === movement.payment_method)[0].label}
+                {movement?.description}
               </p>
             </div>
-          </div>
-        </div>
-        <div className={cn('flex items-start gap-2')}>
-          <div className={cn('p-2 rounded-lg bg-secondary-dark/30')}>
-            <MessageSquareText className={cn('text-primary')} />
-          </div>
-          <div>
-            <h4 className={cn('uppercase font-semibold text-xs text-secondary-light/60')}>
-              Descripción:
-            </h4>
-            <p className={cn('font-medium')}>
-              {movement?.description}
-            </p>
           </div>
         </div>
         {movement.receipt_path
           ? (
-            <div className={cn('w-full rounded-xl overflow-hidden border border-neutral-light/30 bg-neutral-light/10 flex items-center justify-center')}>
+            <div className={cn('w-full max-w-60 rounded-xl overflow-hidden border border-neutral-light/30 bg-neutral-light/10 flex items-center justify-center')}>
               {isLoadingImage ? (
-                <p className={cn('text-sm text-gray-500 animate-pulse')}>Cargando archivo...</p>
+                <p className={cn(
+                  'text-sm text-neutral-light animate-pulse',
+                  'dark:text-neutral-dark/50'
+                )}>
+                  Cargando archivo...
+                </p>
               ) : receiptUrl ? (
                 <img
                   src={receiptUrl}
@@ -169,19 +199,32 @@ function MovementDetailsModal({ movement, isOpen, setIsDetailsModalOpen }: Movem
                   className={cn('w-full h-full object-contain')}
                 />
               ) : (
-                <p className={cn('text-sm text-red-500')}>No se pudo cargar el recibo.</p>
+                <p className={cn('p-4 text-sm text-center text-red-500')}>
+                  No se pudo cargar el recibo.
+                </p>
               )}
             </div>
           )
           : (
-            <p className={cn('text-sm text-gray-500 italic')}>No hay recibo adjunto para este movimiento.</p>
+            <p className={cn(
+              'p-4 rounded-2xl bg-tertiary-light/40',
+              'text-sm text-center text-secondary-light italic',
+              'dark:text-neutral-dark/60 dark:bg-tertiary-dark'
+            )}>
+              No hay recibo adjunto para este movimiento.
+            </p>
           )
         }
       </main>
-      <footer className={cn('p-4 mt-4 border-t border-neutral-light dark:border-neutral-dark/50')}>
-        <div className={cn('flex items-center gap-2 mt-4')}>
+      <footer className={cn('p-2 mt-4 border-t border-neutral-light')}>
+        <div className={cn('flex items-center gap-2')}>
           <Clock />
-          <p>Registrado el {new Date(movement.created_at).toLocaleDateString()}</p>
+          <p>
+            Registrado el
+            <span> {String(new Date(movement.created_at).getDate()).padStart(2, '0')}</span> de
+            <span> {MONTH_NAMES[new Date(movement.created_at).getMonth()]}</span> del
+            <span> {new Date(movement.created_at).getFullYear()}</span>
+          </p>
         </div>
       </footer>
     </section>
