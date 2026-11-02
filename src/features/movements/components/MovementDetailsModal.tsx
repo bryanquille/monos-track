@@ -60,7 +60,7 @@ function MovementDetailsModal({ movement, isOpen, setIsDetailsModalOpen }: Movem
     <section
       className={cn(
         'fixed top-1/2 left-1/2 -translate-1/2 z-50',
-        'w-full h-full max-w-140 p-4 bg-white overflow-y-scroll md:h-[unset]',
+        'w-full h-full max-w-140 max-h-11/12 p-4 bg-white overflow-y-scroll md:h-[unset]',
         'dark:bg-primary-dark dark:text-neutral-dark',
         isOpen ? 'block' : 'hidden',
         'md:rounded-2xl'

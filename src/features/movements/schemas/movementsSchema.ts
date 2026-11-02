@@ -12,7 +12,7 @@ export const INCOME_CATEGORIES = [
   { value: 'other_income', label: 'Otros Ingresos' },
 ]
 
-const EXPENSE_VALUES = ['food', 'housing', 'transport', 'utilities', 'health', 'entertainment', 'shopping', 'education', 'debt', 'other_expense'] as const
+const EXPENSE_VALUES = ['food', 'housing', 'transport', 'utilities', 'health', 'entertainment', 'shopping', 'education', 'debt', 'pets', 'other_expense'] as const
 // TODO: Check if this const is necessary, if not delete it
 export const EXPENSE_CATEGORIES = [
   { value: 'food', label: 'Alimentación', color: 'red' },
@@ -24,10 +24,11 @@ export const EXPENSE_CATEGORIES = [
   { value: 'shopping', label: 'Compras Personales', color: 'paleGreen' },
   { value: 'education', label: 'Educación', color: 'teal' },
   { value: 'debt', label: 'Pago de Deudas', color: 'fuchsia' },
-  { value: 'other_expense', label: 'Otros Gastos', color: 'yellow' },
+  { value: 'pets', label: 'Mascotas', color: 'yellow' },
+  { value: 'other_expense', label: 'Otros Gastos', color: 'lightgray' }
 ]
 
-const GET_MONEY_METHOD_VALUES = ['cash', 'transfer', 'deposit'] as const
+const GET_MONEY_METHOD_VALUES = ['cash', 'transfer', 'deposit', 'credit_card'] as const
 
 const ACCEPTED_FILE_TYPES = ['image/jpeg', "image/jpg", 'image/png', 'application/pdf']
 const MAX_FILE_SIZE = 10 * 1024 * 1024

@@ -172,6 +172,12 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
             >
               Deposito
             </option>
+            <option
+              value="credit_card"
+              className={cn('bg-white dark:bg-tertiary-dark')}
+            >
+              Tarjeta de Crédito
+            </option>
           </select>
           <ChevronDown
             size={20}

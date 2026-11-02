@@ -78,6 +78,13 @@ export const EXPENSE_CATEGORIES = [
     emoji: '💳'
   },
   {
+    value: 'pets',
+    label: 'Mascotas',
+    color: '#F59E0B',
+    border: '#B45309',
+    emoji: '🐶'
+  },
+  {
     value: 'other_expense',
     label: 'Otros Gastos',
     color: '#EAB308',
@@ -121,4 +128,5 @@ export const GET_MONEY_METHOD_CATEGORIES = [
   { value: 'cash', label: 'Efectivo' },
   { value: 'transfer', label: 'Transferencia' },
   { value: 'deposit', label: 'Deposito' },
+  { value: 'credit_card', label: 'Tarjeta de Crédito' }
 ]
