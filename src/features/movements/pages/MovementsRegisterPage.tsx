@@ -7,6 +7,7 @@ import { MovementList } from "../components/MovementsList"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "../../../shared/lib/supabase"
 import MovementDetailsModal from "../components/MovementDetailsModal";
+import { useReadMovement } from "../hooks/useReadMovement";
 
 export interface FinancialDataListTypes {
   amount: number
@@ -23,8 +24,6 @@ export interface FinancialDataListTypes {
 
 function MovementsRegisterPage() {
   const [isIncome, setIsIncome] = useState(true)
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
-  const [selectedMovement, setSelectedMovement] = useState<FinancialDataListTypes | null>(null)
 
   // Get data for movements
   const {
@@ -42,13 +41,22 @@ function MovementsRegisterPage() {
     }
   })
 
-  const handleViewDetails = (movement: FinancialDataListTypes) => {
-    setSelectedMovement(movement)
-    setIsDetailsModalOpen(true)
-  }
+  // Read movement
+  const {
+    isDetailsModalOpen,
+    selectedMovement,
+    handleViewDetails,
+    handleCloseModal
+  } = useReadMovement()
 
   return (
     <>
+      {/* Blur screen when a modal is open */}
+      <div className={cn(
+        'absolute top-0 left-0 z-50 w-full h-full backdrop-blur-sm bg-neutral-light/50 dark:bg-tertiary-dark/50',
+        isDetailsModalOpen ? 'block' : 'hidden'
+      )}></div>
+      {/* Register Form */}
       <section className={cn('w-[95%] max-w-7xl mx-auto mb-6 overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
         <header className={cn('p-4 flex flex-col justify-center gap-8 bg-neutral-light/50 dark:bg-secondary-light md:p-8')}>
           <UserName />
@@ -99,24 +107,24 @@ function MovementsRegisterPage() {
           </article>
         </footer>
       </section>
+      {/* Registered movements list */}
       <section className={cn('w-[95%] max-w-7xl mx-auto overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
         <header className={cn('pt-6 px- flex justify-center items-center bg-neutral-light/50 dark:bg-secondary-light md:p-8')}>
           <h2 className={cn('text-4xl')}>Lista de registros</h2>
         </header>
         <main className={cn('p-4 md:p-8')}>
-          {/* <RegisteredMovementsList /> */}
           <MovementList
             movements={movements}
             onViewDetails={handleViewDetails}
           />
         </main>
       </section>
-      {/* Render the movement details */}
+      {/* Render the movement details modal */}
       {selectedMovement &&
         <MovementDetailsModal
           isOpen={isDetailsModalOpen}
           movement={selectedMovement}
-          setIsDetailsModalOpen={setIsDetailsModalOpen}
+          handleCloseModal={handleCloseModal}
         />
       }
     </>

@@ -81,7 +81,7 @@ export const MovementList = ({
                   <button
                     onClick={() => onViewDetails(item)}
                     title="Ver detalles"
-                    className="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 rounded-md transition-colors"
+                    className="cursor-pointer p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 rounded-md transition-colors"
                   >
                     <Eye size={16} />
                   </button>
