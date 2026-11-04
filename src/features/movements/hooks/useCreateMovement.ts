@@ -8,9 +8,7 @@ export const useCreateMovement = () => {
   return useMutation({
     mutationFn: submitMovementToSupabase,
     onSuccess: () => {
-      // queryClient.invalidateQueries({ queryKey: ['movements'] })
-      queryClient.invalidateQueries({ queryKey: ['financial-summary'] })
-      queryClient.invalidateQueries({ queryKey: ['expenses-by-category'] })
+      queryClient.invalidateQueries({ queryKey: ['financial-data'] })
       sileo.success({ title: '¡Movimiento registrado con exito!' })
       console.log('Movimiento registrado con exito')
     },
