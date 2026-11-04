@@ -80,8 +80,8 @@ export const EXPENSE_CATEGORIES = [
   {
     value: 'pets',
     label: 'Mascotas',
-    color: '#F59E0B',
-    border: '#B45309',
+    color: '#968569',
+    border: '#3b3224',
     emoji: '🐶'
   },
   {
@@ -124,7 +124,7 @@ export const INCOME_CATEGORIES = [
   },
 ]
 
-export const GET_MONEY_METHOD_CATEGORIES = [
+export const MONEY_METHOD_CATEGORIES = [
   { value: 'cash', label: 'Efectivo' },
   { value: 'transfer', label: 'Transferencia' },
   { value: 'deposit', label: 'Deposito' },

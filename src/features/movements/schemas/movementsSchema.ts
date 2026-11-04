@@ -1,55 +1,31 @@
 import { z } from 'zod'
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, MONEY_METHOD_CATEGORIES } from '../../../shared/constants/constants';
 
-const INCOME_VALUES = ['salary', 'freelance', 'sales', 'investments', 'gifts', 'refunds', 'other_income'] as const
-// TODO: Check if this const is necessary, if not delete it
-export const INCOME_CATEGORIES = [
-  { value: 'salary', label: 'Salario / Nómina' },
-  { value: 'freelance', label: 'Honorarios / Freelance' },
-  { value: 'sales', label: 'Ventas' },
-  { value: 'investments', label: 'Inversiones y Rendimientos' },
-  { value: 'gifts', label: 'Regalos / Donaciones' },
-  { value: 'refunds', label: 'Reembolsos' },
-  { value: 'other_income', label: 'Otros Ingresos' },
-]
+const INCOME_VALUES = INCOME_CATEGORIES.map(c => c.value) as [string, ...string[]]
+const EXPENSE_VALUES = EXPENSE_CATEGORIES.map(c => c.value) as [string, ...string[]]
+const MONEY_METHOD_VALUES = MONEY_METHOD_CATEGORIES.map(c => c.value) as [string, ...string[]]
 
-const EXPENSE_VALUES = ['food', 'housing', 'transport', 'utilities', 'health', 'entertainment', 'shopping', 'education', 'debt', 'pets', 'other_expense'] as const
-// TODO: Check if this const is necessary, if not delete it
-export const EXPENSE_CATEGORIES = [
-  { value: 'food', label: 'Alimentación', color: 'red' },
-  { value: 'housing', label: 'Vivienda', color: 'skyBlue' },
-  { value: 'transport', label: 'Transporte', color: 'salmon' },
-  { value: 'utilities', label: 'Servicios', color: 'orange' },
-  { value: 'health', label: 'Salud y Cuidado', color: 'blue' },
-  { value: 'entertainment', label: 'Entretenimiento y Ocio', color: 'pink' },
-  { value: 'shopping', label: 'Compras Personales', color: 'paleGreen' },
-  { value: 'education', label: 'Educación', color: 'teal' },
-  { value: 'debt', label: 'Pago de Deudas', color: 'fuchsia' },
-  { value: 'pets', label: 'Mascotas', color: 'yellow' },
-  { value: 'other_expense', label: 'Otros Gastos', color: 'lightgray' }
-]
-
-const GET_MONEY_METHOD_VALUES = ['cash', 'transfer', 'deposit', 'credit_card'] as const
-
-const ACCEPTED_FILE_TYPES = ['image/jpeg', "image/jpg", 'image/png', 'application/pdf']
-const MAX_FILE_SIZE = 10 * 1024 * 1024
+const ACCEPTED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const MAX_FILE_SIZE = 5 * 1024 * 1024
 
 export const MovementsSchema = z.object({
   movementType: z
-    .enum(['income', 'expense']),
+    .enum(['income', 'expense'], {
+      error: 'Selecciona un tipo de movimiento'
+    }),
 
-  amount: z
-    .coerce.number<number>({ message: 'La cantidad en dolares es requerida.' })
+  amount: z.coerce
+    .number({ error: 'La cantidad en dolares es requerida.' })
     .positive('El valor ingresado debe ser mayor a cero.'),
 
   movementDate: z
     .iso.date('La fecha es requerida.'),
 
   category: z
-    .enum(INCOME_VALUES, { message: 'Debes escoger una categoria.' })
-    .or(z.enum(EXPENSE_VALUES, { message: 'Debes escoger una categoria.' })),
+    .string().min(1, 'Debes escoger una categoría.'),
 
-  getMoneyMethod: z
-    .enum(GET_MONEY_METHOD_VALUES, { message: 'Debes escoger un método de pago.' }),
+  paymentMethod: z
+    .enum(MONEY_METHOD_VALUES, { error: 'Debes escoger un método de pago.' }),
 
   description: z
     .string()
@@ -60,12 +36,30 @@ export const MovementsSchema = z.object({
     .optional()
     .refine(
       (files) => !files || files.length === 0 || files[0].size <= MAX_FILE_SIZE,
-      'El archivo no debe pesar más de 10MB.'
+      'El archivo no debe pesar más de 5MB.'
     )
     .refine(
       (files) => !files || files.length === 0 || ACCEPTED_FILE_TYPES.includes(files[0].type),
-      'Solo se aceptan formatos .png .jpg .pdf'
+      'Solo se aceptan formatos .png, .jpg o .webp'
     )
 })
+  .superRefine((data, ctx) => {
+    if (data.movementType !== 'income' && data.movementType !== 'expense') return
+
+    const allowedCategories = data.movementType === 'income' ? INCOME_VALUES : EXPENSE_VALUES
+
+    if (!allowedCategories.includes(data.category)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['category'],
+        message:
+          data.movementType === 'income'
+            ? 'Selecciona una categoría de ingreso válida.'
+            : 'Selecciona una categoría de gasto válida.'
+      })
+    }
+  })
 
 export type MovementsData = z.infer<typeof MovementsSchema>
+export type MovementInput = z.input<typeof MovementsSchema>
+export type MovementOutput = z.output<typeof MovementsSchema>

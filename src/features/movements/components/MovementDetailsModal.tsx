@@ -1,4 +1,4 @@
-import { EXPENSE_CATEGORIES, GET_MONEY_METHOD_CATEGORIES, INCOME_CATEGORIES, MONTH_NAMES } from "../../../shared/constants/constants";
+import { EXPENSE_CATEGORIES, MONEY_METHOD_CATEGORIES, INCOME_CATEGORIES, MONTH_NAMES } from "../../../shared/constants/constants";
 import { BanknoteArrowDown, BanknoteArrowUp, Calendar, Clock, CreditCard, MessageSquareText, X } from "lucide-react";
 import type { FinancialDataListTypes } from "../pages/MovementsRegisterPage";
 import { useSignedReceiptUrl } from "../hooks/useSignedReceiptUrl";
@@ -36,7 +36,7 @@ function MovementDetailsModal({ movement, isOpen, handleCloseModal }: MovementDe
     ? INCOME_CATEGORIES.find(item => item.value === movement.category)?.label || movement.category
     : EXPENSE_CATEGORIES.find(item => item.value === movement.category)?.label || movement.category
 
-  const paymentMethodLabel = GET_MONEY_METHOD_CATEGORIES.find(
+  const paymentMethodLabel = MONEY_METHOD_CATEGORIES.find(
     method => method.value === movement.payment_method
   )?.label || movement.payment_method
 

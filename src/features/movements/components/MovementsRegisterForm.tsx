@@ -1,10 +1,11 @@
-import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
-import { cn } from "../../../shared/utils/cn";
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, MONEY_METHOD_CATEGORIES } from "../../../shared/constants/constants";
 import { CheckCircle2, ChevronDown, CloudUpload, FileText, X } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, MovementsSchema, type MovementsData } from "../schemas/movementsSchema";
-import React, { useEffect, useMemo } from "react";
+import { MovementsSchema, type MovementInput, type MovementOutput } from "../schemas/movementsSchema";
+import { useForm, useWatch } from "react-hook-form";
 import { useCreateMovement } from "../hooks/useCreateMovement";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect, useMemo, useState } from "react";
+import { cn } from "../../../shared/utils/cn";
 
 interface MovementsRegisterFormProps {
   isIncome: boolean
@@ -18,18 +19,27 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
     reset,
     control,
     formState: { errors }
-  } = useForm<MovementsData>({
+  } = useForm<MovementInput, unknown, MovementOutput>({
     resolver: zodResolver(MovementsSchema),
     defaultValues: {
-      movementType: isIncome ? 'income' : 'expense'
+      amount: undefined,
+      movementType: isIncome ? 'income' : 'expense',
+      category: '',
+      paymentMethod: '',
+      description: '',
+      movementDate: '',
     }
   })
+
+  const { ref: rhfFileRef, ...fileRegisterRest } = register('receiptUpload');
 
   const receiptFileList = useWatch({
     control,
     name: 'receiptUpload'
-  }) as unknown as FileList | undefined
-  const selectedFile = receiptFileList && receiptFileList.length > 0 ? receiptFileList[0] : null
+  })
+
+  const selectedFile = receiptFileList && receiptFileList.length > 0
+    ? receiptFileList[0] : null
   const previewUrl = useMemo(() => {
     if (!selectedFile || !selectedFile.type.startsWith('image/')) return null
     return URL.createObjectURL(selectedFile)
@@ -45,19 +55,35 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
     setValue('movementType', isIncome ? 'income' : 'expense')
   }, [isIncome, setValue])
 
+  // Reset category value when the movement type is changed
+  useEffect(() => {
+    setValue('category', '')
+  }, [isIncome, setValue])
+
   const { mutate, isPending, error: mutationError } = useCreateMovement()
 
-  const onSubmit: SubmitHandler<MovementsData> = (data) => {
+  const [fileInputKey, setFileInputKey] = useState(0)
+  const onSubmit = (data: MovementOutput) => {
     mutate(data, {
       onSuccess: () => {
-        reset()
+        reset({
+          movementType: isIncome ? 'income' : 'expense',
+          amount: undefined,
+          movementDate: undefined,
+          category: '',
+          paymentMethod: undefined,
+          description: '',
+          receiptUpload: undefined
+        })
+        setFileInputKey((key) => key + 1)
       }
     })
   }
 
   const handleRemoveFile = (e: React.MouseEvent) => {
     e.preventDefault()
-    setValue('receiptUpload', undefined as unknown as FileList)
+    setValue('receiptUpload', undefined)
+    setFileInputKey((key) => key + 1)
   }
 
   return (
@@ -65,6 +91,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
       onSubmit={handleSubmit(onSubmit)}
       className={cn('grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6')}
     >
+      {/* Amount field */}
       <div className={cn('flex flex-col gap-1')}>
         <label htmlFor="amount">Monto</label>
         <input
@@ -72,18 +99,32 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
           id="amount"
           step="0.01"
           placeholder="100.00"
-          className={cn('px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
-          {...register('amount', { valueAsNumber: true })}
+          aria-invalid={!!errors.amount}
+          aria-describedby={errors.amount ? 'amount-error' : undefined}
+          className={cn(
+            'px-5 py-3 border-2 border-secondary-light/70 rounded-md',
+            'dark:border-neutral-light/70 dark:text-neutral-dark'
+          )}
+          {...register('amount')}
         />
         {errors.amount &&
-          <span className={cn('text-sm text-red-500')}>{errors.amount.message}</span>
+          <span
+            className={cn('text-sm text-red-500')}
+            id="amount-error"
+            role="alert"
+          >
+            {errors.amount.message}
+          </span>
         }
       </div>
+      {/* Date field */}
       <div className={cn('flex flex-col gap-1')}>
         <label htmlFor="movementDate">Fecha</label>
         <input
           type="date"
           id="movementDate"
+          aria-invalid={!!errors.movementDate}
+          aria-describedby={errors.movementDate ? 'movementDate-error' : undefined}
           className={cn(
             'px-5 py-3 border-2 border-secondary-light/70 rounded-md',
             'dark:border-neutral-light/70 dark:text-neutral-dark',
@@ -92,15 +133,28 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
           {...register('movementDate')}
         />
         {errors.movementDate &&
-          <span className={cn('text-sm text-red-500')}>{errors.movementDate.message}</span>
+          <span
+            className={cn('text-sm text-red-500')}
+            id="movementDate-error"
+            role="alert"
+          >
+            {errors.movementDate.message}
+          </span>
         }
       </div>
+      {/* Category field */}
       <div className={cn('flex flex-col gap-1')}>
         <label htmlFor="category">Categoría</label>
         <div className={cn('relative')}>
           <select
             id="category"
-            className={cn('w-full pl-5 pr-10 py-3 border-2 border-secondary-light/70 rounded-md appearance-none dark:border-neutral-light/70 dark:text-neutral-dark')}
+            aria-invalid={!!errors.category}
+            aria-describedby={errors.category ? 'category-error' : undefined}
+            className={cn(
+              'w-full pl-5 pr-10 py-3 appearance-none',
+              'border-2 border-secondary-light/70 rounded-md',
+              'dark:border-neutral-light/70 dark:text-neutral-dark'
+            )}
             {...register('category')}
           >
             <option
@@ -133,95 +187,127 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
           </select>
           <ChevronDown
             size={20}
-            className={cn('absolute top-1/2 right-2.5 pointer-events-none transform -translate-x-1/2 -translate-y-1/2')}
+            className={cn(
+              'absolute top-1/2 right-2.5 pointer-events-none',
+              'transform -translate-x-1/2 -translate-y-1/2'
+            )}
           />
         </div>
         {errors.category &&
-          <span className={cn('text-sm text-red-500')}>{errors.category.message}</span>
+          <span
+            className={cn('text-sm text-red-500')}
+            id="category-error"
+            role="alert"
+          >
+            {errors.category.message}
+          </span>
         }
       </div>
+      {/* Payment method field */}
       <div className={cn('flex flex-col gap-1')}>
-        <label htmlFor="getMoneyMethod">Método de Pago</label>
+        <label htmlFor="paymentMethod">Método de Pago</label>
         <div className={cn('relative')}>
           <select
-            id="getMoneyMethod"
-            className={cn('w-full pl-5 pr-10 py-3 border-2 border-secondary-light/70 rounded-md appearance-none dark:border-neutral-light/70 dark:text-neutral-dark')}
-            {...register('getMoneyMethod')}
+            id="paymentMethod"
+            aria-invalid={!!errors.paymentMethod}
+            aria-describedby={errors.paymentMethod ? 'paymentMethod-error' : undefined}
+            className={cn(
+              'w-full pl-5 pr-10 py-3 appearance-none',
+              'border-2 border-secondary-light/70 rounded-md',
+              'dark:border-neutral-light/70 dark:text-neutral-dark'
+            )}
+            {...register('paymentMethod')}
           >
             <option
               value=""
               className={cn('bg-white dark:bg-tertiary-dark')}
             >
-              Escoje un método
+              Escoge un método
             </option>
-            <option
-              value="cash"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Efectivo
-            </option>
-            <option
-              value="transfer"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Transferencia
-            </option>
-            <option
-              value="deposit"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Deposito
-            </option>
-            <option
-              value="credit_card"
-              className={cn('bg-white dark:bg-tertiary-dark')}
-            >
-              Tarjeta de Crédito
-            </option>
+            {MONEY_METHOD_CATEGORIES.map(category => {
+              return (
+                <option
+                  key={category.value}
+                  value={category.value}
+                  className={cn('bg-white dark:bg-tertiary-dark')}
+                >
+                  {category.label}
+                </option>
+              )
+            })}
           </select>
           <ChevronDown
             size={20}
-            className={cn('absolute top-1/2 right-2.5 pointer-events-none transform -translate-x-1/2 -translate-y-1/2')}
+            className={cn(
+              'absolute top-1/2 right-2.5 pointer-events-none',
+              'transform -translate-x-1/2 -translate-y-1/2'
+            )}
           />
         </div>
-        {errors.getMoneyMethod &&
-          <span className={cn('text-sm text-red-500')}>{errors.getMoneyMethod.message}</span>
+        {errors.paymentMethod &&
+          <span
+            className={cn('text-sm text-red-500')}
+            id="paymentMethod-error"
+            role="alert"
+          >
+            {errors.paymentMethod.message}
+          </span>
         }
       </div>
+      {/* Description field */}
       <div className={cn('flex flex-col gap-1')}>
         <label htmlFor="description">Descripción</label>
         <textarea
           id="description"
-          className={cn('h-30 px-5 py-3 border-2 border-secondary-light/70 rounded-md resize-none dark:border-neutral-light/70 dark:text-neutral-dark')}
+          className={cn(
+            'h-30 px-5 py-3 resize-none',
+            'border-2 border-secondary-light/70 rounded-md',
+            'dark:border-neutral-light/70 dark:text-neutral-dark'
+          )}
           {...register('description')}
         ></textarea>
       </div>
+      {/* File field */}
       <div className={cn('flex flex-col gap-1')}>
         <span>Comprobante/Adjunto (Opcional)</span>
 
         {/* Input Oculto */}
         <input
+          key={fileInputKey}
           type="file"
           id="receiptUpload"
+          aria-invalid={!!errors.receiptUpload}
+          aria-describedby={errors.receiptUpload ? 'receiptUpload-error' : undefined}
           className={cn('hidden')}
-          accept=".pdf, .png, .jpg, .jpeg"
-          {...register('receiptUpload')}
+          accept="image/jpeg,image/png,image/webp"
+          {...fileRegisterRest}
+          ref={rhfFileRef}
         />
 
         {selectedFile ? (
           /* View 1: The file is selected */
-          <div className={cn('relative p-3 border-2 border-emerald-500/70 rounded-md bg-emerald-500/10 flex flex-col items-center justify-center gap-2 min-h-30')}>
+          <div className={cn(
+            'relative p-3 min-h-30',
+            'flex flex-col items-center justify-center gap-2',
+            'border-2 border-emerald-500/70 rounded-md',
+            'bg-emerald-500/10',
+          )}>
             <button
               type="button"
               onClick={handleRemoveFile}
-              className={cn('absolute top-2 right-2 p-1 rounded-full bg-red-500/20 text-red-500 hover:bg-red-500/40 transition-colors')}
+              disabled={isPending}
+              className={cn(
+                'absolute top-2 right-2 p-1 rounded-full',
+                'bg-red-500/20 text-red-500',
+                'hover:bg-red-500/40 transition-colors'
+              )}
               title="Quitar archivo"
             >
               <X size={16} />
             </button>
 
             {previewUrl ? (
-              /* Previsualización de Imagen */
+              /* Image preview */
               <div className={cn('flex flex-col items-center gap-2 w-full')}>
                 <div className={cn('relative w-4/5 h-20 rounded overflow-hidden border border-emerald-500/30')}>
                   <img
@@ -263,38 +349,22 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
             </span>
             <span>Haz clic para subir o arrastra un archivo</span>
             <span className={cn('text-sm text-gray-text/80 dark:text-neutral-dark/50')}>
-              PDF, PNG O JPG (Máx. 10MB)
+              PNG, JPG O WEBP (Máx. 5MB)
             </span>
           </label>
         )}
 
         {errors.receiptUpload && (
-          <span className={cn('text-sm text-red-500')}>{errors.receiptUpload.message}</span>
+          <span
+            className={cn('text-sm text-red-500')}
+            id="receiptUpload-error"
+            role="alert"
+          >
+            {errors.receiptUpload.message}
+          </span>
         )}
       </div>
-      {/* <div className={cn('flex flex-col gap-1')}>
-        <span>Comprobante/Adjunto (Opcional)</span>
-        <label
-          htmlFor="receiptUpload"
-          className={cn('cursor-pointer w-full h-30 flex flex-col justify-center items-center gap-0.5 border-2 border-dashed rounded-md bg-neutral-light/30 dark:bg-primary-dark/50')}
-        >
-          <span className={cn('p-2 rounded-full bg-white dark:bg-tertiary-dark')}>
-            <CloudUpload strokeWidth={3} className={cn('text-neutral-light/70')} />
-          </span>
-          <span>Haz clic para subir o arrastra un archivo</span>
-          <span className={cn('text-sm text-gray-text/80 dark:text-neutral-dark/50')}>PDF, PNG O JPG (Máx. 10MB)</span>
-        </label>
-        <input
-          type="file"
-          id="receiptUpload"
-          className={cn('hidden')}
-          accept=".pdf, .png, .jpg, .jpeg"
-          {...register('receiptUpload')}
-        />
-        {errors.receiptUpload &&
-          <span className={cn('text-sm text-red-500')}>{errors.receiptUpload.message}</span>
-        }
-      </div> */}
+      {/* Submit button */}
       <button
         type="submit"
         disabled={isPending}

@@ -1,4 +1,4 @@
-import { MONTH_NAMES } from "../../../shared/constants/constants";
+import { EXPENSE_CATEGORIES, MONTH_NAMES } from "../../../shared/constants/constants";
 import type { FinancialDataTypes } from "../types/dashboardTypes";
 
 interface UseExpensesByCategoryPropsTypes {
@@ -6,19 +6,6 @@ interface UseExpensesByCategoryPropsTypes {
   selectedYear: string
   selectedMonth: string
 }
-
-const EXPENSE_CATEGORIES = [
-  { value: 'food', label: 'Alimentación', color: '#EF4444', border: '#B91C1C' },
-  { value: 'housing', label: 'Vivienda', color: '#0EA5E9', border: '#0284C7' },
-  { value: 'transport', label: 'Transporte', color: '#FF6B6B', border: '#DC2626' },
-  { value: 'utilities', label: 'Servicios', color: '#F97316', border: '#EA580C' },
-  { value: 'health', label: 'Salud y Cuidado', color: '#2563EB', border: '#1D4ED8' },
-  { value: 'entertainment', label: 'Entretenimiento y Ocio', color: '#EC4899', border: '#BE185D' },
-  { value: 'shopping', label: 'Compras Personales', color: '#10B981', border: '#059669' },
-  { value: 'education', label: 'Educación', color: '#14B8A6', border: '#0D9488' },
-  { value: 'debt', label: 'Pago de Deudas', color: '#D946EF', border: '#A21CAF' },
-  { value: 'other_expense', label: 'Otros Gastos', color: '#EAB308', border: '#CA8A04' },
-]
 
 const getSpanishCategoryLabel = (category: string) => {
   const foundCategory = EXPENSE_CATEGORIES.find(item => item.value === category)

@@ -1,7 +1,7 @@
 import { cn } from "../../../shared/utils/cn"
 import { Eye, Edit, Trash2 } from "lucide-react"
 import type { FinancialDataListTypes } from "../pages/MovementsRegisterPage"
-import { EXPENSE_CATEGORIES, GET_MONEY_METHOD_CATEGORIES, INCOME_CATEGORIES } from "../../../shared/constants/constants"
+import { EXPENSE_CATEGORIES, MONEY_METHOD_CATEGORIES, INCOME_CATEGORIES } from "../../../shared/constants/constants"
 import { useState } from "react"
 
 interface MovementListProps {
@@ -36,7 +36,7 @@ export const MovementList = ({
 
   return (
     <>
-      {}
+      { }
       <div className="w-full space-y-4">
         <h3 className="text-lg font-semibold px-2">Historial de Movimientos</h3>
 
@@ -138,7 +138,7 @@ export const MovementList = ({
                   </td>
                   <td className="p-3.5 capitalize text-secondary-light/80 dark:text-neutral-light">
                     {
-                      GET_MONEY_METHOD_CATEGORIES.find(metItem => metItem.value === item.payment_method)?.label
+                      MONEY_METHOD_CATEGORIES.find(metItem => metItem.value === item.payment_method)?.label
                       || "-"
                     }
                   </td>

@@ -34,7 +34,7 @@ export const submitMovementToSupabase = async (data: MovementsData) => {
       amount: data.amount,
       category: data.category,
       movement_date: data.movementDate,
-      payment_method: data.getMoneyMethod,
+      payment_method: data.paymentMethod,
       description: data.description,
       receipt_path: receiptPath
     })
