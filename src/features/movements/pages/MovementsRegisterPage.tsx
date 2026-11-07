@@ -18,7 +18,7 @@ export interface FinancialDataListTypes {
   description: string
   id: string
   movement_date: string
-  movement_type: string
+  movement_type: 'income' | 'expense'
   payment_method: string
   receipt_path: string
   user_id: string

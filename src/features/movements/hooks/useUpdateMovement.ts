@@ -1,12 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { sileo } from "sileo";
-import { updateMovementInSupabase, type UpdateMovementPayload } from "../api/movements.api";
-
-interface UpdateParametersType {
-  id: string | undefined
-  data: UpdateMovementPayload
-  oldReceiptPath: string | undefined
-}
+import { updateMovementInSupabase, type updateMovementInSupabasePropsTypes } from "../api/movements.api";
 
 export const useUpdateMovement = () => {
   const queryClient = useQueryClient()
@@ -16,7 +10,7 @@ export const useUpdateMovement = () => {
       id,
       data,
       oldReceiptPath
-    }: UpdateParametersType) => {
+    }: updateMovementInSupabasePropsTypes) => {
       if (id && oldReceiptPath) {
         return await updateMovementInSupabase({ id, data, oldReceiptPath })
       }

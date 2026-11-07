@@ -1,13 +1,10 @@
 import { supabase } from "../../../shared/lib/supabase";
-import type { MovementsData } from "../schemas/movementsSchema";
+import type { MovementOutput, MovementsData } from "../schemas/movementsSchema";
 
-export interface UpdateMovementPayload {
-  amount: number
-  category: string
-  movement_date: string
-  payment_method: string
-  description?: string
-  receiptUpload?: FileList | null
+export interface updateMovementInSupabasePropsTypes {
+  id: string | undefined,
+  data: MovementOutput,
+  oldReceiptPath: string | undefined
 }
 
 export const submitMovementToSupabase = async (data: MovementsData) => {
@@ -62,21 +59,17 @@ export const updateMovementInSupabase = async ({
   id,
   data,
   oldReceiptPath
-}: {
-  id: string;
-  data: UpdateMovementPayload;
-  oldReceiptPath: string | null;
-}) => {
+}: updateMovementInSupabasePropsTypes) => {
   // Verify user session for security
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
 
   if (authError || !user) {
-    throw new Error(`No se puede verificar tu sesión. Por favor vuelve a iniciar sesión.`);
+    throw new Error(`No se puede verificar tu sesión. Por favor vuelve a iniciar sesión.`)
   }
 
   let newReceiptPath = oldReceiptPath;
 
-  // Receipt upload handling (Supabase Storage)
+  // Receipt upload handling (Supabase Storage: 'receipts')
   if (data.receiptUpload && data.receiptUpload.length > 0) {
     const file = data.receiptUpload[0];
     const fileExt = file.name.split('.').pop();
@@ -105,8 +98,9 @@ export const updateMovementInSupabase = async ({
     .update({
       amount: data.amount,
       category: data.category,
-      movement_date: data.movement_date,
-      payment_method: data.payment_method,
+      movementType: data.movementType,
+      movementDate: data.movementDate,
+      paymentMethod: data.paymentMethod,
       description: data.description,
       receipt_path: newReceiptPath,
     })

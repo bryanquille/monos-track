@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, MONEY_METHOD_CATEGORIES } from "../../../shared/constants/constants";
 import { Upload, X } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
+import { MovementsSchema, type MovementInput, type MovementOutput } from "../schemas/movementsSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface MovementEditModalPropsTypes {
   isOpen: boolean
@@ -12,17 +14,16 @@ interface MovementEditModalPropsTypes {
   movement: FinancialDataListTypes | null
 }
 
-export interface EditFormValues {
-  amount: number
-  category: string
-  movement_date: string
-  payment_method: string
-  description: string
-  receiptUpload: FileList | null
-}
-
 function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalPropsTypes) {
-  const { register, handleSubmit, reset } = useForm<EditFormValues>()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm<MovementInput, unknown, MovementOutput>({
+    resolver: zodResolver(MovementsSchema)
+  })
+
   const { mutate: updateMovement, isPending } = useUpdateMovement()
 
   useEffect(() => {
@@ -30,10 +31,11 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
       reset({
         amount: movement.amount,
         category: movement.category,
-        movement_date: movement.movement_date,
-        payment_method: movement.payment_method,
+        movementType: movement.movement_type,
+        movementDate: movement.movement_date,
+        paymentMethod: movement.payment_method,
         description: movement.description || '',
-        receiptUpload: null
+        receiptUpload: undefined
       })
     }
   }, [movement, reset])
@@ -49,7 +51,7 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
     }
   }, [isOpen])
 
-  const onSubmit = (data: EditFormValues) => {
+  const onSubmit = (data: MovementOutput) => {
     updateMovement(
       {
         id: movement?.id,
@@ -88,59 +90,134 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Amount */}
           <div>
-            <label htmlFor="amount">Monto</label>
-            <input
-              type="number"
-              id="amount"
-              step='0.01'
-              {...register('amount', { required: true })}
-            />
+            <div>
+              <label htmlFor="amount">Monto</label>
+              <input
+                type="number"
+                id="amount"
+                step='0.01'
+                aria-invalid={!!errors.amount}
+                aria-describedby={errors.amount ? 'amount-error' : undefined}
+                {...register('amount', { required: true })}
+              />
+            </div>
+            {errors.amount &&
+              <span
+                className={cn('text-sm text-red-500')}
+                id="amount-error"
+                role="alert"
+              >
+                {errors.amount.message}
+              </span>
+            }
+          </div>
+
+          {/* Movement Type */}
+          <div>
+            <div>
+              <label htmlFor="movementType">Tipo de movimiento</label>
+              <input
+                type="radio"
+                id="movementType"
+                aria-invalid={!!errors.movementType}
+                aria-describedby={errors.movementType ? 'movementType-error' : undefined}
+                {...register('movementType')}
+              />
+            </div>
+            {errors.movementType &&
+              <span
+                className={cn('text-sm text-red-500')}
+                id="movementType-error"
+                role="alert"
+              >
+                {errors.movementType.message}
+              </span>
+            }
           </div>
 
           {/* Category */}
           <div>
-            <label htmlFor="category">Categoría</label>
-            <select
-              id="category"
-              {...register('category', { required: true })}
-            >
-              {categories.map(cat => (
-                <option
-                  key={cat.value}
-                  value={cat.value}
-                >
-                  {cat.label}
-                </option>
-              ))}
-            </select>
+            <div>
+              <label htmlFor="category">Categoría</label>
+              <select
+                id="category"
+                aria-invalid={!!errors.category}
+                aria-describedby={errors.category ? 'category-error' : undefined}
+                {...register('category', { required: true })}
+              >
+                {categories.map(cat => (
+                  <option
+                    key={cat.value}
+                    value={cat.value}
+                  >
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {errors.category &&
+              <span
+                className={cn('text-sm text-red-500')}
+                id="category-error"
+                role="alert"
+              >
+                {errors.category.message}
+              </span>
+            }
           </div>
 
           {/* Movement Date */}
           <div>
-            <label htmlFor="movement_date">Fecha de movimiento</label>
-            <input
-              type="date"
-              id="movement_date"
-              {...register('movement_date', { required: true })}
-            />
+            <div>
+              <label htmlFor="movementDate">Fecha de movimiento</label>
+              <input
+                type="date"
+                id="movementDate"
+                aria-invalid={!!errors.movementDate}
+                aria-describedby={errors.movementDate ? 'movementDate-error' : undefined}
+                {...register('movementDate', { required: true })}
+              />
+            </div>
+            {errors.movementDate &&
+              <span
+                className={cn('text-sm text-red-500')}
+                id="movementDate-error"
+                role="alert"
+              >
+                {errors.movementDate.message}
+              </span>
+            }
           </div>
 
           {/* Payment Method */}
           <div>
-            <label htmlFor="payment_method">Método de pago</label>
-            <select
-              id="payment_method"
-              {...register('payment_method', { required: true })}
-            >
-              {MONEY_METHOD_CATEGORIES.map(method => (
-                <option
-                  key={method.value}
-                  value={method.value}
-                >
-                  {method.label}
-                </option>
-              ))}
-            </select>
+            <div>
+              <label htmlFor="paymentMethod">Método de pago</label>
+              <select
+                id="paymentMethod"
+                aria-invalid={!!errors.paymentMethod}
+                aria-describedby={errors.paymentMethod ? 'paymentMethod-error' : undefined}
+                {...register('paymentMethod', { required: true })}
+              >
+                {MONEY_METHOD_CATEGORIES.map(method => (
+                  <option
+                    key={method.value}
+                    value={method.value}
+                  >
+                    {method.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {errors.paymentMethod &&
+              <span
+                className={cn('text-sm text-red-500')}
+                id="paymentMethod-error"
+                role="alert"
+              >
+                {errors.paymentMethod.message}
+              </span>
+            }
           </div>
 
           {/* Description */}
@@ -155,21 +232,34 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
 
           {/* New field to change or upload a receipt */}
           <div>
-            <label htmlFor="receiptUpload">Comprobante / Recibo</label>
             <div>
-              <Upload size={24} />
-              <p>
-                {movement?.receipt_path
-                  ? 'Este movimiento ya tiene un recibo. Si subes uno nuevo se reemplazará al anterior.'
-                  : 'Sube un comprobante en formato .png, .jpg o .webp'}
-              </p>
-              <input
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                id="receiptUpload"
-                {...register('receiptUpload')}
-              />
+              <label htmlFor="receiptUpload">Comprobante / Recibo</label>
+              <div>
+                <Upload size={24} />
+                <p>
+                  {movement?.receipt_path
+                    ? 'Este movimiento ya tiene un recibo. Si subes uno nuevo se reemplazará al anterior.'
+                    : 'Sube un comprobante en formato .png, .jpg o .webp'}
+                </p>
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  id="receiptUpload"
+                  aria-invalid={!!errors.receiptUpload}
+                  aria-describedby={errors.receiptUpload ? 'receiptUpload-error' : undefined}
+                  {...register('receiptUpload')}
+                />
+              </div>
             </div>
+            {errors.receiptUpload &&
+              <span
+                className={cn('text-sm text-red-500')}
+                id="receiptUpload-error"
+                role="alert"
+              >
+                {errors.receiptUpload.message}
+              </span>
+            }
           </div>
 
           {/* Action buttons */}
