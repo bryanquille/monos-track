@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query"
 import { supabase } from "../../../shared/lib/supabase"
 import MovementDetailsModal from "../components/MovementDetailsModal";
 import { useReadMovement } from "../hooks/useReadMovement";
+import { useEditMovement } from "../hooks/useEditMovement";
+import MovementEditModal from "../components/MovementEditModal";
 
 export interface FinancialDataListTypes {
   amount: number
@@ -48,6 +50,14 @@ function MovementsRegisterPage() {
     handleViewDetails,
     handleCloseModal
   } = useReadMovement()
+
+  // Edit movement
+  const {
+    isEditModalOpen,
+    handleOpenEdit,
+    handleCloseEdit,
+    selectedMovementToEdit
+  } = useEditMovement()
 
   return (
     <>
@@ -116,6 +126,7 @@ function MovementsRegisterPage() {
           <MovementList
             movements={movements}
             onViewDetails={handleViewDetails}
+            onEdit={handleOpenEdit}
           />
         </main>
       </section>
@@ -125,6 +136,14 @@ function MovementsRegisterPage() {
           isOpen={isDetailsModalOpen}
           movement={selectedMovement}
           handleCloseModal={handleCloseModal}
+        />
+      }
+      {/* Render the edit movement modal */}
+      {selectedMovementToEdit &&
+        <MovementEditModal
+          isOpen={isEditModalOpen}
+          onClose={handleCloseEdit}
+          movement={selectedMovementToEdit}
         />
       }
     </>

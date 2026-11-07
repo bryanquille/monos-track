@@ -3,9 +3,9 @@ import { sileo } from "sileo";
 import { updateMovementInSupabase, type UpdateMovementPayload } from "../api/movements.api";
 
 interface UpdateParametersType {
-  id: string
+  id: string | undefined
   data: UpdateMovementPayload
-  oldReceiptPath: string | null
+  oldReceiptPath: string | undefined
 }
 
 export const useUpdateMovement = () => {
@@ -17,7 +17,9 @@ export const useUpdateMovement = () => {
       data,
       oldReceiptPath
     }: UpdateParametersType) => {
-      return await updateMovementInSupabase({ id, data, oldReceiptPath })
+      if (id && oldReceiptPath) {
+        return await updateMovementInSupabase({ id, data, oldReceiptPath })
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['financial-data'] })
