@@ -64,7 +64,7 @@ function MovementsRegisterPage() {
       {/* Blur screen when a modal is open */}
       <div className={cn(
         'absolute top-0 left-0 z-50 w-full h-full backdrop-blur-sm bg-neutral-light/50 dark:bg-tertiary-dark/50',
-        isDetailsModalOpen ? 'block' : 'hidden'
+        isDetailsModalOpen || isEditModalOpen ? 'block' : 'hidden'
       )}></div>
       {/* Register Form */}
       <section className={cn('w-[95%] max-w-7xl mx-auto mb-6 overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>

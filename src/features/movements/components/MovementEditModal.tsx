@@ -83,15 +83,19 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
           type="button"
           onClick={onClose}
           className={cn(
-            'absolute top-4 right-4 p-1',
-            'rounded-full',
-            'bg-tertiary-light/25'
+            'cursor-pointer absolute top-4 right-4 p-1',
+            'rounded-full bg-tertiary-light/25',
+            'dark:bg-tertiary-light/90',
+            ''
           )}
         >
           <X
             size={20}
             strokeWidth={4}
-            className="text-tertiary-light"
+            className={cn(
+              'text-tertiary-light',
+              'dark:text-neutral-dark/90'
+            )}
           />
         </button>
       </header>
@@ -121,7 +125,8 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
                 step='0.01'
                 className={cn(
                   'px-4 py-2 appearance-none',
-                  'border border-secondary-light rounded-lg'
+                  'border border-secondary-light rounded-lg',
+                  'dark:border-neutral-dark/80'
                 )}
                 aria-invalid={!!errors.amount}
                 aria-describedby={errors.amount ? 'amount-error' : undefined}
@@ -154,14 +159,19 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
                 id="movementType"
                 className={cn(
                   'px-4 py-2 appearance-none',
-                  'border border-secondary-light rounded-lg'
+                  'border border-secondary-light rounded-lg',
+                  'dark:border-neutral-dark/80'
                 )}
                 aria-invalid={!!errors.movementType}
                 aria-describedby={errors.movementType ? 'movementType-error' : undefined}
                 {...register('movementType')}
               >
-                <option value="income">Ingreso</option>
-                <option value="expense">Gasto</option>
+                <option value="income"
+                  className={cn('dark:text-primary-dark')}
+                >Ingreso</option>
+                <option value="expense"
+                  className={cn('dark:text-primary-dark')}
+                >Gasto</option>
               </select>
             </div>
             {errors.movementType &&
@@ -192,7 +202,8 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
                 id="category"
                 className={cn(
                   'px-4 py-2 appearance-none',
-                  'border border-secondary-light rounded-lg'
+                  'border border-secondary-light rounded-lg',
+                  'dark:border-neutral-dark/80'
                 )}
                 aria-invalid={!!errors.category}
                 aria-describedby={errors.category ? 'category-error' : undefined}
@@ -202,6 +213,7 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
                   <option
                     key={cat.value}
                     value={cat.value}
+                    className={cn('dark:text-primary-dark')}
                   >
                     {cat.label}
                   </option>
@@ -238,7 +250,7 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
                 className={cn(
                   'px-4 py-2 appearance-none',
                   'border border-secondary-light rounded-lg',
-                  'dark:scheme-dark'
+                  'dark:scheme-dark dark:border-neutral-dark/80'
                 )}
                 aria-invalid={!!errors.movementDate}
                 aria-describedby={errors.movementDate ? 'movementDate-error' : undefined}
@@ -274,6 +286,7 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
                 className={cn(
                   'px-4 py-2 appearance-none',
                   'border border-secondary-light rounded-lg',
+                  'dark:border-neutral-dark/80'
                 )}
                 aria-invalid={!!errors.paymentMethod}
                 aria-describedby={errors.paymentMethod ? 'paymentMethod-error' : undefined}
@@ -283,6 +296,7 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
                   <option
                     key={method.value}
                     value={method.value}
+                    className={cn('dark:text-primary-dark')}
                   >
                     {method.label}
                   </option>
@@ -315,6 +329,7 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
               className={cn(
                 'h-30 px-4 py-2 appearance-none resize-none',
                 'border border-secondary-light rounded-lg',
+                'dark:border-neutral-dark/80'
               )}
               {...register('description')}
             >
@@ -354,6 +369,7 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
                   className={cn(
                     'px-4 py-2 appearance-none',
                     'border border-secondary-light rounded-lg',
+                    'dark:border-neutral-dark/80'
                   )}
                   aria-invalid={!!errors.receiptUpload}
                   aria-describedby={errors.receiptUpload ? 'receiptUpload-error' : undefined}
