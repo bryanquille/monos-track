@@ -3,7 +3,7 @@ import type { FinancialDataListTypes } from "../pages/MovementsRegisterPage";
 import { useUpdateMovement } from "../hooks/useUpdateMovement";
 import { useEffect } from "react";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, MONEY_METHOD_CATEGORIES } from "../../../shared/constants/constants";
-import { Upload, X } from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
 import { MovementsSchema, type MovementInput, type MovementOutput } from "../schemas/movementsSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,27 +18,21 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors }
   } = useForm<MovementInput, unknown, MovementOutput>({
-    resolver: zodResolver(MovementsSchema)
+    resolver: zodResolver(MovementsSchema),
+    defaultValues: {
+      amount: movement?.amount,
+      category: movement?.category,
+      movementType: movement?.movement_type,
+      movementDate: movement?.movement_date,
+      paymentMethod: movement?.payment_method,
+      description: movement?.description || '',
+      receiptUpload: undefined
+    }
   })
 
   const { mutate: updateMovement, isPending } = useUpdateMovement()
-
-  useEffect(() => {
-    if (movement) {
-      reset({
-        amount: movement.amount,
-        category: movement.category,
-        movementType: movement.movement_type,
-        movementDate: movement.movement_date,
-        paymentMethod: movement.payment_method,
-        description: movement.description || '',
-        receiptUpload: undefined
-      })
-    }
-  }, [movement, reset])
 
   useEffect(() => {
     if (isOpen) {
@@ -70,32 +64,65 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
     <section
       className={cn(
         'fixed top-1/2 left-1/2 -translate-1/2 z-50',
-        'w-full h-full max-w-140 p-4 bg-white overflow-y-auto',
+        'w-full h-full max-w-140 p-6 bg-white overflow-y-auto',
         'dark:bg-primary-dark dark:text-neutral-dark',
         'shadow-lg shadow-tertiary-light/40 dark:shadow-secondary-dark/40',
         isOpen ? 'block' : 'hidden',
         'md:h-[unset] md:max-h-11/12 md:rounded-2xl'
       )}
     >
-      <header>
-        <h3>Editar Movimiento</h3>
+      <header
+        className={cn('relative p-4')}
+      >
+        <h3
+          className={cn('text-center font-semibold text-xl')}
+        >
+          Editar Movimiento
+        </h3>
         <button
           type="button"
           onClick={onClose}
+          className={cn(
+            'absolute top-4 right-4 p-1',
+            'rounded-full',
+            'bg-tertiary-light/25'
+          )}
         >
-          <X size={20} />
+          <X
+            size={20}
+            strokeWidth={4}
+            className="text-tertiary-light"
+          />
         </button>
       </header>
       <main>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={cn('flex flex-col gap-6')}
+        >
           {/* Amount */}
-          <div>
-            <div>
-              <label htmlFor="amount">Monto</label>
+          <div
+            className={cn('flex flex-col gap-1')}
+          >
+            <div
+              className={cn(
+                'flex flex-col gap-0.5',
+              )}
+            >
+              <label
+                htmlFor="amount"
+                className={cn('font-medium')}
+              >
+                Monto
+              </label>
               <input
                 type="number"
                 id="amount"
                 step='0.01'
+                className={cn(
+                  'px-4 py-2 appearance-none',
+                  'border border-secondary-light rounded-lg'
+                )}
                 aria-invalid={!!errors.amount}
                 aria-describedby={errors.amount ? 'amount-error' : undefined}
                 {...register('amount', { required: true })}
@@ -113,16 +140,29 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
           </div>
 
           {/* Movement Type */}
-          <div>
-            <div>
-              <label htmlFor="movementType">Tipo de movimiento</label>
-              <input
-                type="radio"
+          <div
+            className={cn('flex flex-col gap-1')}
+          >
+            <div className={cn('flex flex-col gap-0.5')}>
+              <label
+                htmlFor="movementType"
+                className={cn('font-medium')}
+              >
+                Tipo de movimiento
+              </label>
+              <select
                 id="movementType"
+                className={cn(
+                  'px-4 py-2 appearance-none',
+                  'border border-secondary-light rounded-lg'
+                )}
                 aria-invalid={!!errors.movementType}
                 aria-describedby={errors.movementType ? 'movementType-error' : undefined}
                 {...register('movementType')}
-              />
+              >
+                <option value="income">Ingreso</option>
+                <option value="expense">Gasto</option>
+              </select>
             </div>
             {errors.movementType &&
               <span
@@ -136,11 +176,24 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
           </div>
 
           {/* Category */}
-          <div>
-            <div>
-              <label htmlFor="category">Categoría</label>
+          <div
+            className={cn('flex flex-col gap-1')}
+          >
+            <div
+              className={cn('flex flex-col gap-0.5')}
+            >
+              <label
+                htmlFor="category"
+                className={cn('font-medium')}
+              >
+                Categoría
+              </label>
               <select
                 id="category"
+                className={cn(
+                  'px-4 py-2 appearance-none',
+                  'border border-secondary-light rounded-lg'
+                )}
                 aria-invalid={!!errors.category}
                 aria-describedby={errors.category ? 'category-error' : undefined}
                 {...register('category', { required: true })}
@@ -167,12 +220,26 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
           </div>
 
           {/* Movement Date */}
-          <div>
-            <div>
-              <label htmlFor="movementDate">Fecha de movimiento</label>
+          <div
+            className={cn('flex flex-col gap-1')}
+          >
+            <div
+              className={cn('flex flex-col gap-0.5')}
+            >
+              <label
+                htmlFor="movementDate"
+                className={cn('font-medium')}
+              >
+                Fecha de movimiento
+              </label>
               <input
                 type="date"
                 id="movementDate"
+                className={cn(
+                  'px-4 py-2 appearance-none',
+                  'border border-secondary-light rounded-lg',
+                  'dark:scheme-dark'
+                )}
                 aria-invalid={!!errors.movementDate}
                 aria-describedby={errors.movementDate ? 'movementDate-error' : undefined}
                 {...register('movementDate', { required: true })}
@@ -190,11 +257,24 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
           </div>
 
           {/* Payment Method */}
-          <div>
-            <div>
-              <label htmlFor="paymentMethod">Método de pago</label>
+          <div
+            className={cn('flex flex-col gap-1')}
+          >
+            <div
+              className={cn('flex flex-col gap-0.5')}
+            >
+              <label
+                htmlFor="paymentMethod"
+                className={cn('font-medium')}
+              >
+                Método de pago
+              </label>
               <select
                 id="paymentMethod"
+                className={cn(
+                  'px-4 py-2 appearance-none',
+                  'border border-secondary-light rounded-lg',
+                )}
                 aria-invalid={!!errors.paymentMethod}
                 aria-describedby={errors.paymentMethod ? 'paymentMethod-error' : undefined}
                 {...register('paymentMethod', { required: true })}
@@ -221,22 +301,48 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
           </div>
 
           {/* Description */}
-          <div>
-            <label htmlFor="description">Descripción</label>
+          <div
+            className={cn('flex flex-col gap-0.5')}
+          >
+            <label
+              htmlFor="description"
+              className={cn('font-medium')}
+            >
+              Descripción
+            </label>
             <textarea
               id="description"
+              className={cn(
+                'h-30 px-4 py-2 appearance-none resize-none',
+                'border border-secondary-light rounded-lg',
+              )}
               {...register('description')}
             >
             </textarea>
           </div>
 
           {/* New field to change or upload a receipt */}
-          <div>
-            <div>
-              <label htmlFor="receiptUpload">Comprobante / Recibo</label>
-              <div>
-                <Upload size={24} />
-                <p>
+          <div
+            className={cn('flex flex-col gap-1')}
+          >
+            <div
+              className={cn('flex flex-col gap-0.5')}
+            >
+              <label
+                htmlFor="receiptUpload"
+                className={cn('font-medium')}
+              >
+                Comprobante / Recibo
+              </label>
+              <div
+                className={cn('flex flex-col gap-0.5')}
+              >
+                <p
+                  className={cn(
+                    'text-sm',
+                    movement?.receipt_path && 'text-tertiary-light'
+                  )}
+                >
                   {movement?.receipt_path
                     ? 'Este movimiento ya tiene un recibo. Si subes uno nuevo se reemplazará al anterior.'
                     : 'Sube un comprobante en formato .png, .jpg o .webp'}
@@ -245,6 +351,10 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
                   id="receiptUpload"
+                  className={cn(
+                    'px-4 py-2 appearance-none',
+                    'border border-secondary-light rounded-lg',
+                  )}
                   aria-invalid={!!errors.receiptUpload}
                   aria-describedby={errors.receiptUpload ? 'receiptUpload-error' : undefined}
                   {...register('receiptUpload')}
@@ -263,16 +373,29 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
           </div>
 
           {/* Action buttons */}
-          <div>
+          <div
+            className={cn('py-2 flex justify-evenly items-center gap-2')}
+          >
             <button
               type="button"
               onClick={onClose}
+              className={cn(
+                'cursor-pointer p-2',
+                'font-semibold text-lg',
+                'border-2 border-tertiary-light rounded-xl',
+              )}
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isPending}
+              className={cn(
+                'cursor-pointer p-2',
+                'font-semibold text-lg text-neutral-dark',
+                'border-2 border-primary rounded-xl',
+                'bg-primary/70'
+              )}
             >
               {isPending ? 'Actualizando' : 'Guardar cambios'}
             </button>
