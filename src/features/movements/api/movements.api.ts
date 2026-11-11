@@ -98,9 +98,9 @@ export const updateMovementInSupabase = async ({
     .update({
       amount: data.amount,
       category: data.category,
-      movementType: data.movementType,
-      movementDate: data.movementDate,
-      paymentMethod: data.paymentMethod,
+      movement_type: data.movementType,
+      movement_date: data.movementDate,
+      payment_method: data.paymentMethod,
       description: data.description,
       receipt_path: newReceiptPath,
     })

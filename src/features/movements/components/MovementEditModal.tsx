@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
 import { MovementsSchema, type MovementInput, type MovementOutput } from "../schemas/movementsSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { sileo } from "sileo";
 
 interface MovementEditModalPropsTypes {
   isOpen: boolean
@@ -18,7 +19,7 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, isDirty }
   } = useForm<MovementInput, unknown, MovementOutput>({
     resolver: zodResolver(MovementsSchema),
     defaultValues: {
@@ -46,6 +47,15 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
   }, [isOpen])
 
   const onSubmit = (data: MovementOutput) => {
+    const hasNewFile = data.receiptUpload && data.receiptUpload.length > 0;
+
+    if (!isDirty && !hasNewFile) {
+      console.log('No se detectaron cambios. No sé puede actualizar si no hay cambios.')
+      sileo.warning({ title: 'No se detectaron cambios.', description: 'No sé puede actualizar si no hay cambios.' })
+      onClose()
+      return
+    }
+
     updateMovement(
       {
         id: movement?.id,
@@ -53,7 +63,8 @@ function MovementEditModal({ isOpen, onClose, movement }: MovementEditModalProps
         oldReceiptPath: movement?.receipt_path
       },
       {
-        onSuccess: () => { onClose() }
+        onSuccess: () => { onClose() },
+        onError: () => { onClose() }
       }
     )
   }
