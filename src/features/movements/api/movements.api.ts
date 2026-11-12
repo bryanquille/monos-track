@@ -2,9 +2,14 @@ import { supabase } from "../../../shared/lib/supabase";
 import type { MovementOutput, MovementsData } from "../schemas/movementsSchema";
 
 export interface updateMovementInSupabasePropsTypes {
-  id: string | undefined,
-  data: MovementOutput,
+  id: string | undefined
+  data: MovementOutput
   oldReceiptPath: string | undefined
+}
+
+export interface deleteMovementFromSupabasePropsTypes {
+  id: string | undefined
+  receiptPath: string | undefined
 }
 
 export const submitMovementToSupabase = async (data: MovementsData) => {
@@ -115,4 +120,33 @@ export const updateMovementInSupabase = async ({
   }
 
   return true;
+}
+
+export const deleteMovementFromSupabase = async ({ id, receiptPath }: deleteMovementFromSupabasePropsTypes) => {
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    throw new Error('No se puede verificar tú sesión. Por favor vuelve a iniciar sesión.')
+  }
+
+  if (receiptPath) {
+    const { error: storageError } = await supabase.storage
+      .from('receipts')
+      .remove([receiptPath])
+
+    if (storageError) {
+      console.error('Adevertencia al eliminar el archivo del storage:', storageError.message)
+    }
+  }
+
+  const { error: dbError } = await supabase
+    .from('movements')
+    .delete()
+    .eq('id', id)
+
+  if (dbError) {
+    throw new Error(`Error al eliminar el movimiento: ${dbError.message}`)
+  }
+
+  return true
 }
