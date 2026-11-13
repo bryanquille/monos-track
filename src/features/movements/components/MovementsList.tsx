@@ -8,7 +8,7 @@ interface MovementListProps {
   movements: FinancialDataListTypes[] | undefined
   onViewDetails: (movement: FinancialDataListTypes) => void
   onEdit: (movement: FinancialDataListTypes) => void
-  onDelete?: (id: string) => void
+  onDelete: (movement: FinancialDataListTypes) => void
 }
 
 export const MovementList = ({
@@ -88,14 +88,14 @@ export const MovementList = ({
                   <button
                     onClick={() => onEdit(item)}
                     title="Editar"
-                    className="p-1.5 text-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-950/40 rounded-md transition-colors"
+                    className="cursor-pointer p-1.5 text-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-950/40 rounded-md transition-colors"
                   >
                     <Edit size={16} />
                   </button>
                   <button
-                    onClick={() => onDelete(item.id)}
+                    onClick={() => onDelete(item)}
                     title="Eliminar"
-                    className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-md transition-colors"
+                    className="cursor-pointer p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-md transition-colors"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -170,7 +170,7 @@ export const MovementList = ({
                         <Edit size={18} />
                       </button>
                       <button
-                        onClick={() => onDelete(item.id)}
+                        onClick={() => onDelete(item)}
                         title="Eliminar"
                         className="cursor-pointer p-1.5 text-red-500 hover:bg-red-300 dark:hover:bg-red-950 rounded-md transition-colors"
                       >

@@ -10,6 +10,8 @@ import MovementDetailsModal from "../components/MovementDetailsModal";
 import { useReadMovement } from "../hooks/useReadMovement";
 import { useEditMovement } from "../hooks/useEditMovement";
 import MovementEditModal from "../components/MovementEditModal";
+import MovementDeleteModal from "../components/MovementDeleteModal";
+import { useDeleteMovementModal } from "../hooks/useDeleteMovementModal";
 
 export interface FinancialDataListTypes {
   amount: number
@@ -59,12 +61,20 @@ function MovementsRegisterPage() {
     selectedMovementToEdit
   } = useEditMovement()
 
+  // Delete movement
+  const {
+    isDeleteModalOpen,
+    handleOpenDelete,
+    handleCloseDelete,
+    selectedMovementToDelete
+  } = useDeleteMovementModal()
+
   return (
     <>
       {/* Blur screen when a modal is open */}
       <div className={cn(
         'absolute top-0 left-0 z-50 w-full h-full backdrop-blur-sm bg-neutral-light/50 dark:bg-tertiary-dark/50',
-        isDetailsModalOpen || isEditModalOpen ? 'block' : 'hidden'
+        isDetailsModalOpen || isEditModalOpen || isDeleteModalOpen ? 'block' : 'hidden'
       )}></div>
       {/* Register Form */}
       <section className={cn('w-[95%] max-w-7xl mx-auto mb-6 overflow-hidden border border-neutral-light/50 rounded-xl bg-white dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
@@ -127,6 +137,7 @@ function MovementsRegisterPage() {
             movements={movements}
             onViewDetails={handleViewDetails}
             onEdit={handleOpenEdit}
+            onDelete={handleOpenDelete}
           />
         </main>
       </section>
@@ -144,6 +155,14 @@ function MovementsRegisterPage() {
           isOpen={isEditModalOpen}
           onClose={handleCloseEdit}
           movement={selectedMovementToEdit}
+        />
+      }
+      {/* Render the delete movement modal */}
+      {selectedMovementToDelete &&
+        <MovementDeleteModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDelete}
+          movement={selectedMovementToDelete}
         />
       }
     </>
