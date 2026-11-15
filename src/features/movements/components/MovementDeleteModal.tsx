@@ -103,7 +103,7 @@ function MovementDeleteModal({ isOpen, onClose, movement }: MovementDeleteModalP
           >
             ${movement.amount.toFixed(2)}
           </span>
-          <span>{movement.movement_type === 'income' ? 'Ingreso' : 'Gasto'}</span>
+          <span className={cn('font-semibold')}>{movement.movement_type === 'income' ? 'Ingreso' : 'Gasto'}</span>
           <span>Categoría: {categoryLabel}</span>
           <span>Fecha: {formattedDate}</span>
         </div>
