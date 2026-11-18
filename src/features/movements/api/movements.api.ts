@@ -150,3 +150,24 @@ export const deleteMovementFromSupabase = async ({ id, receiptPath }: deleteMove
 
   return true
 }
+
+export const getMonthBalance = async (year: number, month: number) => {
+  // Calculate the start and end dates for the given month to filter in Supabase
+  const startDate = `${year}-${String(month).padStart(2, '0')}-01`
+  const endDate = new Date(year, month, 0).toISOString().split('T')[0]
+
+  const { data, error } = await supabase
+    .from('movements')
+    .select('movement_type, amount')
+    .gte('movement_date', startDate)
+    .lte('movement_date', endDate)
+
+  if (error) throw new Error(error.message)
+
+  // We sum the incomes and subtract the expenses
+  const balance = data.reduce((acc, mov) => {
+    return mov.movement_type === 'income' ? acc + mov.amount : acc - mov.amount;
+  }, 0)
+
+  return balance
+}
