@@ -119,6 +119,10 @@ export const INCOME_CATEGORIES = [
     label: 'Reembolsos'
   },
   {
+    value: 'carry_over',
+    label: 'Arrastre de mes'
+  },
+  {
     value: 'other_income',
     label: 'Otros Ingresos'
   },
