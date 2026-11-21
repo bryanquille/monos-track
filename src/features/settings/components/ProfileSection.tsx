@@ -1,7 +1,14 @@
 import { Edit, User } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
+import { useAuthStore } from "../../auth/store/authStore";
 
 function ProfileSection() {
+  const user = useAuthStore((state) => state.user)
+
+  const userFirstName = user?.user_metadata.first_name
+  const userLastName = user?.user_metadata.last_name
+  const userEmail = `${user?.email}`
+
   return (
     <section className={cn('w-[95%] max-w-7xl mx-auto p-4 overflow-hidden flex flex-col justify-center gap-6 border border-neutral-light/50 rounded-xl bg-neutral-light/50 dark:shadow-[unset] dark:bg-tertiary-dark dark:text-neutral-dark')}>
       <div className={cn('flex flex-row-reverse justify-end items-center gap-2')}>
@@ -26,15 +33,29 @@ function ProfileSection() {
       <form className={cn('flex flex-col items-center gap-4')}>
         <div className={cn('w-full flex flex-col justify-center gap-1')}>
           <label
-            htmlFor="fullName"
+            htmlFor="first_name"
             className={cn('text-secondary-light/60 dark:text-neutral-dark/60')}
           >
-            Nombre Completo
+            Nombre
           </label>
           <input
             type="text"
-            id="fullName"
-            value={'John Doe'}
+            id="first_name"
+            value={userFirstName}
+            className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
+          />
+        </div>
+        <div className={cn('w-full flex flex-col justify-center gap-1')}>
+          <label
+            htmlFor="last_name"
+            className={cn('text-secondary-light/60 dark:text-neutral-dark/60')}
+          >
+            Apellido
+          </label>
+          <input
+            type="text"
+            id="last_name"
+            value={userLastName}
             className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
           />
         </div>
@@ -48,7 +69,7 @@ function ProfileSection() {
           <input
             type="text"
             id="email"
-            value={'johndoe@email.com'}
+            value={userEmail}
             className={cn('w-full px-5 py-3 border-2 border-secondary-light/70 rounded-md dark:border-neutral-light/70 dark:text-neutral-dark')}
           />
         </div>
