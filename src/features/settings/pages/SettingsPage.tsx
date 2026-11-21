@@ -4,7 +4,12 @@ import { cn } from "../../../shared/utils/cn";
 function SettingsPage() {
   return (
     <section>
-      <header className={cn('w-[95%] mx-auto mb-6 p-4 flex flex-col justify-center gap-4 rounded-xl bg-neutral-light/50 dark:bg-secondary-light dark:text-neutral-dark md:p-8')}>
+      <header className={cn(
+        'w-[95%] max-w-7xl mx-auto mb-6 p-4 flex flex-col justify-center gap-4 rounded-xl',
+        'bg-neutral-light/50 dark:bg-secondary-light dark:text-neutral-dark',
+        'shadow-sm shadow-secondary-light/50 dark:shadow-neutral-dark/50',
+        'md:p-8'
+      )}>
         <h1 className={cn('text-center text-3xl font-bold')}>
           Configuración de Perfil
         </h1>
