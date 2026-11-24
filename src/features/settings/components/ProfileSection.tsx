@@ -2,6 +2,7 @@ import { Edit, User } from "lucide-react";
 import { cn } from "../../../shared/utils/cn";
 import { useAuthStore } from "../../auth/store/authStore";
 import { useForm } from "react-hook-form";
+import type { ProfileFormData } from "../types/settingsTypes";
 
 function ProfileSection() {
   const user = useAuthStore((state) => state.user)
@@ -12,7 +13,7 @@ function ProfileSection() {
 
   const {
     register
-  } = useForm({
+  } = useForm<ProfileFormData>({
     defaultValues: {
       first_name: userFirstName,
       last_name: userLastName,
