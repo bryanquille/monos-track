@@ -1,5 +1,5 @@
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, MONEY_METHOD_CATEGORIES } from "../../../shared/constants/constants";
-import { CheckCircle2, ChevronDown, CloudUpload, FileText, X } from "lucide-react";
+import { ChevronDown, CloudUpload, X } from "lucide-react";
 import { MovementsSchema, type MovementInput, type MovementOutput } from "../schemas/movementsSchema";
 import { useForm, useWatch } from "react-hook-form";
 import { useCreateMovement } from "../hooks/useCreateMovement";
@@ -306,7 +306,7 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
               <X size={16} />
             </button>
 
-            {previewUrl ? (
+            {previewUrl && (
               /* Image preview */
               <div className={cn('flex flex-col items-center gap-2 w-full')}>
                 <div className={cn('relative w-4/5 h-20 rounded overflow-hidden border border-emerald-500/30')}>
@@ -319,22 +319,6 @@ function MovementsRegisterForm({ isIncome }: MovementsRegisterFormProps) {
                 <span className={cn('text-xs text-emerald-600 dark:text-emerald-400 font-medium truncate max-w-50')}>
                   {selectedFile.name}
                 </span>
-              </div>
-            ) : (
-              /* Doc preview (PDF) */
-              <div className={cn('flex items-center gap-3 w-full px-2')}>
-                <div className={cn('p-2 rounded-lg bg-emerald-500/20 text-emerald-500')}>
-                  <FileText size={24} />
-                </div>
-                <div className={cn('flex flex-col overflow-hidden text-left')}>
-                  <span className={cn('text-sm font-medium text-emerald-600 dark:text-emerald-400 truncate')}>
-                    {selectedFile.name}
-                  </span>
-                  <span className={cn('text-xs text-gray-500 dark:text-neutral-dark/60')}>
-                    {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
-                  </span>
-                </div>
-                <CheckCircle2 size={18} className={cn('ml-auto text-emerald-500 shrink-0')} />
               </div>
             )}
           </div>

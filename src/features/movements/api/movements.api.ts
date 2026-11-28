@@ -24,7 +24,7 @@ export const submitMovementToSupabase = async (data: MovementsData) => {
   if (data.receiptUpload && data.receiptUpload.length > 0) {
     const file = data.receiptUpload[0]
     const fileExt = file.name.split('.').pop()
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+    const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
 
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('receipts')
@@ -78,7 +78,7 @@ export const updateMovementInSupabase = async ({
   if (data.receiptUpload && data.receiptUpload.length > 0) {
     const file = data.receiptUpload[0];
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
     // Upload the new receipt to Supabase Storage bucket 'receipts'
     const { data: uploadData, error: uploadError } = await supabase.storage
