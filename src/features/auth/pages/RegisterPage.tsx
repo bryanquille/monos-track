@@ -1,4 +1,4 @@
-import logo from '../../../assets/images/monos-track-logo-circle.png'
+import Logo from '../../../shared/components/Logo';
 import { cn } from '../../../shared/utils/cn';
 import DarkThemeButton from '../../../shared/components/DarkThemeButton';
 import LoginButton from '../components/LoginButton';
@@ -17,11 +17,7 @@ function RegisterPage() {
             <p className={cn('text-gray-text text-pretty dark:text-neutral-light md:text-center md:mt-4')}>Registrate para gestionar tus movimientos con precisión técnica.</p>
           </div>
           <div className={cn('flex justify-center items-center gap-1 lg:hidden')}>
-            <img
-              src={logo}
-              alt="Monos Track Logo"
-              className='w-14'
-            />
+            <Logo className='w-14' />
             <strong className='font-bold text-2xl text-primary-dark dark:text-neutral-dark md:text-4xl'>Monos Track</strong>
           </div>
         </header>
@@ -37,11 +33,7 @@ function RegisterPage() {
       </section>
       <div className={cn('hidden lg:w-1/2 lg:p-12 lg:flex lg:flex-col lg:justify-center lg:items-center lg:gap-4 lg:bg-linear-180 lg:from-primary/70 lg:to-primary/20 dark:bg-linear-120 dark:from-tertiary-dark dark:to-primary-dark')}>
         <div className={cn('flex flex-col justify-center items-center gap-2')}>
-          <img
-            src={logo}
-            alt="Monos Track Logo"
-            className='w-14'
-          />
+          <Logo className='w-14' />
           <strong className='font-bold text-2xl text-primary-dark dark:text-neutral-dark md:text-4xl'>Monos Track</strong>
         </div>
         <strong className={cn('dark:text-neutral-dark/80')}>Gestión finaciera de alto nivel.</strong>

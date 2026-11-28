@@ -1,4 +1,4 @@
-import logo from '../../../assets/images/monos-track-logo-circle.png'
+import Logo from '../../../shared/components/Logo';
 import DarkThemeButton from '../../../shared/components/DarkThemeButton';
 import LoginForm from '../components/LoginForm';
 import RegisterButton from '../components/RegisterButton';
@@ -15,11 +15,7 @@ function LoginPage() {
               <p className='dark:text-neutral-light'>Ingresa a tu cuenta para continuar</p>
             </div>
             <div className='w-[95%] flex flex-col justify-center items-center gap-1 md:hidden'>
-              <img
-                src={logo}
-                alt="Monos Track Logo"
-                className='w-14'
-              />
+              <Logo className='w-14' />
               <strong className='font-bold text-2xl dark:text-neutral-dark'>Monos Track</strong>
             </div>
           </header>
@@ -36,11 +32,7 @@ function LoginPage() {
         </section>
         <div className='hidden w-[50%] h-screen lg:flex lg:flex-col justify-center items-center gap-2 bg-radial from-secondary-dark from-5% to-primary dark:from-secondary-light dark:from-30% dark:to-primary-dark'>
           <div className='w-[90%] max-w-107.5 mt-10 flex flex-col justify-center items-center gap-1 md:mt-[unset] md:flex-row md:gap-2 lg:w-[85%]'>
-            <img
-              src={logo}
-              alt="Monos Track Logo"
-              className='w-14'
-            />
+            <Logo className='w-14' alt="Monos Track Logo" />
             <strong className='font-bold text-2xl text-primary-dark dark:text-neutral-dark md:text-4xl'>Monos Track</strong>
           </div>
           <p className='w-[90%] max-w-107.5 text-center text-lg text-primary-dark/70 lg:w-[85%] dark:text-neutral-dark/70'>El centro de mando para tus activos financieros. Seguro, rápido y diseñado para la precisión.</p>
